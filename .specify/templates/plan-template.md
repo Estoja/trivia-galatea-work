@@ -31,7 +31,18 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify all of the following before proceeding:
+
+- [ ] **I. Arquitectura Limpia**: capas Dominio → Aplicación → Infraestructura → Presentación respetadas; sin saltar capas.
+- [ ] **II. DDD**: conceptos de negocio modelados como entidades de dominio; lenguaje ubicuo presente en nombres.
+- [ ] **III. Nomenclatura semántica**: nombres de variables/funciones/clases son autoexplicados; sin abreviaturas crípticas.
+- [ ] **IV. Simplicidad**: no se crean abstracciones sin caso de uso real presente; complejidad justificada en tabla inferior.
+- [ ] **V. Cobertura ≥ 80 %**: plan incluye tareas de pruebas para cada caso de uso; casos de uso críticos apuntan ≥ 95 %.
+- [ ] **VI. Accesibilidad**: componentes nuevos incluyen tarea de revisión con axe-core; roles ARIA contemplados en diseño.
+- [ ] **VII. Design System Caribe**: no se proponen componentes visuales propios cuando Caribe ofrece equivalente.
+- [ ] **VIII. UX Consistente**: estados de carga, error y vacío están planificados para cada flujo asíncrono.
+- [ ] **IX. Rendimiento**: estimación de impacto en bundle size y LCP; lazy loading contemplado para módulos nuevos.
+- [ ] **X. Calidad de código**: ESLint + Prettier + TypeScript strict; sin `any`; sin `console.log` en producción.
 
 ## Project Structure
 

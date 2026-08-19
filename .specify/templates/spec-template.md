@@ -114,6 +114,18 @@
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
 
+### Accessibility Criteria *(mandatory — Principio VI)*
+
+- Todos los componentes nuevos pasan axe-core sin violaciones.
+- Flujo completo navegable por teclado.
+- Lighthouse Accessibility score ≥ 95 en producción.
+
+### Design System Criteria *(mandatory — Principio VII)*
+
+- Ningún componente visual custom cuando Caribe ofrece equivalente.
+- Tokens de color y tipografía provienen exclusivamente de Caribe.
+- Revisión visual confirmada (capturas de pantalla / Storybook) en PR.
+
 ## Assumptions
 
 <!--
