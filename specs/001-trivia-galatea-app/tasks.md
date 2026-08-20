@@ -23,6 +23,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 **Purpose**: Inicialización del proyecto Angular y configuración base
 
+- [ ] T000 Gate obligatorio de Setup (C1): ejecutar `npm test --code-coverage` y validar `src/app/shared/foundational/state/match-store.port.spec.ts` + `src/app/shared/foundational/state/match-store.service.spec.ts` antes de continuar con cualquier tarea de historias de usuario (US1-US4)
 - [ ] T001 Crear proyecto Angular 20 standalone/zoneless (`ng new trivia-galatea --standalone --style=scss --routing`) y verificar estructura contra [plan.md — Project Structure](./plan.md)
 - [ ] T002 Configurar `.npmrc` para el registro Artifactory de Bancolombia e instalar `@bancolombia/caribe-design-system` + `@bancolombia/caribe-brand-bancolombia` + dependencias de integración Gemini/Firebase (`firebase`, `@angular/fire`) siguiendo el patrón de `agentic-angular-vertex/example` (ver [quickstart.md §1](./quickstart.md))
 - [ ] T003 [P] Configurar ESLint + Prettier + TypeScript strict mode (`tsconfig.json` sin `any`, Principio X de la constitución)
@@ -32,7 +33,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T007 Crear `src/environments/environment.ts` y `src/environments/environment.development.ts` incluyendo el bloque `firebase` (`apiKey`, `appId`, `messagingSenderId`, `projectId`, `authDomain`, `storageBucket`, `measurementId`) con valores vacíos por defecto y carga segura desde `.env` local no versionado
 - [ ] T008 [P] Crear placeholder `public/assets/galatea-questions.json` cumpliendo [contracts/galatea-question-bank.schema.json](./contracts/galatea-question-bank.schema.json) con ≥12 preguntas de ejemplo anonimizadas
 
-**Checkpoint**: Proyecto Angular corre con `ng serve`, lint y test runner configurados, sin funcionalidad de negocio aún.
+**Checkpoint**: Proyecto Angular corre con `ng serve`, lint y test runner configurados, y el gate C1 de cobertura para MatchStorePort/MatchStoreService está validado antes de arrancar historias de usuario.
 
 ---
 
@@ -55,8 +56,10 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T019 Crear Composition Root real `src/app/app.config.ts` con inicialización obligatoria de Firebase App + providers de Vertex AI (`@angular/fire/vertexai`) y dejar los providers de casos de uso para fases por historia
 - [ ] T020 Crear Composition Root mock `src/app/app.config.local.ts` (depende de T019)
 - [ ] T021 [P] Escribir tests unitarios de los modelos de dominio (invariantes de `MatchModel`: 12 cards, 6+6, máximo 6 respondidas) en sus respectivos `*.spec.ts`
+- [ ] T046 Implementar `MatchStore` basado en signals (`_playerAlias`, `_chosenTopic`, `_cards`, `answeredCount`, `liveScore`, `isMatchComplete` computed) en `src/app/shared/foundational/state/match-store.service.ts` (depende de T012, [research.md §3](./research.md))
+- [ ] T051 Registrar `MatchStore` en `app.config.ts` y `app.config.local.ts` vía `MatchStorePort` (depende de T046, T019, T020)
 
-**Checkpoint**: Modelos de dominio, gateway abstracto, mapper base, logger y ambos Composition Roots existen y compilan — las historias de usuario pueden comenzar.
+**Checkpoint**: Modelos de dominio, gateway abstracto, mapper base, logger, `MatchStore` fundacional y ambos Composition Roots existen y compilan — las historias de usuario pueden comenzar.
 
 ---
 
@@ -87,7 +90,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T035 [US1] Implementar página `welcome` (formulario de alias + tema, validación en línea FR-001/FR-002, componentes `cb-input`/`cb-button` de Caribe) en `src/app/ui/pages/welcome/welcome.page.ts`
 - [ ] T036 [US1] Implementar estado de carga con `cb-loader` durante generación de preguntas (FR-017, mensaje informativo tras 2s) en la página `welcome`
 - [ ] T037 [US1] Implementar manejo de error amigable + reintento cuando la IA no genera 6 preguntas (FR-003, US1 Escenario 5), conservando el alias ingresado
-- [ ] T038 [US1] Conectar `welcome` → `MatchStore`/navegación a `board` al completar la generación (depende de T035, T036, T037; `MatchStore` se crea en Fase 4)
+- [ ] T038 [US1] Conectar `welcome` → `MatchStore`/navegación a `board` al completar la generación (depende de T035, T036, T037, T046, T051)
 
 **Checkpoint**: US1 funciona de forma independiente — alias + tema → 12 preguntas generadas → navegación al tablero, con estados de carga y error.
 
@@ -111,12 +114,10 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 - [ ] T044 [US2] Implementar `AnswerCardUsecase` (valida transición `flipped`→`answered`, límite `maxAnswerableCards`, marca `AnswerResult`) en `src/app/domain/models/match/usecase/answer-card.usecase.ts` (depende de T011, T012)
 - [ ] T045 [US2] Implementar `match.constants.ts` (constantes: 6 respuestas máx., 10 pts por acierto, 12 tarjetas) en `src/app/ui/components/shared/match.constants.ts`
-- [ ] T046 [US2] Implementar `MatchStore` basado en signals (`_playerAlias`, `_chosenTopic`, `_cards`, `answeredCount`, `liveScore`, `isMatchComplete` computed) en `src/app/ui/state/match.store.ts` (depende de T044, T012, [research.md §3](./research.md))
 - [ ] T047 [P] [US2] Implementar componente `tg-question-card` (botón nativo, `aria-label` "Tarjeta N, categoría X, estado Y", `aria-disabled` si respondida) en `src/app/ui/components/question-card/question-card.ts`
 - [ ] T048 [US2] Implementar componente `tg-question-modal` (4 opciones seleccionables, botón "Aceptar" deshabilitado hasta selección, focus trap, retorno de foco) en `src/app/ui/components/question-modal/question-modal.ts`
 - [ ] T049 [US2] Implementar página `board` (tablero de 12 `tg-question-card`, apertura de `tg-question-modal`, navegación automática a `results` tras 6ª respuesta FR-012) en `src/app/ui/pages/board/board.page.ts` (depende de T046, T047, T048)
 - [ ] T050 [US2] Implementar retroalimentación visual inmediata correcto/incorrecto con `aria-live="polite"` (FR-016) en `tg-question-modal`
-- [ ] T051 [US2] Registrar `MatchStore` en `app.config.ts` y `app.config.local.ts` (depende de T046, T019, T020)
 
 **Checkpoint**: US1 + US2 funcionan juntas — flujo completo desde alias hasta las 6 respuestas, con navegación automática a resultados (aún sin puntaje/nivel calculado).
 
@@ -196,18 +197,16 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - **Foundational (Phase 2)**: Depende de Setup — BLOQUEA todas las historias de usuario
 - **US1 (Phase 3)**: Depende de Foundational. Sin dependencia de otras historias
 - **US2 (Phase 4)**: Depende de Foundational. Usa `MatchModel`/`CardModel` de Fase 2; se integra con la navegación de US1 (T038) pero su lógica de tarjetas/respuestas es independiente
-- **US3 (Phase 5)**: Depende de Foundational y de `MatchStore` (creado en T046, US2) para exponer `liveScore` — por eso se implementa después de US2 aunque su prioridad de negocio (P2) es igual a US4
-- **US4 (Phase 6)**: Depende de Foundational y de `MatchStore` (T046, US2) para leer el estado final de la partida
+- **US3 (Phase 5)**: Depende de Foundational y de `MatchStore` fundacional (T046) para exponer `liveScore`
+- **US4 (Phase 6)**: Depende de Foundational y de `MatchStore` fundacional (T046) para leer el estado final de la partida
 - **Polish (Phase 7)**: Depende de que todas las historias deseadas estén completas
-
-> Nota: aunque spec.md prioriza US1/US2 como P1 y US3/US4 como P2, existe una dependencia técnica real de US3 y US4 sobre el `MatchStore` introducido en US2 (no sobre la lógica interna de US2). Esta es la única desviación de "todas las historias son independientes tras Foundational" y está documentada aquí explícitamente.
 
 ### User Story Dependencies
 
 - **US1 (P1)**: Puede iniciar tras Foundational — sin dependencia de otras historias
 - **US2 (P1)**: Puede iniciar tras Foundational — integra con la navegación de US1 (T038) pero es testeable de forma independiente con datos mock
-- **US3 (P2)**: Requiere `MatchStore` de US2 (T046) para el puntaje en vivo; el cálculo puro (`CalculateMatchScoreUsecase`) es independiente y testeable sin UI
-- **US4 (P2)**: Requiere `MatchStore` de US2 (T046) para leer el estado final; el cálculo puro (`AssignLevelUsecase`) es independiente y testeable sin UI
+- **US3 (P2)**: Requiere `MatchStore` fundacional (T046) para el puntaje en vivo; el cálculo puro (`CalculateMatchScoreUsecase`) es independiente y testeable sin UI
+- **US4 (P2)**: Requiere `MatchStore` fundacional (T046) para leer el estado final; el cálculo puro (`AssignLevelUsecase`) es independiente y testeable sin UI
 
 ### Within Each User Story
 
@@ -220,7 +219,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 ### Parallel Opportunities
 
 - Todas las tareas [P] de Setup (T003-T006, T008) en paralelo
-- Todas las tareas [P] de Foundational (T009-T014, T016-T017, T021) en paralelo
+- Todas las tareas [P] de Foundational (T009-T014, T016-T017, T021) en paralelo; `MatchStore` fundacional (T046/T051) se completa secuencialmente tras modelos base
 - Todos los tests [P] de una historia en paralelo entre sí
 - Mappers/modelos [P] dentro de una historia en paralelo
 - US1 y US2 pueden trabajarse en paralelo por desarrolladores distintos tras Foundational (con integración final en T038)
@@ -253,7 +252,7 @@ Task: "Implementar GalateaQuestionMapper en galatea-question.mapper.ts"
 3. Completar Fase 3: US1 (registro + generación de preguntas)
 4. Completar Fase 4: US2 (tablero jugable)
 5. **DETENER y VALIDAR**: US1+US2 permiten jugar una partida completa sin puntaje visible aún
-6. Nota: dado que US3/US4 dependen técnicamente del `MatchStore` de US2, el MVP real de "juego jugable de principio a fin" requiere US1+US2+US3+US4 — ver nota de dependencias arriba
+6. Nota: US3/US4 dependen técnicamente del `MatchStore` fundacional (T046), por lo que el MVP real de "juego jugable de principio a fin" requiere US1+US2+US3+US4
 
 ### Incremental Delivery
 

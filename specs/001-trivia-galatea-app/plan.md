@@ -102,6 +102,11 @@ src/
     │           │   └── mapper.ts
     │           ├── gemini-question.mapper.ts
     │           └── galatea-question.mapper.ts
+    ├── shared/
+    │   └── foundational/
+    │       └── state/
+    │           ├── match-store.port.ts      # Contrato de estado compartido
+    │           └── match-store.service.ts   # Implementación signal-based fundacional
     ├── ui/
     │   ├── pages/
     │   │   ├── welcome/                    # Alias + tema
@@ -115,7 +120,7 @@ src/
     │   │   └── shared/
     │   │       └── match.constants.ts      # Constantes numéricas (10 pts, 6 cartas, etc.)
     │   └── state/
-    │       └── match.store.ts              # Store signal-based del tablero/partida
+    │       └── (consumo de MatchStorePort desde páginas/componentes)
     └── environments/
         ├── environment.ts                  # Local — mocks + bloque firebase con valores vacíos
         └── environment.development.ts      # Firebase App + Vertex AI (Gemini) para modo real

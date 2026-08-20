@@ -88,6 +88,22 @@ export class AnswerCardUsecase {
 }
 ```
 
+  ---
+
+  ## `MatchStorePort` (shared/foundational)
+
+  La disponibilidad del estado compartido de partida se define en la capa fundacional (`src/app/shared/foundational/state`) y se consume desde US1+ sin acoplarse a la implementación concreta:
+
+  - Contrato: `match-store.port.ts`
+  - Implementación: `match-store.service.ts`
+  - Registro DI: `app.config.ts` y `app.config.local.ts`
+
+  Reglas:
+
+  1. El contrato expone señales de solo lectura (`playerAlias`, `chosenTopic`, `answeredCount`, `isMatchComplete`, `liveScore`) y comandos explícitos (`initializeSession`, `setQuestions`, `openCard`, `confirmAnswer`, `resetSession`).
+  2. Consumidores de UI y orquestación de casos de uso dependen del puerto y no de campos privados de `MatchStoreService`.
+  3. El store fundacional debe estar disponible antes de US1 para evitar dependencia técnica de US2.
+
 ### `CalculateMatchScoreUsecase` / `AssignLevelUsecase`
 
 Ver [../data-model.md §Score](../data-model.md#score) y [§Level](../data-model.md#level) — funciones puras sin dependencias de gateway.

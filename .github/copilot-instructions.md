@@ -3,14 +3,14 @@
 
 This repository uses [GitHub Spec Kit](https://github.com/github/spec-kit) for spec-driven development.
 
-**Active feature plan**: [specs/001-trivia-galatea-app/plan.md](../specs/001-trivia-galatea-app/plan.md)
+**Active feature plan**: [specs/002-move-matchstore-foundational/plan.md](../specs/002-move-matchstore-foundational/plan.md)
 
 Related artifacts for the active feature:
-- Spec: [specs/001-trivia-galatea-app/spec.md](../specs/001-trivia-galatea-app/spec.md)
-- Research: [specs/001-trivia-galatea-app/research.md](../specs/001-trivia-galatea-app/research.md)
-- Data Model: [specs/001-trivia-galatea-app/data-model.md](../specs/001-trivia-galatea-app/data-model.md)
-- Contracts: [specs/001-trivia-galatea-app/contracts/](../specs/001-trivia-galatea-app/contracts/)
-- Quickstart: [specs/001-trivia-galatea-app/quickstart.md](../specs/001-trivia-galatea-app/quickstart.md)
+- Spec: [specs/002-move-matchstore-foundational/spec.md](../specs/002-move-matchstore-foundational/spec.md)
+- Research: [specs/002-move-matchstore-foundational/research.md](../specs/002-move-matchstore-foundational/research.md)
+- Data Model: [specs/002-move-matchstore-foundational/data-model.md](../specs/002-move-matchstore-foundational/data-model.md)
+- Contracts: [specs/002-move-matchstore-foundational/contracts/](../specs/002-move-matchstore-foundational/contracts/)
+- Quickstart: [specs/002-move-matchstore-foundational/quickstart.md](../specs/002-move-matchstore-foundational/quickstart.md)
 - Constitution: [.specify/memory/constitution.md](../.specify/memory/constitution.md)
 <!-- SPECKIT END -->
 
