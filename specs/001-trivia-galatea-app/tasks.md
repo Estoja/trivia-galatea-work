@@ -52,7 +52,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T016 [P] Crear `Mapper<T>` (clase abstracta base) en `src/app/infrastructure/helpers/maps/common/mapper.ts`
 - [ ] T017 [P] Crear `LoggerService` inyectable (`providedIn: 'root'`) en `src/app/infrastructure/logger/logger.service.ts` (Principio X — reemplaza `console.log`)
 - [ ] T018 Crear `app.routes.ts` con rutas lazy-loaded para `welcome`, `board`, `results` en `src/app/app.routes.ts`
-- [ ] T019 Crear Composition Root real `src/app/app.config.ts` con providers base de inicialización (incluyendo inicialización Firebase/Gemini si aplica) y dejar los providers de casos de uso para fases por historia
+- [ ] T019 Crear Composition Root real `src/app/app.config.ts` con inicialización obligatoria de Firebase App + providers de Vertex AI (`@angular/fire/vertexai`) y dejar los providers de casos de uso para fases por historia
 - [ ] T020 Crear Composition Root mock `src/app/app.config.local.ts` (depende de T019)
 - [ ] T021 [P] Escribir tests unitarios de los modelos de dominio (invariantes de `MatchModel`: 12 cards, 6+6, máximo 6 respondidas) en sus respectivos `*.spec.ts`
 
@@ -76,14 +76,14 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 ### Implementation for User Story 1
 
-- [ ] T027 [P] [US1] Implementar `GeminiClientService` usando estrategia definida por environment (adaptador `@angular/fire/vertexai` estilo `agentic-angular-vertex` o llamada HTTP directa) con prompt de [contracts/gemini-prompt-contract.md §2](./contracts/gemini-prompt-contract.md) en `src/app/infrastructure/gemini/gemini-client.service.ts`
+- [ ] T027 [P] [US1] Implementar `GeminiClientService` exclusivamente sobre Vertex AI para Firebase (`@angular/fire/vertexai` + Firebase App), con prompt de [contracts/gemini-prompt-contract.md §2](./contracts/gemini-prompt-contract.md), en `src/app/infrastructure/gemini/gemini-client.service.ts`
 - [ ] T028 [US1] Implementar `GeminiTopicAnonymizer` (`BRAND_PLACEHOLDER_MAP`) en `src/app/infrastructure/gemini/gemini-topic-anonymizer.ts` (depende de T027)
 - [ ] T029 [US1] Implementar `GeminiQuestionMapper extends Mapper<QuestionModel>` en `src/app/infrastructure/helpers/maps/gemini-question.mapper.ts` (depende de T016, T010)
 - [ ] T030 [US1] Implementar `GalateaQuestionMapper extends Mapper<QuestionModel>` en `src/app/infrastructure/helpers/maps/galatea-question.mapper.ts` (depende de T016, T010)
 - [ ] T031 [US1] Implementar `QuestionService implements QuestionGateway` (banco JSON + fallback IA para Galatea, Gemini para tema; [contracts/internal-gateways.md](./contracts/internal-gateways.md)) en `src/app/infrastructure/question/question.service.ts` (depende de T015, T028, T029, T030)
 - [ ] T032 [P] [US1] Implementar `QuestionMockService implements QuestionGateway` (datos hardcodeados) en `src/app/infrastructure/question/question-mock.service.ts` (depende de T015)
 - [ ] T033 [US1] Implementar `BuildMatchUsecase` (arma `MatchModel` con 12 cards boca abajo, maneja error si Gemini no retorna 6 preguntas válidas → FR-003) en `src/app/domain/models/match/usecase/build-match.usecase.ts` (depende de T015, T011, T012)
-- [ ] T034 [US1] Registrar `QuestionService` y `BuildMatchUsecase` en `app.config.ts`, `QuestionMockService` en `app.config.local.ts`, y enlazar la implementación de `GeminiClientService` al modo de environment configurado (depende de T031, T032, T033, T019, T020)
+- [ ] T034 [US1] Registrar `QuestionService` y `BuildMatchUsecase` en `app.config.ts`, `QuestionMockService` en `app.config.local.ts`, y enlazar `GeminiClientService` a los providers de Firebase App + Vertex AI definidos en T019 (depende de T031, T032, T033, T019, T020)
 - [ ] T035 [US1] Implementar página `welcome` (formulario de alias + tema, validación en línea FR-001/FR-002, componentes `cb-input`/`cb-button` de Caribe) en `src/app/ui/pages/welcome/welcome.page.ts`
 - [ ] T036 [US1] Implementar estado de carga con `cb-loader` durante generación de preguntas (FR-017, mensaje informativo tras 2s) en la página `welcome`
 - [ ] T037 [US1] Implementar manejo de error amigable + reintento cuando la IA no genera 6 preguntas (FR-003, US1 Escenario 5), conservando el alias ingresado
@@ -183,6 +183,8 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T074 Verificar cobertura de tests ≥80% global y ≥95% en todos los usecases (Principio V, NO NEGOCIABLE) — ajustar tests faltantes
 - [ ] T075 Ejecutar [quickstart.md](./quickstart.md) completo (modo mock y modo real con Gemini) y corregir discrepancias
 - [ ] T076 Revisar y actualizar `README.md` del proyecto con instrucciones de instalación y ejecución
+- [ ] T077 [P] Definir y ejecutar protocolo de validación manual de pertinencia para preguntas generadas por IA (muestra representativa de partidas, rúbrica de relevancia por tema, y criterio de aprobación) para demostrar SC-002 (95%) en `specs/001-trivia-galatea-app/checklists/ai-topic-questions.md` y evidencia en `specs/001-trivia-galatea-app/research.md`
+- [ ] T078 [P] Instrumentar y medir latencia de generación de preguntas IA (percentil p90) en entorno de pruebas controlado, documentando resultados y umbral de aceptación para demostrar SC-003 (<=8s en 90% de partidas) en `src/app/infrastructure/gemini/gemini-client.service.ts` y evidencia en `specs/001-trivia-galatea-app/research.md`
 
 ---
 

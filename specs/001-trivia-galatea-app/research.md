@@ -20,7 +20,7 @@ El prompt enviado a Gemini para el tema libre **nunca** incluye estos nombres �
 
 Después de recibir la respuesta de Gemini (JSON de preguntas), el **mapper de infraestructura** (`GeminiQuestionMapper`) reemplaza los placeholders de vuelta por los nombres reales (`Empresa X` → `Bancolombia`, `Proyecto Y` → `Galatea`) antes de construir el `QuestionModel` del dominio. El dominio nunca ve ni el placeholder ni sabe que existió una anonimización — sólo recibe el texto final ya resuelto.
 
-**Rationale**: Cumple FR-018/A-010 (ningún dato de marca sale hacia servicios externos) sin requerir un proxy corporativo (descartado en Clarifications Q2, opción A elegida). Es la solución más simple: un mapa de sustitución de texto en la capa de infraestructura, sin nueva infraestructura de red.
+**Rationale**: Cumple FR-018/A-010 (ningún dato de marca sale hacia servicios externos) sin requerir un proxy corporativo (descartado en Clarifications Q2, opción A elegida). Es la solución más simple: un mapa de sustitución de texto en la capa de infraestructura, integrado en el cliente Vertex AI sobre Firebase App, sin nueva infraestructura de red.
 
 **Alternatives considered**:
 - Proxy corporativo que filtre contenido — rechazado por complejidad innecesaria para un evento interno controlado (viola Principio IV, YAGNI).
@@ -128,7 +128,7 @@ Ambos son funciones puras testeables sin `TestBed`, apuntando a 100% de cobertur
 ## 7. Estrategia de mocks para `ng serve` sin backend
 
 **Decision**: Dos Composition Roots:
-- `app.config.ts` (default / producción del evento): `QuestionGateway` implementado por `QuestionService`, que combina banco JSON local + llamada real a Gemini.
+- `app.config.ts` (default / producción del evento): `QuestionGateway` implementado por `QuestionService`, que combina banco JSON local + llamada real a Gemini vía Vertex AI for Firebase (`firebase` + `@angular/fire/vertexai`).
 - `app.config.local.ts` (desarrollo sin API key): `QuestionGateway` implementado por `QuestionMockService`, que retorna preguntas hardcodeadas para ambas fuentes.
 
 **Rationale**: Refleja el patrón ya usado en el proyecto (`golden-rules.instructions.md`, regla 3: "el frontend funciona sin backend"). Permite desarrollar la UI sin consumir cuota de la API de Gemini.

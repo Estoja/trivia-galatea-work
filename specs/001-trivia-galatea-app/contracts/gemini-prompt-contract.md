@@ -1,14 +1,14 @@
-# Contrato: Prompt hacia Gemini (anonimizado)
+# Contrato: Prompt hacia Gemini vía Vertex AI for Firebase (anonimizado)
 
 **Feature**: [../spec.md](../spec.md) | **Data Model**: [../data-model.md](../data-model.md)
 
-Este documento es la fuente de verdad de **cómo el frontend debe entregarle contenido a Gemini** y **cómo debe interpretar la respuesta**. Es el contrato que implementa `infrastructure/gemini/gemini-client.service.ts` + `infrastructure/gemini/gemini-topic-anonymizer.ts`.
+Este documento es la fuente de verdad de **cómo el frontend debe entregarle contenido a Gemini** y **cómo debe interpretar la respuesta**. Es el contrato que implementa `infrastructure/gemini/gemini-client.service.ts` + `infrastructure/gemini/gemini-topic-anonymizer.ts` sobre Firebase App + Vertex AI (`@angular/fire/vertexai`).
 
 ---
 
 ## 1. Reglas de anonimización (obligatorias — FR-018)
 
-Antes de enviar cualquier prompt a la API de Gemini:
+Antes de enviar cualquier prompt a Gemini a través de Vertex AI for Firebase:
 
 1. El **tema libre del jugador** (`chosenTopic`) se envía **tal cual lo escribió el jugador**, sin modificaciones ni mención de la empresa. No requiere anonimización porque no contiene datos internos.
 2. Si el prompt necesita dar contexto sobre Galatea/Bancolombia (sólo en el flujo de fallback de preguntas Galatea generadas por IA, ver FR-004), **todo nombre de marca se sustituye** usando el diccionario:
@@ -118,8 +118,9 @@ Reglas estrictas:
 
 ---
 
-## 6. Dónde vive la API key de Gemini
+## 6. Dónde vive la configuración de Firebase/Vertex
 
-- Variable de entorno local (`.env` no versionado) inyectada en `environment.development.ts` en tiempo de build.
-- **Nunca** se hardcodea la key en el código fuente ni se versiona en Git (Principio X, OWASP A02 — Cryptographic/secrets exposure).
-- Al ser un evento presencial sin backend, la key vive en el bundle del cliente: se asume una key de uso restringido/cuota limitada, rotada después de cada evento.
+- Variables de entorno locales (`.env` no versionado) inyectadas en `environment.development.ts`/`environment.ts` dentro del bloque `firebase` (`apiKey`, `appId`, `messagingSenderId`, `projectId`, `authDomain`, `storageBucket`, `measurementId`).
+- **Nunca** se hardcodean credenciales/configuración sensible en el código fuente ni se versionan en Git (Principio X, OWASP A02 — Cryptographic/secrets exposure).
+- Al ser un evento presencial sin backend, la configuración de cliente vive en el bundle: se asume proyecto/cuota de uso restringido y rotación de credenciales/entorno por evento.
+- El acceso a Gemini se realiza por Firebase App + Vertex AI (SDK), no por un endpoint HTTP custom directo a Gemini desde la app.

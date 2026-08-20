@@ -7,18 +7,18 @@
 
 ## Summary
 
-Aplicación Angular 20 standalone, sin backend propio, que corre localmente en un computador y se expone al público durante un evento presencial. El jugador ingresa un alias y un tema libre; el sistema arma un tablero de 12 tarjetas boca abajo (6 "Galatea" + 6 del tema elegido), el jugador voltea y responde 6 de ellas, y al final recibe un título de nivel (0–360 pts) con una pantalla de celebración. Las preguntas de Galatea provienen de un banco JSON curado (≥ 12 preguntas, ya **anonimizado**: sin mencionar "Bancolombia" ni "Galatea" explícitamente, usando placeholders neutrales que el frontend traduce a los nombres reales). Las preguntas del tema libre se generan en tiempo real llamando a la API de Gemini, enviando únicamente el string del tema (sin datos de marca ni de sesión). La arquitectura sigue Clean Architecture + DDD (dominio puro sin Angular/HTTP, gateways abstractos, casos de uso, infraestructura con mappers), Signals para el estado, y el Design System Caribe de Bancolombia para toda la UI.
+Aplicación Angular 20 standalone, sin backend propio, que corre localmente en un computador y se expone al público durante un evento presencial. El jugador ingresa un alias y un tema libre; el sistema arma un tablero de 12 tarjetas boca abajo (6 "Galatea" + 6 del tema elegido), el jugador voltea y responde 6 de ellas, y al final recibe un título de nivel (0–360 pts) con una pantalla de celebración. Las preguntas de Galatea provienen de un banco JSON curado (≥ 12 preguntas, ya **anonimizado**: sin mencionar "Bancolombia" ni "Galatea" explícitamente, usando placeholders neutrales que el frontend traduce a los nombres reales). Las preguntas del tema libre se generan en tiempo real vía Vertex AI for Firebase (Gemini) inicializado desde Firebase App en el frontend, enviando únicamente el string del tema (sin datos de marca ni de sesión). La arquitectura sigue Clean Architecture + DDD (dominio puro sin Angular/HTTP, gateways abstractos, casos de uso, infraestructura con mappers), Signals para el estado, y el Design System Caribe de Bancolombia para toda la UI.
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5.9 (strict mode) sobre Angular 20
-**Primary Dependencies**: Angular 20 (standalone components, Signals, zoneless), `@bancolombia/caribe-design-system`, `@bancolombia/caribe-brand-bancolombia`, Google Generative AI SDK (Gemini) vía `HttpClient`/`fetch`
+**Primary Dependencies**: Angular 20 (standalone components, Signals, zoneless), `@bancolombia/caribe-design-system`, `@bancolombia/caribe-brand-bancolombia`, `firebase`, `@angular/fire` (Firebase App + Vertex AI/Gemini)
 **Storage**: N/A — sin backend ni base de datos. Banco de preguntas Galatea como archivo JSON estático empaquetado en el frontend (`assets/galatea-questions.json`). Sin persistencia de datos de usuario (ver A-001, A-008).
 **Testing**: Jest + Angular Testing Library (TestBed, zoneless), `@axe-core/angular` para accesibilidad, Cypress/Playwright para e2e de los flujos críticos
 **Target Platform**: Navegador web de escritorio, servido localmente (`ng serve` / build estático) en el computador del evento y expuesto a los participantes en red local — sin backend
 **Project Type**: Aplicación web single-page (frontend-only)
 **Performance Goals**: FCP ≤ 1.5 s, LCP ≤ 2.5 s, TBT ≤ 200 ms (Principio IX); generación de preguntas del tema ≤ 8 s en el 90% de las partidas (SC-003)
-**Constraints**: Sin backend — todo el estado vive en el navegador (signals); llamada directa del frontend a Gemini con API key de cliente (uso interno/evento controlado, no expuesto públicamente en internet); anonimización obligatoria del prompt hacia Gemini (FR-018, sin mencionar Bancolombia/Galatea)
+**Constraints**: Sin backend — todo el estado vive en el navegador (signals); integración a Gemini obligatoriamente por Firebase App + Vertex AI en cliente (`firebase` + `@angular/fire`), sin canal HTTP directo custom a Gemini; anonimización obligatoria del prompt hacia IA (FR-018/FR-019, sin mencionar Bancolombia/Galatea en payload no curado)
 **Scale/Scope**: Un solo evento presencial concurrente, decenas de jugadores secuenciales, 4 pantallas (inicio, tablero, pregunta, resultados), banco de preguntas Galatea ≥ 12 registros
 
 ## Constitution Check
@@ -94,7 +94,7 @@ src/
     │   │   ├── question.service.ts         # Gemini (tema) + banco JSON (Galatea)
     │   │   └── question-mock.service.ts    # Mock local para ng serve
     │   ├── gemini/
-    │   │   ├── gemini-client.service.ts    # Cliente HTTP a Gemini API
+    │   │   ├── gemini-client.service.ts    # Cliente Vertex AI (Gemini) sobre Firebase App
     │   │   └── gemini-topic-anonymizer.ts  # Anonimiza el prompt antes de enviarlo
     │   └── helpers/
     │       └── maps/
@@ -117,8 +117,8 @@ src/
     │   └── state/
     │       └── match.store.ts              # Store signal-based del tablero/partida
     └── environments/
-        ├── environment.ts                  # Local — mocks, sin Gemini
-        └── environment.development.ts      # Gemini real + API key desde .env local
+        ├── environment.ts                  # Local — mocks + bloque firebase con valores vacíos
+        └── environment.development.ts      # Firebase App + Vertex AI (Gemini) para modo real
 
 public/
 └── assets/

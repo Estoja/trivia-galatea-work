@@ -34,7 +34,7 @@ export abstract class QuestionGateway {
 
 | Clase | Ubicación | Uso |
 |---|---|---|
-| `QuestionService` | `infrastructure/question/question.service.ts` | Real: banco JSON + Gemini |
+| `QuestionService` | `infrastructure/question/question.service.ts` | Real: banco JSON + Gemini vía Vertex AI (Firebase App) |
 | `QuestionMockService` | `infrastructure/question/question-mock.service.ts` | Mock: datos hardcodeados, usado en `app.config.local.ts` |
 
 ### Reglas de implementación (`QuestionService`)
@@ -42,10 +42,10 @@ export abstract class QuestionGateway {
 1. `getGalateaQuestions(6)`:
    - Carga `public/assets/galatea-questions.json` (vía `HttpClient.get`).
    - Selecciona 6 al azar (sin reemplazo) si `questions.length >= 6`.
-   - Si `questions.length < 6`, completa el faltante llamando a Gemini con el prompt de fallback (ver contrato Gemini §3), usando la base de conocimiento de Galatea como contexto.
+  - Si `questions.length < 6`, completa el faltante llamando a Gemini vía `GeminiClientService` (Vertex AI sobre Firebase App) con el prompt de fallback (ver contrato Gemini §3), usando la base de conocimiento de Galatea como contexto.
    - Cada pregunta pasa por `GalateaQuestionMapper.fromMap()`, que resuelve los placeholders (`Empresa X` → `Bancolombia`, `Proyecto Y` → `Galatea`) y asigna `source: 'galatea'`.
 2. `getChosenTopicQuestions(topic, 6)`:
-   - Llama a Gemini con el prompt de tema libre (contrato Gemini §2).
+  - Llama a Gemini vía `GeminiClientService` (Vertex AI sobre Firebase App) con el prompt de tema libre (contrato Gemini §2).
    - Cada pregunta pasa por `GeminiQuestionMapper.fromMap()`, que asigna `source: 'chosen-topic'`.
    - Si Gemini no retorna 6 preguntas válidas, el `Observable` emite error — el usecase consumidor (`BuildMatchUsecase`) lo propaga a la UI para mostrar el mensaje amigable (Clarifications Q4).
 

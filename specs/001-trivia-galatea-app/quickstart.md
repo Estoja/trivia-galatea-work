@@ -10,7 +10,7 @@ Guía para levantar el proyecto localmente y entender el flujo de entrega de con
 
 - Node.js LTS + Angular CLI 20.
 - Acceso al registro Artifactory de Bancolombia para los paquetes `@bancolombia/caribe-*` (`.npmrc` con token, ver `GETTINGSTARTED.md` del proyecto hermano `agentic-angular-vertex` como referencia de configuración).
-- (Opcional, sólo para el modo real con IA) Un API key de Google Gemini.
+- (Opcional, sólo para el modo real con IA) Configuración de Firebase App para Vertex AI (Gemini).
 
 ---
 
@@ -37,10 +37,17 @@ ng serve --configuration=local
 1. Crear un archivo `.env` (no versionado, ya debe estar en `.gitignore`) en la raíz del proyecto con:
 
    ```
-   GEMINI_API_KEY=tu-api-key-aqui
+   FIREBASE_API_KEY=tu-api-key
+   FIREBASE_APP_ID=tu-app-id
+   FIREBASE_MESSAGING_SENDER_ID=tu-messaging-sender-id
+   FIREBASE_PROJECT_ID=tu-project-id
+   FIREBASE_AUTH_DOMAIN=tu-auth-domain
+   FIREBASE_STORAGE_BUCKET=tu-storage-bucket
+   FIREBASE_MEASUREMENT_ID=tu-measurement-id
    ```
 
-2. El script de build inyecta `GEMINI_API_KEY` en `environment.development.ts` / `environment.ts` (nunca hardcodeado en el repo).
+2. El script de build inyecta estas variables en `environment.development.ts` / `environment.ts` dentro del bloque `firebase` (nunca hardcodeado en el repo).
+3. `app.config.ts` inicializa Firebase App y Vertex AI (`@angular/fire/vertexai`), y `GeminiClientService` consume ese provider.
 3. Ejecutar:
 
    ```bash

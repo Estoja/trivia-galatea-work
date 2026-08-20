@@ -87,10 +87,11 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 ### Edge Cases
 
 - ~~¿Qué sucede si la IA genera menos de 6 preguntas para el tema elegido?~~ **Resuelto (Q4)**: la app muestra mensaje amigable y regresa a selección de tema conservando el alias.
-- ¿Qué pasa si el tema ingresado por el usuario está vacío, es ofensivo o contiene sólo espacios?
-- ¿Cómo se comporta el tablero si el jugador cierra el navegador a mitad de partida y regresa?
-- ¿Qué ocurre si dos preguntas del banco Galatea son idénticas o muy similares?
-- ¿Qué sucede si el tiempo de respuesta de la IA supera 30 segundos?
+- ~~¿Qué pasa si el tema ingresado por el usuario está vacío, es ofensivo o contiene sólo espacios?~~ **Resuelto**: si está vacío o contiene sólo espacios, la app bloquea continuar y muestra validación accionable; si contiene términos ofensivos/no aptos, muestra mensaje amigable y solicita reformular el tema antes de invocar IA.
+- ~~¿Cómo se comporta el tablero si el jugador cierra el navegador a mitad de partida y regresa?~~ **Resuelto**: al regresar, la app inicia una partida nueva desde la pantalla inicial (sin restaurar progreso), consistente con no persistencia de sesión.
+- ~~¿Qué ocurre si dos preguntas del banco Galatea son idénticas o muy similares?~~ **Resuelto**: la app evita duplicados dentro de la misma partida; si al deduplicar quedan menos de 6 preguntas válidas de Galatea, completa los cupos faltantes consultando IA con fuentes de información general de Galatea incluidas en el prompt.
+- ~~¿Qué sucede si el tiempo de respuesta de la IA supera 30 segundos?~~ **Resuelto**: se considera timeout, se cancela la operación y se muestra mensaje amigable con opción de reintentar sin perder el alias.
+- ~~¿Qué ocurre si el jugador intenta voltear una segunda tarjeta mientras hay una pregunta abierta sin responder?~~ **Resuelto**: el sistema permite una sola pregunta activa a la vez; bloquea abrir otra tarjeta hasta confirmar o cerrar la actual.
 
 ---
 
@@ -115,7 +116,13 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - **FR-015**: La pantalla de resultados DEBE ofrecer la opción de iniciar una nueva partida.
 - **FR-016**: El sistema DEBE mostrar retroalimentación inmediata (correcto/incorrecto) al confirmar cada respuesta.
 - **FR-017**: El sistema DEBE mostrar un indicador de carga durante la generación de preguntas por IA.
-- **FR-018**: El sistema DEBE enviar al servicio de IA externo únicamente el texto del tema elegido. El alias del jugador y cualquier otro dato de sesión NO deben incluirse en las peticiones a la IA.
+- **FR-018**: En el flujo de generación de preguntas del tema elegido, el sistema DEBE enviar al servicio de IA externo únicamente el texto del tema elegido. El alias del jugador y cualquier otro dato de sesión NO deben incluirse en estas peticiones.
+- **FR-019**: En el flujo de fallback de preguntas Galatea (cuando el banco curado tenga menos de 6 preguntas válidas), el sistema DEBE consultar IA enviando exclusivamente fuentes de información general de Galatea provistas para el prompt (sin alias ni datos de sesión), y completar hasta 6 preguntas Galatea para la partida.
+- **FR-020**: El sistema DEBE validar el tema antes de invocar IA: no permitir tema vacío o de sólo espacios, y rechazar temas ofensivos/no aptos con mensaje accionable para reformular.
+- **FR-021**: El sistema DEBE deduplicar preguntas de Galatea dentro de una misma partida; si tras deduplicar hay menos de 6 preguntas, DEBE completar faltantes vía FR-019.
+- **FR-022**: El sistema DEBE mantener como máximo una pregunta activa (tarjeta volteada pendiente de confirmación) a la vez.
+- **FR-023**: Si el jugador recarga o cierra y vuelve a abrir la aplicación durante una partida, el sistema DEBE iniciar una partida nueva en pantalla de inicio sin restaurar progreso previo.
+- **FR-024**: Si cualquier llamada a IA supera 30 segundos, el sistema DEBE cancelar la operación, informar timeout en lenguaje amigable y ofrecer reintento conservando alias.
 
 ### Key Entities
 
@@ -168,7 +175,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - **A-007**: La aplicación es de escritorio/web (responsive). Soporte de dispositivos móviles es considerado pero no es requisito de esta versión.
 - **A-008**: El alias del jugador no requiere autenticación ni verificación de unicidad; es sólo un nombre de pantalla para la sesión.
 - **A-009**: Las 12 tarjetas del tablero siempre muestran exactamente 6 de Galatea y 6 del tema elegido; no se permite una distribución diferente.
-- **A-010**: El alias del jugador es un dato de sesión local y nunca se transmite al servicio de IA externo. Sólo el string del tema elegido (texto público) sale de la aplicación hacia la IA.
+- **A-010**: El alias del jugador es un dato de sesión local y nunca se transmite al servicio de IA externo. En generación por tema libre sólo sale el string del tema; en fallback Galatea sólo sale contexto general de Galatea provisto para el prompt. Ninguna petición de IA incluye datos de sesión del jugador.
 
 ---
 
@@ -180,3 +187,9 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - Q: ¿Hay restricciones de privacidad sobre qué datos pueden enviarse al servicio de IA externo? → A: Solo el texto del tema elegido (string público) se envía a la IA. El alias del jugador y cualquier dato de sesión permanecen locales. No se transmiten datos personales.
 - Q: ¿Cuántas preguntas contiene el banco curado de Galatea y en qué formato se entrega? → A: Banco JSON con ≥ 12 preguntas curadas; el sistema elige 6 aleatoriamente por partida. Si hay menos de 6 disponibles, la IA completa los slots restantes usando la base de conocimiento de Galatea como contexto.
 - Q: Si la IA no puede generar las 6 preguntas del tema elegido, ¿cómo debe comportarse la app? → A: Mostrar mensaje amigable ("No encontré suficientes preguntas sobre ese tema, intenta con otro") y regresar a la pantalla de selección de tema conservando el alias del jugador.
+
+### Session 2026-08-20 (ajustes post-analyze)
+
+- Q: ¿Cómo se resuelve el conflicto I1 entre FR-004 y FR-018? → A: Se separan dos flujos: tema libre (solo string del tema) y fallback Galatea (solo contexto general de Galatea para prompt), en ambos casos sin alias ni datos de sesión.
+- Q: ¿Qué hacer si faltan preguntas Galatea (<6) por baja disponibilidad o deduplicación? → A: Completar cupos faltantes consultando IA con fuentes de información general de Galatea incluidas en el prompt hasta llegar a 6 preguntas Galatea válidas.
+- Q: ¿Cuál es el comportamiento esperado para U2 (una sola tarjeta activa)? → A: El sistema bloquea abrir una segunda tarjeta mientras exista una pregunta abierta sin confirmación.
