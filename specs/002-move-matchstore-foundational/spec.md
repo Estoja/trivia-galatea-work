@@ -85,7 +85,7 @@ Como mantenedor de especificaciones, necesito evitar referencias rotas o contrad
 - **SC-001**: El 100% de tareas de US1 quedan libres de dependencias directas hacia tareas de US2.
 - **SC-002**: El 100% de referencias a `MatchStore` en el plan de tareas apuntan a su nueva ubicación en Foundational o a sus artefactos derivados válidos.
 - **SC-003**: La sección de dependencias por fase no presenta contradicciones internas en una revisión estática completa.
-- **SC-004**: Un nuevo análisis de especificación no reporta findings de inconsistencia para la relación US1-`MatchStore`.
+- **SC-004**: Un nuevo análisis de especificación reporta 0 findings HIGH/CRITICAL de inconsistencia para la relación US1-`MatchStore`.
 
 ### Accessibility Criteria *(mandatory — Principio VI)*
 

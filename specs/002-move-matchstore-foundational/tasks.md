@@ -3,9 +3,9 @@
 **Input**: Design documents from `/specs/002-move-matchstore-foundational/`
 **Prerequisites**: [plan.md](./plan.md), [spec.md](./spec.md), [research.md](./research.md), [data-model.md](./data-model.md), [contracts/](./contracts/), [quickstart.md](./quickstart.md)
 
-**Tests**: Se incluyen tareas de validacion documental y de contrato tecnico solo donde aportan evidencia directa para FR-003, FR-004 y FR-010.
+**Tests**: Se incluyen tareas de validacion documental y de contrato tecnico donde aportan evidencia directa para FR-003, FR-004, FR-010 y cumplimiento del principio V de cobertura.
 
-**Organization**: Tareas agrupadas por historia de usuario (US1-US3) para mantener implementacion y validacion independientes.
+**Organization**: Tareas agrupadas por historia para validacion independiente por historia; el orden de ejecucion puede ser secuencial cuando una historia produce evidencia documental requerida por la siguiente.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -42,6 +42,9 @@ Proyecto unico Angular/frontend con artefactos de especificacion en `specs/`.
 - [ ] T006 Registrar providers fundacionales de MatchStore en `src/app/app.config.ts` y `src/app/app.config.local.ts` sin acoplar consumidores a clase concreta
 - [ ] T007 [P] Actualizar estructura objetivo del plan para capa shared/foundational en `specs/001-trivia-galatea-app/plan.md`
 - [ ] T008 Actualizar contrato de gateway interno para referenciar consumo via puerto de store en `specs/001-trivia-galatea-app/contracts/internal-gateways.md`
+- [ ] T031 [P] [US1] Crear pruebas de contrato de MatchStorePort en `src/app/shared/foundational/state/match-store.port.spec.ts` validando surface publica y razones de error de comandos
+- [ ] T032 [P] [US1] Crear pruebas unitarias de MatchStoreService en `src/app/shared/foundational/state/match-store.service.spec.ts` validando invariantes: una tarjeta activa, maximo 6 respuestas y transiciones validas
+- [ ] T033 [US1] Ejecutar cobertura de pruebas para cambios de la feature y registrar evidencia en `specs/002-move-matchstore-foundational/checklists/migration-acceptance.md` con umbral minimo 80%
 
 **Checkpoint**: MatchStore existe como capacidad fundacional reusable (contrato + servicio + DI) antes de tareas de historias.
 
@@ -81,6 +84,7 @@ Proyecto unico Angular/frontend con artefactos de especificacion en `specs/`.
 - [ ] T019 [US2] Actualizar `Verification Matrix` con evidencia de cumplimiento FR-001..FR-010 en `specs/002-move-matchstore-foundational/contracts/task-dependency-migration.md`
 - [ ] T020 [US2] Actualizar quickstart de migracion con pasos finales de verificacion trazable en `specs/002-move-matchstore-foundational/quickstart.md`
 - [ ] T021 [US2] Actualizar narrativa de decisiones y no-regresion tras ejecución real en `specs/002-move-matchstore-foundational/research.md`
+- [ ] T034 [US2] Ejecutar control de alcance FR-009 en `specs/002-move-matchstore-foundational/checklists/migration-acceptance.md` confirmando que no se agregaron requisitos funcionales de producto fuera de la migracion de dependencias
 
 **Checkpoint**: La migracion conserva trazabilidad completa (IDs, reglas, dependencias y criterios de exito).
 
@@ -96,8 +100,8 @@ Proyecto unico Angular/frontend con artefactos de especificacion en `specs/`.
 
 - [ ] T022 [US3] Revisar y corregir referencias cruzadas de feature activa en `.github/copilot-instructions.md` para mantener contexto 002 consistente
 - [ ] T023 [P] [US3] Ejecutar validacion de prerequisitos de tasks y registrar evidencia en `specs/002-move-matchstore-foundational/checklists/migration-acceptance.md`
-- [ ] T024 [US3] Ejecutar analisis de consistencia de la feature y documentar resultados en `specs/002-move-matchstore-foundational/checklists/migration-acceptance.md`
-- [ ] T025 [US3] Incorporar acciones correctivas del analisis (si aplica) en `specs/001-trivia-galatea-app/tasks.md`
+- [ ] T024 [US3] Ejecutar analisis de consistencia de la feature y documentar resultados en `specs/002-move-matchstore-foundational/checklists/migration-acceptance.md` con criterio de aceptacion: 0 findings HIGH/CRITICAL sobre dependencia US1-US2 por MatchStore
+- [ ] T025 [US3] Incorporar acciones correctivas del analisis en `specs/001-trivia-galatea-app/tasks.md` cuando el reporte de analyze incluya al menos un finding HIGH o CRITICAL
 - [ ] T026 [US3] Actualizar estado final de readiness para implementacion en `specs/002-move-matchstore-foundational/plan.md`
 
 **Checkpoint**: No quedan contradicciones documentales y la feature queda preparada para implementacion/ejecucion posterior.
@@ -122,14 +126,14 @@ Proyecto unico Angular/frontend con artefactos de especificacion en `specs/`.
 - **Setup (Phase 1)**: Sin dependencias
 - **Foundational (Phase 2)**: Depende de Setup y bloquea todas las historias
 - **US1 (Phase 3)**: Depende de Foundational
-- **US2 (Phase 4)**: Depende de US1 para validar migracion ya aplicada sobre backlog base
-- **US3 (Phase 5)**: Depende de US1 + US2 para ejecutar validacion de no-regresion
+- **US2 (Phase 4)**: Puede iniciar tras Foundational; su validacion final usa la salida de US1 para auditoria trazable
+- **US3 (Phase 5)**: Puede preparar validaciones en paralelo tras Foundational; el cierre de consistencia usa evidencia consolidada de US1 y US2
 - **Polish (Phase 6)**: Depende de completar historias requeridas
 
 ### User Story Dependencies
 
 - **US1 (P1)**: No depende de US2 ni US3
-- **US2 (P2)**: Requiere que la reubicacion de US1 este aplicada para auditar trazabilidad real
+- **US2 (P2)**: Puede iniciar tras Foundational; su cierre requiere la evidencia de reubicacion producida por US1 para auditar trazabilidad real
 - **US3 (P3)**: Requiere evidencia consolidada de US1 y US2 para cerrar consistencia
 
 ### Within Each User Story
@@ -141,7 +145,7 @@ Proyecto unico Angular/frontend con artefactos de especificacion en `specs/`.
 ### Parallel Opportunities
 
 - Tareas [P] de Setup: T002, T003
-- Tareas [P] de Foundational: T007
+- Tareas [P] de Foundational: T007, T031, T032
 - Tareas [P] de US2: T017
 - Tareas [P] de US3: T023
 - Tareas [P] de Polish: T027, T028
