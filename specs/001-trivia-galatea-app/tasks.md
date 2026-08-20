@@ -23,6 +23,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 **Purpose**: Inicialización del proyecto Angular y configuración base
 
+- [ ] T000 Gate obligatorio de Setup (C1): ejecutar `npm test --code-coverage` y validar `src/app/shared/foundational/state/match-store.port.spec.ts` + `src/app/shared/foundational/state/match-store.service.spec.ts` antes de continuar con cualquier tarea de historias de usuario (US1-US4)
 - [ ] T001 Crear proyecto Angular 20 standalone/zoneless (`ng new trivia-galatea --standalone --style=scss --routing`) y verificar estructura contra [plan.md — Project Structure](./plan.md)
 - [ ] T002 Configurar `.npmrc` para el registro Artifactory de Bancolombia e instalar `@bancolombia/caribe-design-system` + `@bancolombia/caribe-brand-bancolombia` + dependencias de integración Gemini/Firebase (`firebase`, `@angular/fire`) siguiendo el patrón de `agentic-angular-vertex/example` (ver [quickstart.md §1](./quickstart.md))
 - [ ] T003 [P] Configurar ESLint + Prettier + TypeScript strict mode (`tsconfig.json` sin `any`, Principio X de la constitución)
@@ -32,7 +33,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T007 Crear `src/environments/environment.ts` y `src/environments/environment.development.ts` incluyendo el bloque `firebase` (`apiKey`, `appId`, `messagingSenderId`, `projectId`, `authDomain`, `storageBucket`, `measurementId`) con valores vacíos por defecto y carga segura desde `.env` local no versionado
 - [ ] T008 [P] Crear placeholder `public/assets/galatea-questions.json` cumpliendo [contracts/galatea-question-bank.schema.json](./contracts/galatea-question-bank.schema.json) con ≥12 preguntas de ejemplo anonimizadas
 
-**Checkpoint**: Proyecto Angular corre con `ng serve`, lint y test runner configurados, sin funcionalidad de negocio aún.
+**Checkpoint**: Proyecto Angular corre con `ng serve`, lint y test runner configurados, y el gate C1 de cobertura para MatchStorePort/MatchStoreService está validado antes de arrancar historias de usuario.
 
 ---
 
