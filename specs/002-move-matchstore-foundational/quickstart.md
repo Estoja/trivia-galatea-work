@@ -26,3 +26,14 @@
 - MatchStore definido como fundacional compartido.
 - US1 independiente de US2 para ejecución y prueba.
 - Dependencias/checkpoints/coherencia documental alineadas.
+
+## 6. Validacion Ejecutada (T030)
+
+### Resultado
+- Validacion documental de migracion: PASS.
+- Prerrequisitos SpecKit: PASS.
+- Cobertura automatizada para cambios de codigo: BLOCKED en este repo por ausencia de `package.json` en la raiz actual de la feature.
+
+### Discrepancias registradas
+1. El repositorio de especificacion activo (`trivia-galatea`) no contiene pipeline npm ejecutable para correr cobertura local de los archivos `src/` agregados durante esta migracion.
+2. Se deja evidencia del intento y del bloqueo en `checklists/migration-acceptance.md` para cierre transparente.

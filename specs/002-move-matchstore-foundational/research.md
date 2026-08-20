@@ -42,3 +42,9 @@
 ## Open Clarifications Resolved
 - Alcance técnico confirmado: Angular + TypeScript, estado compartido en servicio, interfaz desacoplada.
 - Alcance funcional confirmado: cambio de planeación/arquitectura interna, sin nuevos requerimientos de producto.
+
+## Post-Execution Notes (T021)
+- No regresion documental verificada: `specs/001-trivia-galatea-app/tasks.md` ya no expresa dependencia US1 -> US2 por disponibilidad de MatchStore.
+- Trazabilidad preservada: IDs `T046` y `T051` se mantienen y cambian de fase a Foundational.
+- Consistencia de estructura: `specs/001-trivia-galatea-app/plan.md` y `contracts/internal-gateways.md` alineados con `shared/foundational/state` y `MatchStorePort`.
+- Cobertura automatizada: intento de ejecucion registrado; bloqueado por ausencia de `package.json` en la raiz del repo de especificacion activo.

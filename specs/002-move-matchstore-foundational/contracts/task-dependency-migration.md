@@ -28,3 +28,12 @@ Formalizar la migración de dependencias para que US1 dependa solo de Setup + Fo
 - FR-003/FR-004: validado si ninguna tarea US1 depende de US2.
 - FR-005/FR-006: validado si checkpoints y referencias cruzadas están actualizados.
 - FR-010: validado si re-analyze no reporta inconsistencia US1-US2 por MatchStore.
+
+## Execution Evidence
+
+| Rule | Evidence | Status |
+|---|---|---|
+| FR-001/FR-002 | `specs/001-trivia-galatea-app/tasks.md`: `T046` y `T051` movidas a Foundational | PASS |
+| FR-003/FR-004 | `T038` actualizado para depender de `T046`/`T051`; secciones de dependencias sin vínculo US1 -> US2 por store | PASS |
+| FR-005/FR-006 | Checkpoint de Foundational actualizado con disponibilidad de estado compartido; trazabilidad documentada en checklists de `specs/002...` | PASS |
+| FR-010 | Resultado de analyze más reciente sin findings HIGH/CRITICAL sobre inconsistencia US1-US2 por MatchStore (registrado en `migration-acceptance.md`) | PASS |
