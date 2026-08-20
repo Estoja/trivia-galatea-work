@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Galatea Question Bank",
+  "description": "Banco curado de preguntas sobre Galatea/Bancolombia, ya anonimizado con placeholders neutrales ('Empresa X', 'Proyecto Y'). Ver contracts/gemini-prompt-contract.md para las reglas de anonimización y el mapper que resuelve los placeholders a nombres reales.",
+  "type": "object",
+  "required": ["version", "questions"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "description": "Versión del esquema del archivo, para permitir migraciones futuras.",
+      "minimum": 1
+    },
+    "questions": {
+      "type": "array",
+      "description": "Debe contener al menos 12 preguntas (Clarifications Q3) para permitir selección aleatoria de 6 sin repetición entre partidas.",
+      "minItems": 12,
+      "items": {
+        "type": "object",
+        "required": ["id", "text", "options", "correctOptionIndex"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador único de la pregunta, formato 'gal-NNN'.",
+            "pattern": "^gal-[0-9]{3,}$"
+          },
+          "text": {
+            "type": "string",
+            "description": "Enunciado de la pregunta. Debe usar 'Empresa X' y 'Proyecto Y' en vez de 'Bancolombia' y 'Galatea'.",
+            "minLength": 10
+          },
+          "options": {
+            "type": "array",
+            "description": "Exactamente 4 opciones de respuesta (FR-005).",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "correctOptionIndex": {
+            "type": "integer",
+            "description": "Índice 0-based de la opción correcta dentro de 'options'.",
+            "minimum": 0,
+            "maximum": 3
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "version": 1,
+      "questions": [
+        {
+          "id": "gal-001",
+          "text": "¿Qué representa el logo del Proyecto Y dentro de Empresa X?",
+          "options": [
+            "Un ecosistema de innovación interna",
+            "Un producto financiero externo",
+            "Una alianza con un tercero",
+            "Un evento anual de la compañía"
+          ],
+          "correctOptionIndex": 0
+        },
+        {
+          "id": "gal-002",
+          "text": "¿Qué tipo de proyecto es el Proyecto Y dentro de Empresa X?",
+          "options": [
+            "Un proyecto de retos de desarrollo dinámico",
+            "Una campaña de mercadeo externo",
+            "Un servicio de atención al cliente",
+            "Un proveedor externo de tecnología"
+          ],
+          "correctOptionIndex": 0
+        }
+      ]
+    }
+  ]
+}
