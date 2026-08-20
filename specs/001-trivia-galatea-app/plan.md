@@ -132,7 +132,7 @@ public/
 # tests conviven junto a cada archivo como *.spec.ts (convención Angular/Jest de instructions_2)
 ```
 
-**Structure Decision**: Proyecto Angular único (frontend-only), sin `backend/`. Se sigue la estructura de capas de `.github/instructions_2/clean-architecture.instructions.md`: `domain/` (modelos + gateways + casos de uso, cero dependencias externas), `infrastructure/` (Gemini + banco JSON + mappers), `ui/` (páginas smart + componentes dumb + store de signals). Dos Composition Roots (`app.config.ts` real, `app.config.local.ts` mock) permiten que `ng serve` funcione sin conexión a Gemini, cumpliendo el principio de "frontend sin backend" reflejado en las instrucciones del proyecto.
+**Structure Decision**: Proyecto Angular único (frontend-only), sin `backend/`. Se sigue la estructura de capas de `.github/instructions_2/clean-architecture.instructions.md`: `domain/` (modelos + gateways + casos de uso, cero dependencias externas), `infrastructure/` (Gemini + banco JSON + mappers), `shared/foundational` (capacidades transversales como `MatchStorePort` y `MatchStoreService`), `ui` (páginas smart + componentes dumb que consumen el puerto del store, sin poseer la implementación). Dos Composition Roots (`app.config.ts` real, `app.config.local.ts` mock) permiten que `ng serve` funcione sin conexión a Gemini, cumpliendo el principio de "frontend sin backend" reflejado en las instrucciones del proyecto.
 
 ## Complexity Tracking
 

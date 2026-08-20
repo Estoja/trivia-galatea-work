@@ -23,7 +23,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 **Purpose**: Inicialización del proyecto Angular y configuración base
 
-- [ ] T000 Gate obligatorio de Setup (C1): ejecutar `npm test --code-coverage` y validar `src/app/shared/foundational/state/match-store.port.spec.ts` + `src/app/shared/foundational/state/match-store.service.spec.ts` antes de continuar con cualquier tarea de historias de usuario (US1-US4)
+- [ ] T000 Gate obligatorio de Setup (C1): ejecutar `npm test --code-coverage` y validar `src/app/shared/foundational/state/match-store.port.spec.ts` + `src/app/shared/foundational/state/match-store.service.spec.ts`; este paso se ejecuta al cierre de Setup (después de T001-T008) y es gate de salida obligatorio antes de continuar con cualquier tarea de historias de usuario (US1-US4)
 - [ ] T001 Crear proyecto Angular 20 standalone/zoneless (`ng new trivia-galatea --standalone --style=scss --routing`) y verificar estructura contra [plan.md — Project Structure](./plan.md)
 - [ ] T002 Configurar `.npmrc` para el registro Artifactory de Bancolombia e instalar `@bancolombia/caribe-design-system` + `@bancolombia/caribe-brand-bancolombia` + dependencias de integración Gemini/Firebase (`firebase`, `@angular/fire`) siguiendo el patrón de `agentic-angular-vertex/example` (ver [quickstart.md §1](./quickstart.md))
 - [ ] T003 [P] Configurar ESLint + Prettier + TypeScript strict mode (`tsconfig.json` sin `any`, Principio X de la constitución)
@@ -34,6 +34,8 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T008 [P] Crear placeholder `public/assets/galatea-questions.json` cumpliendo [contracts/galatea-question-bank.schema.json](./contracts/galatea-question-bank.schema.json) con ≥12 preguntas de ejemplo anonimizadas
 
 **Checkpoint**: Proyecto Angular corre con `ng serve`, lint y test runner configurados, y el gate C1 de cobertura para MatchStorePort/MatchStoreService está validado antes de arrancar historias de usuario.
+
+**A1 (orden de ejecución)**: T000 se ejecuta al final de Setup y bloquea el paso a US1-US4 hasta que la validación de cobertura C1 quede en PASS.
 
 ---
 
@@ -76,6 +78,9 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T024 [P] [US1] Test unitario de `GalateaQuestionMapper` (resolución de placeholders del banco JSON) en `src/app/infrastructure/helpers/maps/galatea-question.mapper.spec.ts`
 - [ ] T025 [P] [US1] Test unitario de `BuildMatchUsecase` con `QuestionGateway` mockeado (éxito, fallo de IA con <6 preguntas → error) en `src/app/domain/models/match/usecase/build-match.usecase.spec.ts`
 - [ ] T026 [P] [US1] Test de componente para la página `welcome` (validación de alias 2–30 caracteres, tema no vacío, estados de carga/error) con Angular Testing Library en `src/app/ui/pages/welcome/welcome.page.spec.ts`
+- [ ] T079 [P] [US1] Test unitario de deduplicación de preguntas Galatea + fallback (FR-021) en `src/app/infrastructure/question/question.service.spec.ts`
+- [ ] T080 [P] [US1] Test unitario de política de rechazo de tema ofensivo/no apto (FR-020) en `src/app/infrastructure/gemini/topic-safety-policy.spec.ts`
+- [ ] T081 [P] [US1] Test unitario de timeout/cancelación/reintento en Gemini client (30s, FR-024) en `src/app/infrastructure/gemini/gemini-client.service.spec.ts`
 
 ### Implementation for User Story 1
 
@@ -91,6 +96,9 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T036 [US1] Implementar estado de carga con `cb-loader` durante generación de preguntas (FR-017, mensaje informativo tras 2s) en la página `welcome`
 - [ ] T037 [US1] Implementar manejo de error amigable + reintento cuando la IA no genera 6 preguntas (FR-003, US1 Escenario 5), conservando el alias ingresado
 - [ ] T038 [US1] Conectar `welcome` → `MatchStore`/navegación a `board` al completar la generación (depende de T035, T036, T037, T046, T051)
+- [ ] T082 [US1] Implementar deduplicación de preguntas Galatea por partida (FR-021) y completar faltantes vía fallback FR-019 en `src/app/infrastructure/question/question.service.ts` (depende de T031, T079)
+- [ ] T083 [US1] Implementar política de validación de tema con rechazo de contenido ofensivo/no apto (FR-020) en `src/app/infrastructure/gemini/topic-safety-policy.ts` e integración en `src/app/ui/pages/welcome/welcome.page.ts` (depende de T080, T035)
+- [ ] T084 [US1] Implementar timeout de 30s con cancelación y reintento en cliente Gemini (FR-024) en `src/app/infrastructure/gemini/gemini-client.service.ts` (depende de T027, T081)
 
 **Checkpoint**: US1 funciona de forma independiente — alias + tema → 12 preguntas generadas → navegación al tablero, con estados de carga y error.
 
@@ -105,7 +113,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 ### Tests for User Story 2 ⚠️
 
 - [ ] T039 [P] [US2] Test unitario de `AnswerCardUsecase` (transiciones de estado válidas, bloqueo tras 6 respuestas, rechazo de re-respuesta) en `src/app/domain/models/match/usecase/answer-card.usecase.spec.ts`
-- [ ] T040 [P] [US2] Test unitario de `MatchStore` (signals derivados: `answeredCount`, `isMatchComplete`, `liveScore`) en `src/app/ui/state/match.store.spec.ts`
+- [ ] T040 [P] [US2] Test unitario de `MatchStore` (signals derivados: `answeredCount`, `isMatchComplete`, `liveScore`) en `src/app/shared/foundational/state/match-store.service.spec.ts`
 - [ ] T041 [P] [US2] Test de componente `tg-question-card` (estados face-down/flipped/answered, `aria-label` dinámico) en `src/app/ui/components/question-card/question-card.spec.ts`
 - [ ] T042 [P] [US2] Test de componente `tg-question-modal` (focus trap, selección de opción habilita "Aceptar", retorno de foco al cerrar) en `src/app/ui/components/question-modal/question-modal.spec.ts`
 - [ ] T043 [P] [US2] Test de accesibilidad axe-core de la página `board` en `src/app/ui/pages/board/board.page.a11y.spec.ts`
@@ -137,7 +145,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 - [ ] T053 [US3] Implementar `CalculateMatchScoreUsecase` (función pura, fórmula FR-010/A-006) en `src/app/domain/models/match/usecase/calculate-match-score.usecase.ts` (depende de T013)
 - [ ] T054 [US3] Registrar `CalculateMatchScoreUsecase` en `app.config.ts` y `app.config.local.ts`
-- [ ] T055 [US3] Implementar computed `liveScore` en `MatchStore` usando `CalculateMatchScoreUsecase` sobre las respuestas ya registradas (FR-011) en `src/app/ui/state/match.store.ts` (depende de T053, T046)
+- [ ] T055 [US3] Implementar computed `liveScore` en `MatchStore` usando `CalculateMatchScoreUsecase` sobre las respuestas ya registradas (FR-011) en `src/app/shared/foundational/state/match-store.service.ts` (depende de T053, T046)
 - [ ] T056 [US3] Implementar componente `tg-score-board` (puntaje parcial visible con `aria-live`) en `src/app/ui/components/score-board/score-board.ts`
 - [ ] T057 [US3] Integrar `tg-score-board` en la página `board` (depende de T056, T049)
 
@@ -183,9 +191,12 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T073 [P] Sanitizar/escapar alias y tema libre antes de renderizarlos en pantalla (prevención XSS, ver checklists/security.md)
 - [ ] T074 Verificar cobertura de tests ≥80% global y ≥95% en todos los usecases (Principio V, NO NEGOCIABLE) — ajustar tests faltantes
 - [ ] T075 Ejecutar [quickstart.md](./quickstart.md) completo (modo mock y modo real con Gemini) y corregir discrepancias
-- [ ] T076 Revisar y actualizar `README.md` del proyecto con instrucciones de instalación y ejecución
+- [ ] T076 [P] [DOC] Revisar y actualizar `README.md` del proyecto con instrucciones de instalación y ejecución (tarea documental/operativa; no mapea FR/SC funcional)
 - [ ] T077 [P] Definir y ejecutar protocolo de validación manual de pertinencia para preguntas generadas por IA (muestra representativa de partidas, rúbrica de relevancia por tema, y criterio de aprobación) para demostrar SC-002 (95%) en `specs/001-trivia-galatea-app/checklists/ai-topic-questions.md` y evidencia en `specs/001-trivia-galatea-app/research.md`
 - [ ] T078 [P] Instrumentar y medir latencia de generación de preguntas IA (percentil p90) en entorno de pruebas controlado, documentando resultados y umbral de aceptación para demostrar SC-003 (<=8s en 90% de partidas) en `src/app/infrastructure/gemini/gemini-client.service.ts` y evidencia en `specs/001-trivia-galatea-app/research.md`
+- [ ] T085 [P] Test e2e + unit de reinicio de partida ante recarga/cierre (FR-023): verificar retorno a `welcome` sin restaurar progreso en `e2e/match-reload-reset.spec.ts` y `src/app/app.spec.ts`
+- [ ] T086 Implementar manejo explícito de recarga/cierre para iniciar partida nueva en `src/app/app.ts` y `src/app/shared/foundational/state/match-store.service.ts` (depende de T085)
+- [ ] T087 [P] Medir y registrar evidencia de SC-001 (partida completa <5 min): ejecutar al menos 10 corridas E2E controladas del flujo alias→tema→tablero→6 respuestas→resultados, documentar tiempo por corrida y porcentaje de cumplimiento en `specs/001-trivia-galatea-app/research.md`
 
 ---
 
@@ -193,7 +204,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: Sin dependencias — puede iniciar de inmediato
+- **Setup (Phase 1)**: Sin dependencias — puede iniciar de inmediato. T000 se ejecuta al cierre de Setup y actúa como gate de salida hacia US1-US4
 - **Foundational (Phase 2)**: Depende de Setup — BLOQUEA todas las historias de usuario
 - **US1 (Phase 3)**: Depende de Foundational. Sin dependencia de otras historias
 - **US2 (Phase 4)**: Depende de Foundational. Usa `MatchModel`/`CardModel` de Fase 2; se integra con la navegación de US1 (T038) pero su lógica de tarjetas/respuestas es independiente
@@ -219,6 +230,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 ### Parallel Opportunities
 
 - Todas las tareas [P] de Setup (T003-T006, T008) en paralelo
+- T000 se ejecuta secuencialmente al final de Setup (A1), después de completar T001-T008
 - Todas las tareas [P] de Foundational (T009-T014, T016-T017, T021) en paralelo; `MatchStore` fundacional (T046/T051) se completa secuencialmente tras modelos base
 - Todos los tests [P] de una historia en paralelo entre sí
 - Mappers/modelos [P] dentro de una historia en paralelo
