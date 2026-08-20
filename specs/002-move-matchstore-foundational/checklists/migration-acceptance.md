@@ -23,6 +23,11 @@ Raw outcome summary:
 - Runtime result in active repo root: BLOCKED (`ENOENT: no such file or directory, open '.../trivia-galatea/package.json'`).
 - Disposition: limitation documented; migration acceptance remains focused on dependency and consistency outcomes.
 
+### C1 Status: PENDING (Explicit Gate)
+- Real coverage validation for `match-store.port.spec.ts` and `match-store.service.spec.ts` remains PENDING until Phase 1 Setup is executed in feature `001-trivia-galatea-app`.
+- Mandatory first step when implementing Setup for feature `001-trivia-galatea-app`: run `npm test --code-coverage` and validate both MatchStore specs pass before continuing with any user story work.
+- Execution policy: no progression to US1/US2/US3/US4 tasks in feature `001-trivia-galatea-app` until this C1 validation is completed and recorded.
+
 ## Scope Control FR-009 (T034)
 - Check performed: reviewed all added/modified tasks and documents.
 - Result: PASS
