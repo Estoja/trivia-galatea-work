@@ -9,4 +9,8 @@ export const environment = {
     storageBucket: '',
     measurementId: '',
   },
+  appCheck: {
+    /** Site key de reCAPTCHA v3 registrado en Firebase App Check (FR-026) */
+    recaptchaV3SiteKey: '',
+  },
 };

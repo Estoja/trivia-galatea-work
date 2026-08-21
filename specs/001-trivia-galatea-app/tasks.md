@@ -45,21 +45,21 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 **⚠️ CRITICAL**: Ninguna historia de usuario puede iniciar hasta completar esta fase
 
-- [ ] T009 [P] Crear `PlayerModel` en `src/app/domain/models/player/player.model.ts` (ver [data-model.md — Player](./data-model.md))
-- [ ] T010 [P] Crear `QuestionModel` y `QuestionSource` en `src/app/domain/models/question/question.model.ts` + enum en `src/app/domain/enums/question-source.enum.ts` (ver [data-model.md — Question](./data-model.md))
-- [ ] T011 [P] Crear `CardModel`, `CardState`, `AnswerResult` en `src/app/domain/models/match/match.model.ts` (ver [data-model.md — Card](./data-model.md))
-- [ ] T012 [P] Crear `MatchModel`, `MatchStatus` en `src/app/domain/models/match/match.model.ts` (ver [data-model.md — Match](./data-model.md))
-- [ ] T013 [P] Crear `ScoreModel` en `src/app/domain/models/match/match.model.ts` (ver [data-model.md — Score](./data-model.md))
-- [ ] T014 [P] Crear `LevelModel`, `LevelTier` en `src/app/domain/models/level/level.model.ts` (ver [data-model.md — Level](./data-model.md))
-- [ ] T015 Crear `QuestionGateway` (clase abstracta) en `src/app/domain/models/question/gateway/question.gateway.ts` (depende de T010; ver [contracts/internal-gateways.md](./contracts/internal-gateways.md))
-- [ ] T016 [P] Crear `Mapper<T>` (clase abstracta base) en `src/app/infrastructure/helpers/maps/common/mapper.ts`
-- [ ] T017 [P] Crear `LoggerService` inyectable (`providedIn: 'root'`) en `src/app/infrastructure/logger/logger.service.ts` (Principio X — reemplaza `console.log`)
-- [ ] T018 Crear `app.routes.ts` con rutas lazy-loaded para `welcome`, `board`, `results` en `src/app/app.routes.ts`
-- [ ] T019 Crear Composition Root real `src/app/app.config.ts` con inicialización obligatoria de Firebase App + providers de Vertex AI (`@angular/fire/vertexai`) + registro de Firebase App Check provider (ReCaptchaV3 en producción, debug token en local) para cumplir FR-026; dejar los providers de casos de uso para fases por historia
-- [ ] T020 Crear Composition Root mock `src/app/app.config.local.ts` (depende de T019)
-- [ ] T021 [P] Escribir tests unitarios de los modelos de dominio (invariantes de `MatchModel`: 12 cards, 6+6, máximo 6 respondidas) en sus respectivos `*.spec.ts`
-- [ ] T046 Implementar `MatchStore` basado en signals (`_playerAlias`, `_chosenTopic`, `_cards`, `answeredCount`, `liveScore`, `isMatchComplete` computed) en `src/app/shared/foundational/state/match-store.service.ts` (depende de T012, [research.md §3](./research.md))
-- [ ] T051 Registrar `MatchStore` en `app.config.ts` y `app.config.local.ts` vía `MatchStorePort` (depende de T046, T019, T020)
+- [X] T009 [P] Crear `PlayerModel` en `src/app/domain/models/player/player.model.ts` (ver [data-model.md — Player](./data-model.md))
+- [X] T010 [P] Crear `QuestionModel` y `QuestionSource` en `src/app/domain/models/question/question.model.ts` + enum en `src/app/domain/enums/question-source.enum.ts` (ver [data-model.md — Question](./data-model.md))
+- [X] T011 [P] Crear `CardModel`, `CardState`, `AnswerResult` en `src/app/domain/models/match/match.model.ts` (ver [data-model.md — Card](./data-model.md))
+- [X] T012 [P] Crear `MatchModel`, `MatchStatus` en `src/app/domain/models/match/match.model.ts` (ver [data-model.md — Match](./data-model.md))
+- [X] T013 [P] Crear `ScoreModel` en `src/app/domain/models/match/match.model.ts` (ver [data-model.md — Score](./data-model.md))
+- [X] T014 [P] Crear `LevelModel`, `LevelTier` en `src/app/domain/models/level/level.model.ts` (ver [data-model.md — Level](./data-model.md))
+- [X] T015 Crear `QuestionGateway` (clase abstracta) en `src/app/domain/models/question/gateway/question.gateway.ts` (depende de T010; ver [contracts/internal-gateways.md](./contracts/internal-gateways.md))
+- [X] T016 [P] Crear `Mapper<T>` (clase abstracta base) en `src/app/infrastructure/helpers/maps/common/mapper.ts`
+- [X] T017 [P] Crear `LoggerService` inyectable (`providedIn: 'root'`) en `src/app/infrastructure/logger/logger.service.ts` (Principio X — reemplaza `console.log`)
+- [X] T018 Crear `app.routes.ts` con rutas lazy-loaded para `welcome`, `board`, `results` en `src/app/app.routes.ts`
+- [X] T019 Crear Composition Root real `src/app/app.config.ts` con inicialización obligatoria de Firebase App + providers de Vertex AI (`@angular/fire/vertexai`) + registro de Firebase App Check provider (ReCaptchaV3 en producción, debug token en local) para cumplir FR-026; dejar los providers de casos de uso para fases por historia
+- [X] T020 Crear Composition Root mock `src/app/app.config.local.ts` (depende de T019)
+- [X] T021 [P] Escribir tests unitarios de los modelos de dominio (invariantes de `MatchModel`: 12 cards, 6+6, máximo 6 respondidas) en sus respectivos `*.spec.ts`
+- [X] T046 Implementar `MatchStore` basado en signals (`_playerAlias`, `_chosenTopic`, `_cards`, `answeredCount`, `liveScore`, `isMatchComplete` computed) en `src/app/shared/foundational/state/match-store.service.ts` (depende de T012, [research.md §3](./research.md)) — ya satisfecho por la implementación fundacional heredada de la feature 002 (merge previo), validada por el gate T000
+- [X] T051 Registrar `MatchStore` en `app.config.ts` y `app.config.local.ts` vía `MatchStorePort` (depende de T046, T019, T020) — registrado vía `provideFoundationalMatchStore()` en ambos Composition Roots
 
 **Checkpoint**: Modelos de dominio, gateway abstracto, mapper base, logger, `MatchStore` fundacional y ambos Composition Roots existen y compilan — las historias de usuario pueden comenzar.
 

@@ -15,7 +15,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "tg",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -50,12 +50,29 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "local": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/app/main.config.ts",
+                  "with": "src/app/main.config.local.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -68,6 +85,9 @@
             },
             "development": {
               "buildTarget": "trivia-galatea:build:development"
+            },
+            "local": {
+              "buildTarget": "trivia-galatea:build:local"
             }
           },
           "defaultConfiguration": "development"
