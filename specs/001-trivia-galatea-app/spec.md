@@ -79,7 +79,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 1. **Given** el jugador completó 6 preguntas, **When** se carga la pantalla de resultados, **Then** se muestra el alias del jugador, la puntuación total y el título del nivel ganado, centrado en pantalla.
 2. **Given** el jugador obtuvo entre 0 y 59 puntos, **When** se muestra el resultado, **Then** el nivel es "Visitante" con efectos visuales sobrios.
 3. **Given** el jugador obtuvo 360 puntos, **When** se muestra el resultado, **Then** el nivel es "Unicornio Galatea 🦄" con la celebración más elaborada (máxima intensidad de efectos).
-4. **Given** la pantalla de resultados está visible, **When** el jugador hace clic en "Jugar de nuevo", **Then** regresa a la pantalla de inicio para comenzar una nueva partida.
+4. **Given** la pantalla de resultados está visible, **When** el jugador hace clic en "Jugar de nuevo", **Then** regresa a la pantalla de inicio con el campo de alias pre-rellenado con el valor de la partida anterior (editable) y el campo de tema vacío para que el jugador elija un nuevo tema.
 5. **Given** la pantalla de resultados está visible, **When** el jugador la revisa, **Then** puede ver el detalle de sus respuestas: qué acertó, qué erró y la puntuación desglosada por categoría.
 
 ---
@@ -100,11 +100,12 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 ### Functional Requirements
 
 - **FR-001**: El sistema DEBE solicitar al jugador un alias (2–30 caracteres) antes de iniciar la partida.
-- **FR-002**: El sistema DEBE solicitar al jugador un tema libre de su preferencia para personalizar las preguntas.
+- **FR-002**: El sistema DEBE solicitar al jugador un tema libre de su preferencia para personalizar las preguntas. El texto del tema DEBE tener entre 3 y 60 caracteres (tras trim de espacios). Antes de invocar IA el sistema DEBE normalizar el tema (recorte de espacios extremos, colapso de espacios internos) y rechazar temas ofensivos/no aptos según FR-020. Las preguntas generadas DEBEN estar en español independientemente del idioma en que se ingrese el tema.
 - **FR-003**: El sistema DEBE generar exactamente 6 preguntas sobre el tema elegido usando un servicio de IA con acceso a internet. Si la IA no puede generar las 6 preguntas requeridas, el sistema DEBE mostrar un mensaje amigable al jugador (ej. "No encontré suficientes preguntas sobre ese tema, intenta con otro") y regresar a la pantalla de selección de tema conservando el alias ya ingresado.
-- **FR-004**: El sistema DEBE seleccionar exactamente 6 preguntas sobre Galatea eligiendo aleatoriamente del banco curado (archivo JSON con ≥ 12 preguntas). Si el banco tiene menos de 6 preguntas disponibles, el sistema completa los slots restantes con preguntas generadas por IA usando la base de conocimiento de Galatea como contexto.
+- **FR-004**: El sistema DEBE seleccionar exactamente 6 preguntas sobre Galatea eligiendo aleatoriamente del banco curado (archivo JSON con ≥ 12 preguntas). Si el banco tiene menos de 6 preguntas disponibles, el sistema completa los slots restantes con preguntas generadas por IA usando la base de conocimiento de Galatea como contexto. Si banco curado + fallback IA no logran completar 6 preguntas Galatea válidas, la partida NO inicia: se muestra error amigable, se conserva alias y se regresa a selección de tema con opción de reintento.
 - **FR-005**: Cada pregunta DEBE tener exactamente 4 opciones de respuesta de selección múltiple con única respuesta correcta.
-- **FR-006**: El tablero DEBE mostrar 12 tarjetas boca abajo, con etiqueta de categoría visible ("Galatea" o el nombre del tema elegido) en cada tarjeta.
+- **FR-005A**: El texto del enunciado de cada pregunta DEBE tener entre 30 y 180 caracteres, y cada opción DEBE tener entre 10 y 100 caracteres para garantizar legibilidad y consistencia visual en la tarjeta.
+- **FR-006**: El tablero DEBE mostrar 12 tarjetas boca abajo, con etiqueta de categoría visible ("Galatea" o el nombre del tema elegido) y color de fondo diferenciado por categoría usando tokens Caribe, de modo que el jugador identifique visualmente el tipo de tarjeta sin necesidad de leer la etiqueta.
 - **FR-007**: El jugador DEBE poder seleccionar libremente qué tarjeta voltear, de a una por vez.
 - **FR-008**: El sistema DEBE requerir que el jugador seleccione explícitamente una opción y confirme con "Aceptar" antes de registrar la respuesta.
 - **FR-009**: El sistema DEBE limitar a 6 el número total de tarjetas que el jugador puede responder por partida.
@@ -113,7 +114,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - **FR-012**: El sistema DEBE mostrar la pantalla de resultados automáticamente al completar la 6ª pregunta.
 - **FR-013**: La pantalla de resultados DEBE mostrar: alias del jugador, puntuación total, título del nivel ganado y efectos visuales de celebración acordes al nivel.
 - **FR-014**: El sistema DEBE asignar el título según la escala: 0–59=Visitante, 60–119=Explorador, 120–179=Aprendiz, 180–239=Constructor, 240–299=Estratega, 300–359=Maestro Galatea, 360=Unicornio Galatea 🦄.
-- **FR-015**: La pantalla de resultados DEBE ofrecer la opción de iniciar una nueva partida.
+- **FR-015**: La pantalla de resultados DEBE ofrecer la opción de iniciar una nueva partida. Al activarla, la app navega a la pantalla de inicio con el alias de la partida anterior pre-rellenado (editable) y el campo de tema vacío.
 - **FR-016**: El sistema DEBE mostrar retroalimentación inmediata (correcto/incorrecto) al confirmar cada respuesta.
 - **FR-017**: El sistema DEBE mostrar un indicador de carga durante la generación de preguntas por IA.
 - **FR-018**: En el flujo de generación de preguntas del tema elegido, el sistema DEBE enviar al servicio de IA externo únicamente el texto del tema elegido. El alias del jugador y cualquier otro dato de sesión NO deben incluirse en estas peticiones.
@@ -122,7 +123,15 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - **FR-021**: El sistema DEBE deduplicar preguntas de Galatea dentro de una misma partida; si tras deduplicar hay menos de 6 preguntas, DEBE completar faltantes vía FR-019.
 - **FR-022**: El sistema DEBE mantener como máximo una pregunta activa (tarjeta volteada pendiente de confirmación) a la vez.
 - **FR-023**: Si el jugador recarga o cierra y vuelve a abrir la aplicación durante una partida, el sistema DEBE iniciar una partida nueva en pantalla de inicio sin restaurar progreso previo.
-- **FR-024**: Si cualquier llamada a IA supera 30 segundos, el sistema DEBE cancelar la operación, informar timeout en lenguaje amigable y ofrecer reintento conservando alias.
+- **FR-024**: Si cualquier llamada a IA supera 30 segundos, el sistema DEBE cancelar la operación, informar timeout en lenguaje amigable y ofrecer reintento conservando alias. Los reintentos automáticos DEBEN limitarse a 2 intentos con backoff corto (2s y 4s), y si siguen fallando, la app DEBE mostrar error final con reintento manual.
+- **FR-025**: Si la conectividad falla antes de que la partida haya cargado las 12 preguntas y el tablero esté activo, la aplicación DEBE resetear la partida a la pantalla de inicio con mensaje amigable conservando únicamente el alias ya ingresado en la pantalla de error. Si la conectividad falla después de que las 12 preguntas ya están cargadas y el tablero está activo, la aplicación NO DEBE reiniciar la partida ni borrar el progreso; el jugador DEBE seguir jugando localmente sobre el estado ya cargado sin consultar IA.
+- **FR-026**: La integración con IA DEBE usar API key restringida por HTTP Referer al dominio de GitHub Pages del evento (p. ej. `https://<org>.github.io/<repo>/*`) configurado en Google Cloud Console, más App Check habilitado en cliente. Esta configuración reduce el riesgo de abuso aunque no lo elimina completamente, dado que la key queda expuesta en el bundle cliente durante la ventana del evento.
+- **FR-027**: Al cierre de la ventana del evento (aproximadamente 1 mes), la API key DEBE rotarse o deshabilitarse en Google Cloud Console antes de que transcurran 24 horas desde el fin del evento. Este paso es operativo y NO requiere redespliegue de código.
+- **FR-028**: Si la sustitución de placeholders de anonimización falla o produce un resultado incompleto antes de construir el prompt de IA, el sistema DEBE cancelar la llamada a IA, mostrar un error amigable al jugador y no transmitir ningún prompt al servicio externo (fail-closed). Nunca se enviará un prompt con datos de sesión sin anonimizar.
+- **FR-029**: Cuando existe una partida activa con al menos 1 tarjeta respondida y el jugador intenta cerrar o recargar la página, el sistema DEBE mostrar la advertencia nativa del navegador (`beforeunload`) indicando que el progreso se perderá. Si el jugador confirma, la partida se reinicia según FR-023.
+- **FR-030**: Toda interpolación del alias del jugador en atributos `aria-*` DEBE escapar entidades HTML (`"` → `&quot;`, `'` → `&#x27;`, `<` → `&lt;`, `>` → `&gt;`) mediante un pipe Angular reutilizable, para evitar inyección de contenido accesible no esperado.
+- **FR-031**: El botón que dispara la generación de preguntas vía IA DEBE deshabilitarse inmediatamente al primer clic y permanecer deshabilitado hasta que la operación complete o falle, para prevenir solicitudes concurrentes, consumo doble de cuota y estados inconsistentes en `MatchStore`.
+- **FR-032**: El cliente DEBE limitar a un máximo de 3 solicitudes de generación de preguntas por sesión de navegador (contabilizando reintentos manuales del jugador), como salvaguarda frente a abuso de cuota durante la exposición pública en GitHub Pages. Al alcanzar el límite, la app DEBE mostrar un mensaje indicando que se agotaron los intentos y sugerir refrescar para iniciar una nueva sesión.
 
 ### Key Entities
 
@@ -144,7 +153,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - **SC-003**: El tiempo de generación de preguntas no supera 8 segundos en el 90% de las partidas bajo condiciones normales de red.
 - **SC-004**: El 100% de las partidas calcula y muestra el puntaje correcto según la fórmula especificada.
 - **SC-005**: La pantalla de resultados muestra siempre el nivel correcto según el puntaje obtenido, en el 100% de los casos.
-- **SC-006**: Los efectos de celebración de la pantalla de resultados difieren visiblemente entre al menos 3 niveles distintos.
+- **SC-006**: Los efectos de celebración de la pantalla de resultados difieren visiblemente entre al menos 3 niveles distintos, y cada uno de los 7 niveles de puntaje DEBE tener una variación visual distinta en color, intensidad y animación para distinguirlo claramente del siguiente nivel.
 
 ### Accessibility Criteria *(mandatory — Principio VI)*
 
@@ -176,6 +185,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - **A-008**: El alias del jugador no requiere autenticación ni verificación de unicidad; es sólo un nombre de pantalla para la sesión.
 - **A-009**: Las 12 tarjetas del tablero siempre muestran exactamente 6 de Galatea y 6 del tema elegido; no se permite una distribución diferente.
 - **A-010**: El alias del jugador es un dato de sesión local y nunca se transmite al servicio de IA externo. En generación por tema libre sólo sale el string del tema; en fallback Galatea sólo sale contexto general de Galatea provisto para el prompt. Ninguna petición de IA incluye datos de sesión del jugador.
+- **A-011**: La app se despliega en **GitHub Pages** con URL pública durante una ventana acotada de aproximadamente 1 mes (duración del evento). La exposición es pública e intencional; la mitigación principal es la restricción de HTTP Referer en la API key (FR-026), los límites de cuota diaria/por-minuto configurados en Google Cloud Console, y la baja/rotación de la key al cerrar la ventana (FR-027). Red local controlada es un escenario de contingencia, no el principal.
 
 ---
 
@@ -193,3 +203,20 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - Q: ¿Cómo se resuelve el conflicto I1 entre FR-004 y FR-018? → A: Se separan dos flujos: tema libre (solo string del tema) y fallback Galatea (solo contexto general de Galatea para prompt), en ambos casos sin alias ni datos de sesión.
 - Q: ¿Qué hacer si faltan preguntas Galatea (<6) por baja disponibilidad o deduplicación? → A: Completar cupos faltantes consultando IA con fuentes de información general de Galatea incluidas en el prompt hasta llegar a 6 preguntas Galatea válidas.
 - Q: ¿Cuál es el comportamiento esperado para U2 (una sola tarjeta activa)? → A: El sistema bloquea abrir una segunda tarjeta mientras exista una pregunta abierta sin confirmación.
+
+### Session 2026-08-20 (security/error clarifications)
+
+- Q: ¿Qué postura de seguridad se adopta para credenciales y operación del evento? → A: Se mantiene arquitectura frontend-only con API key restringida, App Check habilitado, rotación obligatoria post-evento y modelo de amenazas explícito de red interna controlada.
+- Q: ¿Qué hacer si fallan banco curado y fallback IA para completar 6 preguntas Galatea? → A: Fallo total controlado: no iniciar partida, mostrar error amigable, conservar alias, volver a selección de tema y habilitar reintento.
+- Q: ¿Cuál es la política de reintentos automáticos ante fallos de IA? → A: 2 reintentos automáticos con backoff corto (2s y 4s); si siguen fallando, se muestra error final con reintento manual del jugador.
+- Q: ¿Qué pasa si la red se cae mientras el jugador ya tiene cargadas las 12 preguntas y está en la etapa de elegir tarjetas/responder? → A: Si la partida ya tiene el tablero cargado, no se reinicia ni se vuelve a inicio; la sesión sigue localmente sin consultar IA. Si cae antes de abrir el tablero, la app reinicia a inicio con mensaje amigable.
+
+### Session 2026-08-21 (ux/security clarifications)
+
+- Q: Al hacer clic en "Jugar de nuevo" desde resultados, ¿qué datos conserva la pantalla de inicio? → A: Alias pre-rellenado (editable), campo de tema vacío — el jugador elige un nuevo tema.
+- Q: Si la sustitucón de placeholders de anonimización falla, ¿fail-open o fail-closed? → A: Fail-closed: cancelar llamada a IA, mostrar error amigable, no transmitir ningún prompt incompleto o sin anonimizar.
+- Q: ¿Las tarjetas del tablero deben diferenciarse visualmente más allá de la etiqueta de texto? → A: Sí, color de fondo diferente por categoría (Galatea vs tema elegido) usando tokens Caribe, más etiqueta de texto.
+- Q: ¿Debe la app advertir al jugador antes de que cierre/recargue a mitad de partida? → A: Sí, advertencia nativa `beforeunload` únicamente cuando hay ≥1 tarjeta respondida; si no hay progreso, no se muestra advertencia.
+- Q: ¿Cómo manejar el alias al interpolarlo en atributos `aria-*`? → A: Escapar entidades HTML (`"`, `'`, `<`, `>`) mediante un pipe Angular reutilizable antes de cualquier interpolación en `aria-label` u otros atributos `aria-*`.
+- Q: ¿Qué ocurre si el jugador dispara múltiples solicitudes concurrentes a la IA (p. ej. doble clic en Iniciar)? → A: El botón se deshabilita en el primer clic y solo se re-habilita al completar o fallar la operación; no se lanzan solicitudes concurrentes.
+- Q: ¿Cómo se despliega la app y cuál es el modelo de amenazas real? → A: GitHub Pages pública durante ~1 mes (evento). Mitigación: HTTP Referer restriction en API key, cuota Google Cloud Console, límite de 3 solicitudes por sesión en cliente (FR-032), y baja/rotación de key al cerrar ventana (<24h post-evento).

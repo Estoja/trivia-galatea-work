@@ -197,6 +197,8 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T085 [P] Test e2e + unit de reinicio de partida ante recarga/cierre (FR-023): verificar retorno a `welcome` sin restaurar progreso en `e2e/match-reload-reset.spec.ts` y `src/app/app.spec.ts`
 - [ ] T086 Implementar manejo explícito de recarga/cierre para iniciar partida nueva en `src/app/app.ts` y `src/app/shared/foundational/state/match-store.service.ts` (depende de T085)
 - [ ] T087 [P] Medir y registrar evidencia de SC-001 (partida completa <5 min): ejecutar al menos 10 corridas E2E controladas del flujo alias→tema→tablero→6 respuestas→resultados, documentar tiempo por corrida y porcentaje de cumplimiento en `specs/001-trivia-galatea-app/research.md`
+- [ ] T088 [P] Verificación auditable de A-010/FR-018/FR-019: interceptar todas las peticiones salientes a Gemini en tests e2e y unitarios (usando spy/mock del HttpClient o del SDK de VertexAI) y afirmar que ningún payload contiene el alias del jugador ni campos de sesión distintos del string del tema o del contexto Galatea provisto; documentar evidencia en `specs/001-trivia-galatea-app/research.md` (depende de T027, T031)
+- [ ] T089 [DOC] [OPS] Nota operativa de cierre de evento: al finalizar la ventana del evento (~1 mes), rotar o deshabilitar la API key en Google Cloud Console en menos de 24h post-evento, y verificar que la restricción de HTTP Referer haya estado activa durante todo el período (FR-027, A-011). Evidencia: captura de pantalla de la consola con la key deshabilitada archivada en `specs/001-trivia-galatea-app/research.md`.
 
 ---
 
