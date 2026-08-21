@@ -55,7 +55,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T016 [P] Crear `Mapper<T>` (clase abstracta base) en `src/app/infrastructure/helpers/maps/common/mapper.ts`
 - [ ] T017 [P] Crear `LoggerService` inyectable (`providedIn: 'root'`) en `src/app/infrastructure/logger/logger.service.ts` (Principio X — reemplaza `console.log`)
 - [ ] T018 Crear `app.routes.ts` con rutas lazy-loaded para `welcome`, `board`, `results` en `src/app/app.routes.ts`
-- [ ] T019 Crear Composition Root real `src/app/app.config.ts` con inicialización obligatoria de Firebase App + providers de Vertex AI (`@angular/fire/vertexai`) y dejar los providers de casos de uso para fases por historia
+- [ ] T019 Crear Composition Root real `src/app/app.config.ts` con inicialización obligatoria de Firebase App + providers de Vertex AI (`@angular/fire/vertexai`) + registro de Firebase App Check provider (ReCaptchaV3 en producción, debug token en local) para cumplir FR-026; dejar los providers de casos de uso para fases por historia
 - [ ] T020 Crear Composition Root mock `src/app/app.config.local.ts` (depende de T019)
 - [ ] T021 [P] Escribir tests unitarios de los modelos de dominio (invariantes de `MatchModel`: 12 cards, 6+6, máximo 6 respondidas) en sus respectivos `*.spec.ts`
 - [ ] T046 Implementar `MatchStore` basado en signals (`_playerAlias`, `_chosenTopic`, `_cards`, `answeredCount`, `liveScore`, `isMatchComplete` computed) en `src/app/shared/foundational/state/match-store.service.ts` (depende de T012, [research.md §3](./research.md))
@@ -73,7 +73,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 ### Tests for User Story 1 ⚠️
 
-- [ ] T022 [P] [US1] Test unitario de `GeminiTopicAnonymizer` (sustitución/reversión de placeholders `Empresa X`/`Proyecto Y`) en `src/app/infrastructure/gemini/gemini-topic-anonymizer.spec.ts`
+- [ ] T022 [P] [US1] Test unitario de `GeminiTopicAnonymizer` (sustitución/reversión de placeholders `Empresa X`/`Proyecto Y`, incluyendo escenario fail-closed: sustitución incompleta → error lanzado → sin llamada a Gemini, FR-028) en `src/app/infrastructure/gemini/gemini-topic-anonymizer.spec.ts`
 - [ ] T023 [P] [US1] Test unitario de `GeminiQuestionMapper` (parseo de respuesta Gemini → `QuestionModel`, validación de esquema FR-005) en `src/app/infrastructure/helpers/maps/gemini-question.mapper.spec.ts`
 - [ ] T024 [P] [US1] Test unitario de `GalateaQuestionMapper` (resolución de placeholders del banco JSON) en `src/app/infrastructure/helpers/maps/galatea-question.mapper.spec.ts`
 - [ ] T025 [P] [US1] Test unitario de `BuildMatchUsecase` con `QuestionGateway` mockeado (éxito, fallo de IA con <6 preguntas → error) en `src/app/domain/models/match/usecase/build-match.usecase.spec.ts`
@@ -85,15 +85,15 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 ### Implementation for User Story 1
 
 - [ ] T027 [P] [US1] Implementar `GeminiClientService` exclusivamente sobre Vertex AI para Firebase (`@angular/fire/vertexai` + Firebase App), con prompt de [contracts/gemini-prompt-contract.md §2](./contracts/gemini-prompt-contract.md), en `src/app/infrastructure/gemini/gemini-client.service.ts`
-- [ ] T028 [US1] Implementar `GeminiTopicAnonymizer` (`BRAND_PLACEHOLDER_MAP`) en `src/app/infrastructure/gemini/gemini-topic-anonymizer.ts` (depende de T027)
+- [ ] T028 [US1] Implementar `GeminiTopicAnonymizer` (`BRAND_PLACEHOLDER_MAP`) en `src/app/infrastructure/gemini/gemini-topic-anonymizer.ts` con comportamiento fail-closed: si la sustitución de placeholders produce resultado incompleto, DEBE lanzar error antes de construir el prompt y cancelar la llamada IA sin transmitir ningún payload (FR-028) (depende de T027)
 - [ ] T029 [US1] Implementar `GeminiQuestionMapper extends Mapper<QuestionModel>` en `src/app/infrastructure/helpers/maps/gemini-question.mapper.ts` (depende de T016, T010)
 - [ ] T030 [US1] Implementar `GalateaQuestionMapper extends Mapper<QuestionModel>` en `src/app/infrastructure/helpers/maps/galatea-question.mapper.ts` (depende de T016, T010)
 - [ ] T031 [US1] Implementar `QuestionService implements QuestionGateway` (banco JSON + fallback IA para Galatea, Gemini para tema; [contracts/internal-gateways.md](./contracts/internal-gateways.md)) en `src/app/infrastructure/question/question.service.ts` (depende de T015, T028, T029, T030)
 - [ ] T032 [P] [US1] Implementar `QuestionMockService implements QuestionGateway` (datos hardcodeados) en `src/app/infrastructure/question/question-mock.service.ts` (depende de T015)
 - [ ] T033 [US1] Implementar `BuildMatchUsecase` (arma `MatchModel` con 12 cards boca abajo, maneja error si Gemini no retorna 6 preguntas válidas → FR-003) en `src/app/domain/models/match/usecase/build-match.usecase.ts` (depende de T015, T011, T012)
 - [ ] T034 [US1] Registrar `QuestionService` y `BuildMatchUsecase` en `app.config.ts`, `QuestionMockService` en `app.config.local.ts`, y enlazar `GeminiClientService` a los providers de Firebase App + Vertex AI definidos en T019 (depende de T031, T032, T033, T019, T020)
-- [ ] T035 [US1] Implementar página `welcome` (formulario de alias + tema, validación en línea FR-001/FR-002, componentes `cb-input`/`cb-button` de Caribe) en `src/app/ui/pages/welcome/welcome.page.ts`
-- [ ] T036 [US1] Implementar estado de carga con `cb-loader` durante generación de preguntas (FR-017, mensaje informativo tras 2s) en la página `welcome`
+- [ ] T035 [US1] Implementar página `welcome` (formulario alias + tema: validación en línea FR-001/FR-002 incluyendo longitud 3–60 chars, normalización trim+colapso de espacios internos antes de invocar IA, componentes `cb-input`/`cb-button` de Caribe, botón deshabilitado tras primer clic hasta completar/fallar la operación IA FR-031, alias pre-rellenado al volver desde resultados FR-015) en `src/app/ui/pages/welcome/welcome.page.ts`
+- [ ] T036 [US1] Implementar estado de carga con `cb-loader` durante generación de preguntas (FR-017, mensaje informativo tras 2s) y deshabilitar botón de inicio en el primer clic (FR-031) hasta que la operación complete o falle, en la página `welcome`
 - [ ] T037 [US1] Implementar manejo de error amigable + reintento cuando la IA no genera 6 preguntas (FR-003, US1 Escenario 5), conservando el alias ingresado
 - [ ] T038 [US1] Conectar `welcome` → `MatchStore`/navegación a `board` al completar la generación (depende de T035, T036, T037, T046, T051)
 - [ ] T082 [US1] Implementar deduplicación de preguntas Galatea por partida (FR-021) y completar faltantes vía fallback FR-019 en `src/app/infrastructure/question/question.service.ts` (depende de T031, T079)
@@ -122,7 +122,7 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 - [ ] T044 [US2] Implementar `AnswerCardUsecase` (valida transición `flipped`→`answered`, límite `maxAnswerableCards`, marca `AnswerResult`) en `src/app/domain/models/match/usecase/answer-card.usecase.ts` (depende de T011, T012)
 - [ ] T045 [US2] Implementar `match.constants.ts` (constantes: 6 respuestas máx., 10 pts por acierto, 12 tarjetas) en `src/app/ui/components/shared/match.constants.ts`
-- [ ] T047 [P] [US2] Implementar componente `tg-question-card` (botón nativo, `aria-label` "Tarjeta N, categoría X, estado Y", `aria-disabled` si respondida) en `src/app/ui/components/question-card/question-card.ts`
+- [ ] T047 [P] [US2] Implementar componente `tg-question-card` (botón nativo, `aria-label` "Tarjeta N, categoría X, estado Y" con alias escapado vía `AriaEscapePipe` FR-030, `aria-disabled` si respondida, color de fondo diferenciado por categoría usando tokens `--cb-sys-color-*` de Caribe: Galatea vs tema elegido FR-006, etiqueta de categoría visible) en `src/app/ui/components/question-card/question-card.ts`
 - [ ] T048 [US2] Implementar componente `tg-question-modal` (4 opciones seleccionables, botón "Aceptar" deshabilitado hasta selección, focus trap, retorno de foco) en `src/app/ui/components/question-modal/question-modal.ts`
 - [ ] T049 [US2] Implementar página `board` (tablero de 12 `tg-question-card`, apertura de `tg-question-modal`, navegación automática a `results` tras 6ª respuesta FR-012) en `src/app/ui/pages/board/board.page.ts` (depende de T046, T047, T048)
 - [ ] T050 [US2] Implementar retroalimentación visual inmediata correcto/incorrecto con `aria-live="polite"` (FR-016) en `tg-question-modal`
@@ -195,10 +195,12 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 - [ ] T077 [P] Definir y ejecutar protocolo de validación manual de pertinencia para preguntas generadas por IA (muestra representativa de partidas, rúbrica de relevancia por tema, y criterio de aprobación) para demostrar SC-002 (95%) en `specs/001-trivia-galatea-app/checklists/ai-topic-questions.md` y evidencia en `specs/001-trivia-galatea-app/research.md`
 - [ ] T078 [P] Instrumentar y medir latencia de generación de preguntas IA (percentil p90) en entorno de pruebas controlado, documentando resultados y umbral de aceptación para demostrar SC-003 (<=8s en 90% de partidas) en `src/app/infrastructure/gemini/gemini-client.service.ts` y evidencia en `specs/001-trivia-galatea-app/research.md`
 - [ ] T085 [P] Test e2e + unit de reinicio de partida ante recarga/cierre (FR-023): verificar retorno a `welcome` sin restaurar progreso en `e2e/match-reload-reset.spec.ts` y `src/app/app.spec.ts`
-- [ ] T086 Implementar manejo explícito de recarga/cierre para iniciar partida nueva en `src/app/app.ts` y `src/app/shared/foundational/state/match-store.service.ts` (depende de T085)
+- [ ] T086 Implementar manejo explícito de recarga/cierre para iniciar partida nueva en `src/app/app.ts` y `src/app/shared/foundational/state/match-store.service.ts`; registrar listener nativo `beforeunload` cuando `answeredCount() >= 1` para mostrar advertencia del navegador (FR-029), removiéndolo al navegar a `results` o `welcome` (depende de T085)
 - [ ] T087 [P] Medir y registrar evidencia de SC-001 (partida completa <5 min): ejecutar al menos 10 corridas E2E controladas del flujo alias→tema→tablero→6 respuestas→resultados, documentar tiempo por corrida y porcentaje de cumplimiento en `specs/001-trivia-galatea-app/research.md`
 - [ ] T088 [P] Verificación auditable de A-010/FR-018/FR-019: interceptar todas las peticiones salientes a Gemini en tests e2e y unitarios (usando spy/mock del HttpClient o del SDK de VertexAI) y afirmar que ningún payload contiene el alias del jugador ni campos de sesión distintos del string del tema o del contexto Galatea provisto; documentar evidencia en `specs/001-trivia-galatea-app/research.md` (depende de T027, T031)
 - [ ] T089 [DOC] [OPS] Nota operativa de cierre de evento: al finalizar la ventana del evento (~1 mes), rotar o deshabilitar la API key en Google Cloud Console en menos de 24h post-evento, y verificar que la restricción de HTTP Referer haya estado activa durante todo el período (FR-027, A-011). Evidencia: captura de pantalla de la consola con la key deshabilitada archivada en `specs/001-trivia-galatea-app/research.md`.
+- [ ] T090 [US1] Implementar contador de solicitudes IA por sesión de navegador (máx. 3, usando `sessionStorage`) en `src/app/infrastructure/gemini/gemini-client.service.ts`: bloquear nueva llamada al alcanzar el límite y mostrar mensaje de agotamiento con sugerencia de refrescar (FR-032); incluir test unitario en `gemini-client.service.spec.ts` (depende de T084)
+- [ ] T091 [P] Implementar `AriaEscapePipe` (escapa `"` `'` `<` `>` como entidades HTML para atributos `aria-*`) en `src/app/shared/pipes/aria-escape.pipe.ts` + test en `aria-escape.pipe.spec.ts`; aplicar en `tg-question-card` y `tg-question-modal` donde se interpola el alias (FR-030) (depende de T047, T048)
 
 ---
 
