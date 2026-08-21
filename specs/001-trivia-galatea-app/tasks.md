@@ -23,15 +23,15 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 **Purpose**: Inicialización del proyecto Angular y configuración base
 
-- [ ] T000 Gate obligatorio de Setup (C1): ejecutar `npm test --code-coverage` y validar `src/app/shared/foundational/state/match-store.port.spec.ts` + `src/app/shared/foundational/state/match-store.service.spec.ts`; este paso se ejecuta al cierre de Setup (después de T001-T008) y es gate de salida obligatorio antes de continuar con cualquier tarea de historias de usuario (US1-US4)
-- [ ] T001 Crear proyecto Angular 20 standalone/zoneless (`ng new trivia-galatea --standalone --style=scss --routing`) y verificar estructura contra [plan.md — Project Structure](./plan.md)
-- [ ] T002 Configurar `.npmrc` para el registro Artifactory de Bancolombia e instalar `@bancolombia/caribe-design-system` + `@bancolombia/caribe-brand-bancolombia` + dependencias de integración Gemini/Firebase (`firebase`, `@angular/fire`) siguiendo el patrón de `agentic-angular-vertex/example` (ver [quickstart.md §1](./quickstart.md))
-- [ ] T003 [P] Configurar ESLint + Prettier + TypeScript strict mode (`tsconfig.json` sin `any`, Principio X de la constitución)
-- [ ] T004 [P] Configurar Jest + Angular Testing Library en modo zoneless (`jest.config.js`, `setup-jest.ts`) reemplazando Karma/Jasmine por defecto
-- [ ] T005 [P] Instalar y configurar `@axe-core/angular` para pruebas de accesibilidad automatizadas
-- [ ] T006 [P] Instalar y configurar Cypress o Playwright para e2e de los flujos críticos
-- [ ] T007 Crear `src/environments/environment.ts` y `src/environments/environment.development.ts` incluyendo el bloque `firebase` (`apiKey`, `appId`, `messagingSenderId`, `projectId`, `authDomain`, `storageBucket`, `measurementId`) con valores vacíos por defecto y carga segura desde `.env` local no versionado
-- [ ] T008 [P] Crear placeholder `public/assets/galatea-questions.json` cumpliendo [contracts/galatea-question-bank.schema.json](./contracts/galatea-question-bank.schema.json) con ≥12 preguntas de ejemplo anonimizadas
+- [X] T000 Gate obligatorio de Setup (C1): ejecutar `npm test --code-coverage` y validar `src/app/shared/foundational/state/match-store.port.spec.ts` + `src/app/shared/foundational/state/match-store.service.spec.ts`; este paso se ejecuta al cierre de Setup (después de T001-T008) y es gate de salida obligatorio antes de continuar con cualquier tarea de historias de usuario (US1-US4)
+- [X] T001 Crear proyecto Angular 20 standalone/zoneless (`ng new trivia-galatea --standalone --style=scss --routing`) y verificar estructura contra [plan.md — Project Structure](./plan.md)
+- [X] T002 Configurar `.npmrc` para el registro Artifactory de Bancolombia e instalar `@bancolombia/caribe-design-system` + `@bancolombia/caribe-brand-bancolombia` + dependencias de integración Gemini/Firebase (`firebase`, `@angular/fire`) siguiendo el patrón de `agentic-angular-vertex/example` (ver [quickstart.md §1](./quickstart.md))
+- [X] T003 [P] Configurar ESLint + Prettier + TypeScript strict mode (`tsconfig.json` sin `any`, Principio X de la constitución)
+- [X] T004 [P] Configurar Jest + Angular Testing Library en modo zoneless (`jest.config.js`, `setup-jest.ts`) reemplazando Karma/Jasmine por defecto
+- [X] T005 [P] Instalar y configurar `@axe-core/angular` para pruebas de accesibilidad automatizadas (nota: `@axe-core/angular` no existe en npm; sustituido por `axe-core` + `jest-axe`)
+- [X] T006 [P] Instalar y configurar Cypress o Playwright para e2e de los flujos críticos
+- [X] T007 Crear `src/environments/environment.ts` y `src/environments/environment.development.ts` incluyendo el bloque `firebase` (`apiKey`, `appId`, `messagingSenderId`, `projectId`, `authDomain`, `storageBucket`, `measurementId`) con valores vacíos por defecto y carga segura desde `.env` local no versionado
+- [X] T008 [P] Crear placeholder `public/assets/galatea-questions.json` cumpliendo [contracts/galatea-question-bank.schema.json](./contracts/galatea-question-bank.schema.json) con ≥12 preguntas de ejemplo anonimizadas
 
 **Checkpoint**: Proyecto Angular corre con `ng serve`, lint y test runner configurados, y el gate C1 de cobertura para MatchStorePort/MatchStoreService está validado antes de arrancar historias de usuario.
 

@@ -1,0 +1,68 @@
+{
+  "name": "trivia-galatea",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:a11y": "jest --coverage --testPathPatterns=a11y",
+    "e2e": "playwright test",
+    "lint": "eslint . --ext .ts"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/fire": "^20.0.1",
+    "@angular/forms": "^20.3.0",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/platform-browser-dynamic": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "@bancolombia/caribe-brand-bancolombia": "^1.0.0-alpha.2",
+    "@bancolombia/caribe-design-system": "^1.0.0-alpha.65",
+    "firebase": "^12.2.1",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "20.3.34",
+    "@angular/cli": "20.3.34",
+    "@angular/compiler-cli": "^20.3.0",
+    "@playwright/test": "^1.55.0",
+    "@testing-library/angular": "^18.1.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
+    "angular-eslint": "^20.2.0",
+    "axe-core": "^4.10.2",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.1.3",
+    "jest-axe": "^10.0.0",
+    "jest-environment-jsdom": "^30.4.1",
+    "jest-preset-angular": "^15.0.0",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.2"
+  }
+}
