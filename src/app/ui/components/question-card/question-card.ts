@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
 import { AnswerResult, CardModel } from '../../../domain/models/match/match.model';
+import { AriaEscapePipe } from '../../../shared/pipes/aria-escape.pipe';
 
 /**
  * Tarjeta individual del tablero (US2). Botón nativo que representa una
@@ -14,6 +15,8 @@ import { AnswerResult, CardModel } from '../../../domain/models/match/match.mode
   styleUrl: './question-card.scss',
 })
 export class QuestionCard {
+  private readonly ariaEscape = new AriaEscapePipe();
+
   /** Tarjeta de dominio a representar (contiene la pregunta y su estado). */
   readonly card = input.required<CardModel>();
   /** Posición 1-based de la tarjeta dentro del tablero (para el `aria-label`). */
@@ -36,7 +39,11 @@ export class QuestionCard {
   });
 
   readonly ariaLabel = computed(
-    () => `Tarjeta ${this.position()}, categoría ${this.categoryLabel()}, estado ${this.stateLabel()}`,
+    () =>
+      // `categoryLabel` puede contener el tema libre elegido por el jugador (texto sin
+      // restricción de caracteres, solo longitud), por eso se escapa antes de
+      // interpolarlo en el `aria-label` (FR-030).
+      `Tarjeta ${this.position()}, categoría ${this.ariaEscape.transform(this.categoryLabel())}, estado ${this.stateLabel()}`,
   );
 
   handleClick(): void {

@@ -45,6 +45,15 @@ describe('QuestionCard', () => {
     expect(button.getAttribute('aria-label')).toContain('volteada, en curso');
   });
 
+  it('escapa comillas y ángulos del tema libre (chosenTopic) al interpolarlo en el aria-label (FR-030)', () => {
+    const fixture = createComponent(buildCard({ state: 'face-down' }), `<b>"Fútbol" & 'Cine'</b>`);
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+
+    expect(button.getAttribute('aria-label')).toBe(
+      'Tarjeta 3, categoría &lt;b&gt;&quot;Fútbol&quot; & &#x27;Cine&#x27;&lt;/b&gt;, estado boca abajo',
+    );
+  });
+
   it('deshabilita el botón y refleja aria-disabled cuando la tarjeta ya fue respondida', () => {
     const fixture = createComponent(buildCard({ state: 'answered', result: 'correct' }));
     const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
