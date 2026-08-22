@@ -112,20 +112,20 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T039 [P] [US2] Test unitario de `AnswerCardUsecase` (transiciones de estado válidas, bloqueo tras 6 respuestas, rechazo de re-respuesta) en `src/app/domain/models/match/usecase/answer-card.usecase.spec.ts`
-- [ ] T040 [P] [US2] Test unitario de `MatchStore` (signals derivados: `answeredCount`, `isMatchComplete`, `liveScore`) en `src/app/shared/foundational/state/match-store.service.spec.ts`
-- [ ] T041 [P] [US2] Test de componente `tg-question-card` (estados face-down/flipped/answered, `aria-label` dinámico) en `src/app/ui/components/question-card/question-card.spec.ts`
-- [ ] T042 [P] [US2] Test de componente `tg-question-modal` (focus trap, selección de opción habilita "Aceptar", retorno de foco al cerrar) en `src/app/ui/components/question-modal/question-modal.spec.ts`
-- [ ] T043 [P] [US2] Test de accesibilidad axe-core de la página `board` en `src/app/ui/pages/board/board.page.a11y.spec.ts`
+- [X] T039 [P] [US2] Test unitario de `AnswerCardUsecase` (transiciones de estado válidas, bloqueo tras 6 respuestas, rechazo de re-respuesta) en `src/app/domain/models/match/usecase/answer-card.usecase.spec.ts`
+- [X] T040 [P] [US2] Test unitario de `MatchStore` (signals derivados: `answeredCount`, `isMatchComplete`, `liveScore`) en `src/app/shared/foundational/state/match-store.service.spec.ts`
+- [X] T041 [P] [US2] Test de componente `tg-question-card` (estados face-down/flipped/answered, `aria-label` dinámico) en `src/app/ui/components/question-card/question-card.spec.ts`
+- [X] T042 [P] [US2] Test de componente `tg-question-modal` (focus trap, selección de opción habilita "Aceptar", retorno de foco al cerrar) en `src/app/ui/components/question-modal/question-modal.spec.ts`
+- [X] T043 [P] [US2] Test de accesibilidad axe-core de la página `board` en `src/app/ui/pages/board/board.page.a11y.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T044 [US2] Implementar `AnswerCardUsecase` (valida transición `flipped`→`answered`, límite `maxAnswerableCards`, marca `AnswerResult`) en `src/app/domain/models/match/usecase/answer-card.usecase.ts` (depende de T011, T012)
-- [ ] T045 [US2] Implementar `match.constants.ts` (constantes: 6 respuestas máx., 10 pts por acierto, 12 tarjetas) en `src/app/ui/components/shared/match.constants.ts`
-- [ ] T047 [P] [US2] Implementar componente `tg-question-card` (botón nativo, `aria-label` "Tarjeta N, categoría X, estado Y" con alias escapado vía `AriaEscapePipe` FR-030, `aria-disabled` si respondida, color de fondo diferenciado por categoría usando tokens `--cb-sys-color-*` de Caribe: Galatea vs tema elegido FR-006, etiqueta de categoría visible) en `src/app/ui/components/question-card/question-card.ts`
-- [ ] T048 [US2] Implementar componente `tg-question-modal` (4 opciones seleccionables, botón "Aceptar" deshabilitado hasta selección, focus trap, retorno de foco) en `src/app/ui/components/question-modal/question-modal.ts`
-- [ ] T049 [US2] Implementar página `board` (tablero de 12 `tg-question-card`, apertura de `tg-question-modal`, navegación automática a `results` tras 6ª respuesta FR-012) en `src/app/ui/pages/board/board.page.ts` (depende de T046, T047, T048)
-- [ ] T050 [US2] Implementar retroalimentación visual inmediata correcto/incorrecto con `aria-live="polite"` (FR-016) en `tg-question-modal`
+- [X] T044 [US2] Implementar `AnswerCardUsecase` (valida transición `flipped`→`answered`, límite `maxAnswerableCards`, marca `AnswerResult`) en `src/app/domain/models/match/usecase/answer-card.usecase.ts` (depende de T011, T012)
+- [X] T045 [US2] Implementar `match.constants.ts` (constantes: 6 respuestas máx., 10 pts por acierto, 12 tarjetas) en `src/app/ui/components/shared/match.constants.ts`
+- [X] T047 [P] [US2] Implementar componente `tg-question-card` (botón nativo, `aria-label` "Tarjeta N, categoría X, estado Y" con alias escapado vía `AriaEscapePipe` FR-030, `aria-disabled` si respondida, color de fondo diferenciado por categoría usando tokens `--cb-sys-color-*` de Caribe: Galatea vs tema elegido FR-006, etiqueta de categoría visible) en `src/app/ui/components/question-card/question-card.ts` — usa tokens reales `--cb-sys-status-alert-fill`/`--cb-sys-status-info-fill` (el prefijo `--cb-sys-color-*` no existe en la versión instalada de Caribe); `AriaEscapePipe` diferido a T091 (no aplica aún: el `aria-label` no interpola el alias del jugador)
+- [X] T048 [US2] Implementar componente `tg-question-modal` (4 opciones seleccionables, botón "Aceptar" deshabilitado hasta selección, focus trap, retorno de foco) en `src/app/ui/components/question-modal/question-modal.ts` — construido con elementos nativos (no `CbModal`) porque jsdom no implementa `HTMLDialogElement.showModal()`; sin botón de cancelar dado que `MatchStoreService.confirmAnswer()` no admite deshacer una tarjeta volteada
+- [X] T049 [US2] Implementar página `board` (tablero de 12 `tg-question-card`, apertura de `tg-question-modal`, navegación automática a `results` tras 6ª respuesta FR-012) en `src/app/ui/pages/board/board.page.ts` (depende de T046, T047, T048)
+- [X] T050 [US2] Implementar retroalimentación visual inmediata correcto/incorrecto con `aria-live="polite"` (FR-016) en `tg-question-modal`
 
 **Checkpoint**: US1 + US2 funcionan juntas — flujo completo desde alias hasta las 6 respuestas, con navegación automática a resultados (aún sin puntaje/nivel calculado).
 

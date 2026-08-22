@@ -5,6 +5,7 @@ import { FirebaseApp, initializeApp, provideFirebaseApp } from '@angular/fire/ap
 import { ReCaptchaV3Provider, initializeAppCheck, provideAppCheck } from '@angular/fire/app-check';
 import { VertexAIBackend, getAI, provideVertexAI } from '@angular/fire/vertexai';
 import { environment } from '../environments/environment';
+import { AnswerCardUsecase } from './domain/models/match/usecase/answer-card.usecase';
 import { BuildMatchUsecase } from './domain/models/match/usecase/build-match.usecase';
 import { QuestionGateway } from './domain/models/question/gateway/question.gateway';
 import { QuestionService } from './infrastructure/question/question.service';
@@ -23,6 +24,7 @@ export const provideQuestionFeature = () =>
     provideHttpClient(),
     { provide: QuestionGateway, useClass: QuestionService },
     BuildMatchUsecase,
+    AnswerCardUsecase,
   ]);
 
 /**

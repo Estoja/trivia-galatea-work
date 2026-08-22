@@ -1,5 +1,6 @@
 import { ApplicationConfig, makeEnvironmentProviders, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { AnswerCardUsecase } from './domain/models/match/usecase/answer-card.usecase';
 import { BuildMatchUsecase } from './domain/models/match/usecase/build-match.usecase';
 import { QuestionGateway } from './domain/models/question/gateway/question.gateway';
 import { QuestionMockService } from './infrastructure/question/question-mock.service';
@@ -12,7 +13,11 @@ import { routes } from './app.routes';
  * real/local, sólo su gateway).
  */
 export const provideQuestionFeatureLocal = () =>
-  makeEnvironmentProviders([{ provide: QuestionGateway, useClass: QuestionMockService }, BuildMatchUsecase]);
+  makeEnvironmentProviders([
+    { provide: QuestionGateway, useClass: QuestionMockService },
+    BuildMatchUsecase,
+    AnswerCardUsecase,
+  ]);
 
 /**
  * Composition Root mock: permite `ng serve` sin conexión real a Firebase/Gemini.

@@ -37,5 +37,37 @@ describe('MatchStoreService', () => {
     expect(store.confirmAnswer('c1', 'opt', true).ok).toBe(true);
     expect(store.answeredCount()).toBe(1);
   });
+
+  it('should derive answeredCount from confirmed answers only', () => {
+    expect(store.answeredCount()).toBe(0);
+    store.openCard('c1');
+    store.confirmAnswer('c1', 'opt', true);
+    store.openCard('c2');
+    store.confirmAnswer('c2', 'opt', false);
+    expect(store.answeredCount()).toBe(2);
+  });
+
+  it('should derive isMatchComplete as false before six answers and true at six', () => {
+    for (let i = 1; i <= 5; i += 1) {
+      store.openCard(`c${i}`);
+      store.confirmAnswer(`c${i}`, 'opt', true);
+    }
+    expect(store.isMatchComplete()).toBe(false);
+
+    store.openCard('c6');
+    store.confirmAnswer('c6', 'opt', true);
+    expect(store.isMatchComplete()).toBe(true);
+  });
+
+  it('should derive liveScore as 10 points per correct answer, ignoring incorrect ones', () => {
+    store.openCard('c1');
+    store.confirmAnswer('c1', 'opt', true);
+    store.openCard('c2');
+    store.confirmAnswer('c2', 'opt', false);
+    store.openCard('c3');
+    store.confirmAnswer('c3', 'opt', true);
+
+    expect(store.liveScore()).toBe(20);
+  });
 }
 );

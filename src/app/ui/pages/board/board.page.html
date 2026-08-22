@@ -1,0 +1,24 @@
+@if (match(); as m) {
+  <section class="tg-board-page" aria-label="Tablero de preguntas">
+    <p class="tg-board-page__score" aria-live="polite">Puntos: {{ liveScore() }}</p>
+    <div class="tg-board-page__grid">
+      @for (card of m.cards; track card.id; let i = $index) {
+        <tg-question-card
+          [card]="card"
+          [position]="i + 1"
+          [categoryLabel]="categoryLabel(card)"
+          (opened)="openCard($event)"
+        />
+      }
+    </div>
+  </section>
+
+  @if (activeCard(); as card) {
+    <tg-question-modal
+      [isOpen]="true"
+      [question]="card.question"
+      [feedback]="feedback()"
+      (confirmed)="confirmAnswer($event)"
+    />
+  }
+}

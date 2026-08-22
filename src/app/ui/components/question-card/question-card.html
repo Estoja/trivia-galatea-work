@@ -1,0 +1,20 @@
+<button
+  type="button"
+  class="tg-question-card__button"
+  [class.tg-question-card__button--galatea]="isGalatea()"
+  [class.tg-question-card__button--topic]="!isGalatea()"
+  [class.tg-question-card__button--answered]="isAnswered()"
+  [class.tg-question-card__button--correct]="card().result === 'correct'"
+  [class.tg-question-card__button--incorrect]="card().result === 'incorrect'"
+  [disabled]="isAnswered()"
+  [attr.aria-disabled]="isAnswered()"
+  [attr.aria-label]="ariaLabel()"
+  (click)="handleClick()"
+>
+  <span class="tg-question-card__category">{{ categoryLabel() }}</span>
+  @if (card().state === 'answered') {
+    <span class="tg-question-card__icon" aria-hidden="true">{{ card().result === 'correct' ? '✓' : '✗' }}</span>
+  } @else {
+    <span class="tg-question-card__icon" aria-hidden="true">?</span>
+  }
+</button>

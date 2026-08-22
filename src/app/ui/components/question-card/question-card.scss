@@ -1,0 +1,52 @@
+:host {
+  display: block;
+}
+
+.tg-question-card__button {
+  width: 100%;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--cb-sys-text-default);
+  transition: opacity 0.15s ease-in-out;
+
+  &--galatea {
+    background-color: var(--cb-sys-status-alert-fill);
+  }
+
+  &--topic {
+    background-color: var(--cb-sys-status-info-fill);
+  }
+
+  &--answered {
+    cursor: default;
+  }
+
+  &--correct {
+    background-color: var(--cb-sys-status-success-fill);
+  }
+
+  &--incorrect {
+    background-color: var(--cb-sys-status-error-fill);
+  }
+
+  &:disabled {
+    opacity: 0.9;
+  }
+}
+
+.tg-question-card__category {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.tg-question-card__icon {
+  font-size: 1.5rem;
+}
