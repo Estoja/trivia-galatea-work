@@ -2,6 +2,7 @@ import { ApplicationConfig, makeEnvironmentProviders, provideBrowserGlobalErrorL
 import { provideRouter } from '@angular/router';
 import { AnswerCardUsecase } from './domain/models/match/usecase/answer-card.usecase';
 import { BuildMatchUsecase } from './domain/models/match/usecase/build-match.usecase';
+import { CalculateMatchScoreUsecase } from './domain/models/match/usecase/calculate-match-score.usecase';
 import { QuestionGateway } from './domain/models/question/gateway/question.gateway';
 import { QuestionMockService } from './infrastructure/question/question-mock.service';
 import { provideFoundationalMatchStore } from './app.config';
@@ -17,6 +18,7 @@ export const provideQuestionFeatureLocal = () =>
     { provide: QuestionGateway, useClass: QuestionMockService },
     BuildMatchUsecase,
     AnswerCardUsecase,
+    CalculateMatchScoreUsecase,
   ]);
 
 /**

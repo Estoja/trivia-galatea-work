@@ -59,7 +59,8 @@ describe('MatchStoreService', () => {
     expect(store.isMatchComplete()).toBe(true);
   });
 
-  it('should derive liveScore as 10 points per correct answer, ignoring incorrect ones', () => {
+  it('should derive liveScore applying the Galatea multiplier for galatea-category correct answers', () => {
+    // c1, c2, c3 son categoría "galatea" (idx 0-2 < 4)
     store.openCard('c1');
     store.confirmAnswer('c1', 'opt', true);
     store.openCard('c2');
@@ -67,6 +68,18 @@ describe('MatchStoreService', () => {
     store.openCard('c3');
     store.confirmAnswer('c3', 'opt', true);
 
+    // 2 aciertos Galatea: (2×10)×2 = 40
+    expect(store.liveScore()).toBe(40);
+  });
+
+  it('should derive liveScore combining galatea multiplier with fixed topic points (FR-010)', () => {
+    // c1 (galatea), c5 (chosen-topic, idx 4 >= 4)
+    store.openCard('c1');
+    store.confirmAnswer('c1', 'opt', true);
+    store.openCard('c5');
+    store.confirmAnswer('c5', 'opt', true);
+
+    // (1×10)×1 + 1×10 = 10 + 10 = 20
     expect(store.liveScore()).toBe(20);
   });
 }

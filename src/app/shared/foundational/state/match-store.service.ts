@@ -1,10 +1,12 @@
 import { Injectable, Signal, computed, signal } from '@angular/core';
+import { CalculateMatchScoreUsecase } from '../../../domain/models/match/usecase/calculate-match-score.usecase';
 import { AnswerRecord, CardState, MatchStorePort } from './match-store.port';
 
 const MAX_ANSWERS = 6;
 
 @Injectable({ providedIn: 'root' })
 export class MatchStoreService implements MatchStorePort {
+  private readonly calculateMatchScore = new CalculateMatchScoreUsecase();
   private readonly _playerAlias = signal('');
   private readonly _chosenTopic = signal('');
   private readonly _cards = signal<ReadonlyArray<CardState>>([]);
@@ -15,7 +17,24 @@ export class MatchStoreService implements MatchStorePort {
   readonly chosenTopic: Signal<string> = this._chosenTopic.asReadonly();
   readonly answeredCount: Signal<number> = computed(() => this._answers().length);
   readonly isMatchComplete: Signal<boolean> = computed(() => this.answeredCount() >= MAX_ANSWERS);
-  readonly liveScore: Signal<number> = computed(() => this._answers().filter((a) => a.isCorrect).length * 10);
+  readonly liveScore: Signal<number> = computed(() => {
+    const cardsById = new Map(this._cards().map((card) => [card.id, card]));
+    let galateaCorrectCount = 0;
+    let topicCorrectCount = 0;
+
+    for (const answer of this._answers()) {
+      if (!answer.isCorrect) {
+        continue;
+      }
+      if (cardsById.get(answer.cardId)?.category === 'galatea') {
+        galateaCorrectCount += 1;
+      } else {
+        topicCorrectCount += 1;
+      }
+    }
+
+    return this.calculateMatchScore.calculate(galateaCorrectCount, topicCorrectCount).totalScore;
+  });
 
   initializeSession(alias: string, topic: string): void {
     this._playerAlias.set(alias.trim());

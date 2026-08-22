@@ -7,6 +7,7 @@ import { CurrentMatchStore } from '../../../shared/foundational/state/current-ma
 import { MatchStoreService } from '../../../shared/foundational/state/match-store.service';
 import { QuestionCard } from '../../components/question-card/question-card';
 import { QuestionModal, QuestionModalFeedback } from '../../components/question-modal/question-modal';
+import { ScoreBoard } from '../../components/score-board/score-board';
 
 /** Tiempo que se muestra el feedback (correcto/incorrecto) antes de cerrar el modal (FR-016). */
 export const ANSWER_FEEDBACK_DISPLAY_MS = 1_500;
@@ -20,7 +21,7 @@ export const ANSWER_FEEDBACK_DISPLAY_MS = 1_500;
 @Component({
   selector: 'tg-board-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [QuestionCard, QuestionModal],
+  imports: [QuestionCard, QuestionModal, ScoreBoard],
   templateUrl: './board.page.html',
 })
 export class BoardPage implements OnInit, OnDestroy {

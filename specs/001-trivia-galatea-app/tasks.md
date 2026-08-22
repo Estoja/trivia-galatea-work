@@ -139,15 +139,15 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T052 [P] [US3] Test unitario exhaustivo de `CalculateMatchScoreUsecase` cubriendo los 5 escenarios de aceptación de spec.md US3 (2+3→70, 6 Galatea→360, 0 aciertos→0, 0 Galatea+6 tema→60) más casos límite adicionales, apuntando a 100% de branches en `src/app/domain/models/match/usecase/calculate-match-score.usecase.spec.ts`
+- [X] T052 [P] [US3] Test unitario exhaustivo de `CalculateMatchScoreUsecase` cubriendo los 5 escenarios de aceptación de spec.md US3 (2+3→70, 6 Galatea→360, 0 aciertos→0, 0 Galatea+6 tema→60) más casos límite adicionales, apuntando a 100% de branches en `src/app/domain/models/match/usecase/calculate-match-score.usecase.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T053 [US3] Implementar `CalculateMatchScoreUsecase` (función pura, fórmula FR-010/A-006) en `src/app/domain/models/match/usecase/calculate-match-score.usecase.ts` (depende de T013)
-- [ ] T054 [US3] Registrar `CalculateMatchScoreUsecase` en `app.config.ts` y `app.config.local.ts`
-- [ ] T055 [US3] Implementar computed `liveScore` en `MatchStore` usando `CalculateMatchScoreUsecase` sobre las respuestas ya registradas (FR-011) en `src/app/shared/foundational/state/match-store.service.ts` (depende de T053, T046)
-- [ ] T056 [US3] Implementar componente `tg-score-board` (puntaje parcial visible con `aria-live`) en `src/app/ui/components/score-board/score-board.ts`
-- [ ] T057 [US3] Integrar `tg-score-board` en la página `board` (depende de T056, T049)
+- [X] T053 [US3] Implementar `CalculateMatchScoreUsecase` (función pura, fórmula FR-010/A-006) en `src/app/domain/models/match/usecase/calculate-match-score.usecase.ts` (depende de T013)
+- [X] T054 [US3] Registrar `CalculateMatchScoreUsecase` en `app.config.ts` y `app.config.local.ts`
+- [X] T055 [US3] Implementar computed `liveScore` en `MatchStore` usando `CalculateMatchScoreUsecase` sobre las respuestas ya registradas (FR-011) en `src/app/shared/foundational/state/match-store.service.ts` (depende de T053, T046)
+- [X] T056 [US3] Implementar componente `tg-score-board` (puntaje parcial visible con `aria-live`) en `src/app/ui/components/score-board/score-board.ts`
+- [X] T057 [US3] Integrar `tg-score-board` en la página `board` (depende de T056, T049)
 
 **Checkpoint**: US1 + US2 + US3 — el jugador ve su puntaje parcial actualizarse en tiempo real mientras juega.
 

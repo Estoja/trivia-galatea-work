@@ -1,6 +1,6 @@
 @if (match(); as m) {
   <section class="tg-board-page" aria-label="Tablero de preguntas">
-    <p class="tg-board-page__score" aria-live="polite">Puntos: {{ liveScore() }}</p>
+    <tg-score-board [score]="liveScore()" />
     <div class="tg-board-page__grid">
       @for (card of m.cards; track card.id; let i = $index) {
         <tg-question-card
