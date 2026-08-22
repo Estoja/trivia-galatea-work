@@ -10,6 +10,8 @@ const browserGlobals = {
   self: 'readonly',
   globalThis: 'readonly',
   fetch: 'readonly',
+  setTimeout: 'readonly',
+  clearTimeout: 'readonly',
 };
 
 const jestGlobals = {

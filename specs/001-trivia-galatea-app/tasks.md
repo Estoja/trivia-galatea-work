@@ -73,32 +73,32 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 ### Tests for User Story 1 ⚠️
 
-- [ ] T022 [P] [US1] Test unitario de `GeminiTopicAnonymizer` (sustitución/reversión de placeholders `Empresa X`/`Proyecto Y`, incluyendo escenario fail-closed: sustitución incompleta → error lanzado → sin llamada a Gemini, FR-028) en `src/app/infrastructure/gemini/gemini-topic-anonymizer.spec.ts`
-- [ ] T023 [P] [US1] Test unitario de `GeminiQuestionMapper` (parseo de respuesta Gemini → `QuestionModel`, validación de esquema FR-005) en `src/app/infrastructure/helpers/maps/gemini-question.mapper.spec.ts`
-- [ ] T024 [P] [US1] Test unitario de `GalateaQuestionMapper` (resolución de placeholders del banco JSON) en `src/app/infrastructure/helpers/maps/galatea-question.mapper.spec.ts`
-- [ ] T025 [P] [US1] Test unitario de `BuildMatchUsecase` con `QuestionGateway` mockeado (éxito, fallo de IA con <6 preguntas → error) en `src/app/domain/models/match/usecase/build-match.usecase.spec.ts`
-- [ ] T026 [P] [US1] Test de componente para la página `welcome` (validación de alias 2–30 caracteres, tema no vacío, estados de carga/error) con Angular Testing Library en `src/app/ui/pages/welcome/welcome.page.spec.ts`
-- [ ] T079 [P] [US1] Test unitario de deduplicación de preguntas Galatea + fallback (FR-021) en `src/app/infrastructure/question/question.service.spec.ts`
-- [ ] T080 [P] [US1] Test unitario de política de rechazo de tema ofensivo/no apto (FR-020) en `src/app/infrastructure/gemini/topic-safety-policy.spec.ts`
-- [ ] T081 [P] [US1] Test unitario de timeout/cancelación/reintento en Gemini client (30s, FR-024) en `src/app/infrastructure/gemini/gemini-client.service.spec.ts`
+- [X] T022 [P] [US1] Test unitario de `GeminiTopicAnonymizer` (sustitución/reversión de placeholders `Empresa X`/`Proyecto Y`, incluyendo escenario fail-closed: sustitución incompleta → error lanzado → sin llamada a Gemini, FR-028) en `src/app/infrastructure/gemini/gemini-topic-anonymizer.spec.ts`
+- [X] T023 [P] [US1] Test unitario de `GeminiQuestionMapper` (parseo de respuesta Gemini → `QuestionModel`, validación de esquema FR-005) en `src/app/infrastructure/helpers/maps/gemini-question.mapper.spec.ts`
+- [X] T024 [P] [US1] Test unitario de `GalateaQuestionMapper` (resolución de placeholders del banco JSON) en `src/app/infrastructure/helpers/maps/galatea-question.mapper.spec.ts`
+- [X] T025 [P] [US1] Test unitario de `BuildMatchUsecase` con `QuestionGateway` mockeado (éxito, fallo de IA con <6 preguntas → error) en `src/app/domain/models/match/usecase/build-match.usecase.spec.ts`
+- [X] T026 [P] [US1] Test de componente para la página `welcome` (validación de alias 2–30 caracteres, tema no vacío, estados de carga/error) con Angular Testing Library en `src/app/ui/pages/welcome/welcome.page.spec.ts`
+- [X] T079 [P] [US1] Test unitario de deduplicación de preguntas Galatea + fallback (FR-021) en `src/app/infrastructure/question/question.service.spec.ts`
+- [X] T080 [P] [US1] Test unitario de política de rechazo de tema ofensivo/no apto (FR-020) en `src/app/infrastructure/gemini/topic-safety-policy.spec.ts`
+- [X] T081 [P] [US1] Test unitario de timeout/cancelación/reintento en Gemini client (30s, FR-024) en `src/app/infrastructure/gemini/gemini-client.service.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T027 [P] [US1] Implementar `GeminiClientService` exclusivamente sobre Vertex AI para Firebase (`@angular/fire/vertexai` + Firebase App), con prompt de [contracts/gemini-prompt-contract.md §2](./contracts/gemini-prompt-contract.md), en `src/app/infrastructure/gemini/gemini-client.service.ts`
-- [ ] T028 [US1] Implementar `GeminiTopicAnonymizer` (`BRAND_PLACEHOLDER_MAP`) en `src/app/infrastructure/gemini/gemini-topic-anonymizer.ts` con comportamiento fail-closed: si la sustitución de placeholders produce resultado incompleto, DEBE lanzar error antes de construir el prompt y cancelar la llamada IA sin transmitir ningún payload (FR-028) (depende de T027)
-- [ ] T029 [US1] Implementar `GeminiQuestionMapper extends Mapper<QuestionModel>` en `src/app/infrastructure/helpers/maps/gemini-question.mapper.ts` (depende de T016, T010)
-- [ ] T030 [US1] Implementar `GalateaQuestionMapper extends Mapper<QuestionModel>` en `src/app/infrastructure/helpers/maps/galatea-question.mapper.ts` (depende de T016, T010)
-- [ ] T031 [US1] Implementar `QuestionService implements QuestionGateway` (banco JSON + fallback IA para Galatea, Gemini para tema; [contracts/internal-gateways.md](./contracts/internal-gateways.md)) en `src/app/infrastructure/question/question.service.ts` (depende de T015, T028, T029, T030)
-- [ ] T032 [P] [US1] Implementar `QuestionMockService implements QuestionGateway` (datos hardcodeados) en `src/app/infrastructure/question/question-mock.service.ts` (depende de T015)
-- [ ] T033 [US1] Implementar `BuildMatchUsecase` (arma `MatchModel` con 12 cards boca abajo, maneja error si Gemini no retorna 6 preguntas válidas → FR-003) en `src/app/domain/models/match/usecase/build-match.usecase.ts` (depende de T015, T011, T012)
-- [ ] T034 [US1] Registrar `QuestionService` y `BuildMatchUsecase` en `app.config.ts`, `QuestionMockService` en `app.config.local.ts`, y enlazar `GeminiClientService` a los providers de Firebase App + Vertex AI definidos en T019 (depende de T031, T032, T033, T019, T020)
-- [ ] T035 [US1] Implementar página `welcome` (formulario alias + tema: validación en línea FR-001/FR-002 incluyendo longitud 3–60 chars, normalización trim+colapso de espacios internos antes de invocar IA, componentes `cb-input`/`cb-button` de Caribe, botón deshabilitado tras primer clic hasta completar/fallar la operación IA FR-031, alias pre-rellenado al volver desde resultados FR-015) en `src/app/ui/pages/welcome/welcome.page.ts`
-- [ ] T036 [US1] Implementar estado de carga con `cb-loader` durante generación de preguntas (FR-017, mensaje informativo tras 2s) y deshabilitar botón de inicio en el primer clic (FR-031) hasta que la operación complete o falle, en la página `welcome`
-- [ ] T037 [US1] Implementar manejo de error amigable + reintento cuando la IA no genera 6 preguntas (FR-003, US1 Escenario 5), conservando el alias ingresado
-- [ ] T038 [US1] Conectar `welcome` → `MatchStore`/navegación a `board` al completar la generación (depende de T035, T036, T037, T046, T051)
-- [ ] T082 [US1] Implementar deduplicación de preguntas Galatea por partida (FR-021) y completar faltantes vía fallback FR-019 en `src/app/infrastructure/question/question.service.ts` (depende de T031, T079)
-- [ ] T083 [US1] Implementar política de validación de tema con rechazo de contenido ofensivo/no apto (FR-020) en `src/app/infrastructure/gemini/topic-safety-policy.ts` e integración en `src/app/ui/pages/welcome/welcome.page.ts` (depende de T080, T035)
-- [ ] T084 [US1] Implementar timeout de 30s con cancelación y reintento en cliente Gemini (FR-024) en `src/app/infrastructure/gemini/gemini-client.service.ts` (depende de T027, T081)
+- [X] T027 [P] [US1] Implementar `GeminiClientService` exclusivamente sobre Vertex AI para Firebase (`@angular/fire/vertexai` + Firebase App), con prompt de [contracts/gemini-prompt-contract.md §2](./contracts/gemini-prompt-contract.md), en `src/app/infrastructure/gemini/gemini-client.service.ts`
+- [X] T028 [US1] Implementar `GeminiTopicAnonymizer` (`BRAND_PLACEHOLDER_MAP`) en `src/app/infrastructure/gemini/gemini-topic-anonymizer.ts` con comportamiento fail-closed: si la sustitución de placeholders produce resultado incompleto, DEBE lanzar error antes de construir el prompt y cancelar la llamada IA sin transmitir ningún payload (FR-028) (depende de T027)
+- [X] T029 [US1] Implementar `GeminiQuestionMapper extends Mapper<QuestionModel>` en `src/app/infrastructure/helpers/maps/gemini-question.mapper.ts` (depende de T016, T010)
+- [X] T030 [US1] Implementar `GalateaQuestionMapper extends Mapper<QuestionModel>` en `src/app/infrastructure/helpers/maps/galatea-question.mapper.ts` (depende de T016, T010)
+- [X] T031 [US1] Implementar `QuestionService implements QuestionGateway` (banco JSON + fallback IA para Galatea, Gemini para tema; [contracts/internal-gateways.md](./contracts/internal-gateways.md)) en `src/app/infrastructure/question/question.service.ts` (depende de T015, T028, T029, T030)
+- [X] T032 [P] [US1] Implementar `QuestionMockService implements QuestionGateway` (datos hardcodeados) en `src/app/infrastructure/question/question-mock.service.ts` (depende de T015)
+- [X] T033 [US1] Implementar `BuildMatchUsecase` (arma `MatchModel` con 12 cards boca abajo, maneja error si Gemini no retorna 6 preguntas válidas → FR-003) en `src/app/domain/models/match/usecase/build-match.usecase.ts` (depende de T015, T011, T012)
+- [X] T034 [US1] Registrar `QuestionService` y `BuildMatchUsecase` en `app.config.ts`, `QuestionMockService` en `app.config.local.ts`, y enlazar `GeminiClientService` a los providers de Firebase App + Vertex AI definidos en T019 (depende de T031, T032, T033, T019, T020)
+- [X] T035 [US1] Implementar página `welcome` (formulario alias + tema: validación en línea FR-001/FR-002 incluyendo longitud 3–60 chars, normalización trim+colapso de espacios internos antes de invocar IA, componentes `cb-input`/`cb-button` de Caribe, botón deshabilitado tras primer clic hasta completar/fallar la operación IA FR-031, alias pre-rellenado al volver desde resultados FR-015) en `src/app/ui/pages/welcome/welcome.page.ts`
+- [X] T036 [US1] Implementar estado de carga con `cb-loader` durante generación de preguntas (FR-017, mensaje informativo tras 2s) y deshabilitar botón de inicio en el primer clic (FR-031) hasta que la operación complete o falle, en la página `welcome`
+- [X] T037 [US1] Implementar manejo de error amigable + reintento cuando la IA no genera 6 preguntas (FR-003, US1 Escenario 5), conservando el alias ingresado
+- [X] T038 [US1] Conectar `welcome` → `MatchStore`/navegación a `board` al completar la generación (depende de T035, T036, T037, T046, T051)
+- [X] T082 [US1] Implementar deduplicación de preguntas Galatea por partida (FR-021) y completar faltantes vía fallback FR-019 en `src/app/infrastructure/question/question.service.ts` (depende de T031, T079)
+- [X] T083 [US1] Implementar política de validación de tema con rechazo de contenido ofensivo/no apto (FR-020) en `src/app/infrastructure/gemini/topic-safety-policy.ts` e integración en `src/app/ui/pages/welcome/welcome.page.ts` (depende de T080, T035)
+- [X] T084 [US1] Implementar timeout de 30s con cancelación y reintento en cliente Gemini (FR-024) en `src/app/infrastructure/gemini/gemini-client.service.ts` (depende de T027, T081)
 
 **Checkpoint**: US1 funciona de forma independiente — alias + tema → 12 preguntas generadas → navegación al tablero, con estados de carga y error.
 

@@ -1,0 +1,42 @@
+<section class="tg-welcome-page">
+  <h1>Trivia Galatea</h1>
+  <p>Ingresa tu alias y un tema libre para generar tus preguntas.</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <cb-input-field [inputFieldConfig]="aliasInputConfig" [formControl]="form.controls.alias"></cb-input-field>
+    @if (form.controls.alias.invalid && form.controls.alias.touched) {
+      <p class="tg-field-error" role="alert">El alias debe tener entre 2 y 30 caracteres.</p>
+    }
+
+    <cb-input-field [inputFieldConfig]="topicInputConfig" [formControl]="form.controls.topic"></cb-input-field>
+    @if (form.controls.topic.invalid && form.controls.topic.touched) {
+      <p class="tg-field-error" role="alert">El tema debe tener entre 3 y 60 caracteres.</p>
+    }
+
+    @if (errorMessage()) {
+      <p class="tg-form-error" role="alert">{{ errorMessage() }}</p>
+      <cb-button id="welcome-retry-button" typeButton="secondary" (buttonClick)="retry()">
+        Reintentar
+      </cb-button>
+    }
+
+    @if (isSubmitting()) {
+      <output class="tg-loading">
+        <cb-loader sizeLoader="5xl" ariaLabel="Generando tus preguntas"></cb-loader>
+        @if (showLoadingMessage()) {
+          <p>Esto puede tardar unos segundos, estamos preparando tus preguntas...</p>
+        }
+      </output>
+    }
+
+    <cb-button
+      id="welcome-submit-button"
+      typeButton="primary"
+      [disabled]="isSubmitting()"
+      [aria-label]="'Comenzar partida'"
+      (buttonClick)="submit()"
+    >
+      Comenzar
+    </cb-button>
+  </form>
+</section>

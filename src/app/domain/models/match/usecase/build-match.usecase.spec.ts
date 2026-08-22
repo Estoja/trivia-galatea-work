@@ -1,0 +1,87 @@
+import { of, throwError } from 'rxjs';
+import { QuestionGateway } from '../../question/gateway/question.gateway';
+import { QuestionModel } from '../../question/question.model';
+import { QuestionSource } from '../../../enums/question-source.enum';
+import { PlayerModel } from '../../player/player.model';
+import { BuildMatchUsecase, InsufficientQuestionsError } from './build-match.usecase';
+
+function buildQuestions(count: number, source: QuestionSource, prefix: string): QuestionModel[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: `${prefix}-${i}`,
+    text: `Pregunta ${prefix} número ${i} con suficiente longitud para pasar validaciones`,
+    options: ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+    correctOptionIndex: 0,
+    source,
+  }));
+}
+
+describe('BuildMatchUsecase', () => {
+  let gatewayMock: jest.Mocked<QuestionGateway>;
+  let usecase: BuildMatchUsecase;
+  const player: PlayerModel = { alias: 'Jugador1', chosenTopic: 'Fútbol' };
+
+  beforeEach(() => {
+    gatewayMock = {
+      getGalateaQuestions: jest.fn(),
+      getChosenTopicQuestions: jest.fn(),
+    } as unknown as jest.Mocked<QuestionGateway>;
+    usecase = new BuildMatchUsecase(gatewayMock);
+  });
+
+  it('debe construir un MatchModel con 12 cards boca abajo (6 Galatea + 6 tema)', (done) => {
+    gatewayMock.getGalateaQuestions.mockReturnValue(of(buildQuestions(6, QuestionSource.Galatea, 'gal')));
+    gatewayMock.getChosenTopicQuestions.mockReturnValue(of(buildQuestions(6, QuestionSource.ChosenTopic, 'topic')));
+
+    usecase.build(player).subscribe((match) => {
+      expect(match.cards.length).toBe(12);
+      expect(match.cards.every((c) => c.state === 'face-down')).toBe(true);
+      expect(match.cards.every((c) => c.result === 'pending')).toBe(true);
+      expect(match.cards.every((c) => c.selectedOptionIndex === null)).toBe(true);
+      expect(match.cards.filter((c) => c.question.source === QuestionSource.Galatea).length).toBe(6);
+      expect(match.cards.filter((c) => c.question.source === QuestionSource.ChosenTopic).length).toBe(6);
+      expect(match.maxAnswerableCards).toBe(6);
+      expect(match.status).toBe('in-progress');
+      expect(match.player).toEqual(player);
+      expect(gatewayMock.getGalateaQuestions).toHaveBeenCalledWith(6);
+      expect(gatewayMock.getChosenTopicQuestions).toHaveBeenCalledWith(player.chosenTopic, 6);
+      done();
+    });
+  });
+
+  it('debe lanzar InsufficientQuestionsError si el tema elegido retorna menos de 6 preguntas', (done) => {
+    gatewayMock.getGalateaQuestions.mockReturnValue(of(buildQuestions(6, QuestionSource.Galatea, 'gal')));
+    gatewayMock.getChosenTopicQuestions.mockReturnValue(of(buildQuestions(3, QuestionSource.ChosenTopic, 'topic')));
+
+    usecase.build(player).subscribe({
+      error: (err) => {
+        expect(err).toBeInstanceOf(InsufficientQuestionsError);
+        done();
+      },
+    });
+  });
+
+  it('debe lanzar InsufficientQuestionsError si Galatea retorna menos de 6 preguntas', (done) => {
+    gatewayMock.getGalateaQuestions.mockReturnValue(of(buildQuestions(2, QuestionSource.Galatea, 'gal')));
+    gatewayMock.getChosenTopicQuestions.mockReturnValue(of(buildQuestions(6, QuestionSource.ChosenTopic, 'topic')));
+
+    usecase.build(player).subscribe({
+      error: (err) => {
+        expect(err).toBeInstanceOf(InsufficientQuestionsError);
+        done();
+      },
+    });
+  });
+
+  it('debe propagar el error emitido por el gateway de tema elegido (falla de IA)', (done) => {
+    gatewayMock.getGalateaQuestions.mockReturnValue(of(buildQuestions(6, QuestionSource.Galatea, 'gal')));
+    gatewayMock.getChosenTopicQuestions.mockReturnValue(throwError(() => new Error('gemini-failure')));
+
+    usecase.build(player).subscribe({
+      error: (err) => {
+        expect(err).toBeInstanceOf(Error);
+        expect((err as Error).message).toBe('gemini-failure');
+        done();
+      },
+    });
+  });
+});
