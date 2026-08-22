@@ -10,8 +10,10 @@ export type QuestionModalFeedback = 'correct' | 'incorrect' | null;
  *
  * Nota (FR-030/T091): la interpolación de `question().text`/`options` no requiere
  * `AriaEscapePipe` porque son bindings de texto/atributo estándar de Angular (ya
- * sanitizados por el motor de plantillas); `AriaEscapePipe` queda para T091 cuando
- * se interpole el alias del jugador en atributos `aria-*` de este componente.
+ * sanitizados por el motor de plantillas) y su contenido no es texto libre ingresado
+ * por el jugador. Verificado (T091, 2026-08-21): este componente no interpola ningún
+ * texto libre del jugador (alias ni tema elegido) en atributos `aria-*`, por lo que
+ * `AriaEscapePipe` no aplica aquí; se aplica únicamente en `tg-question-card`.
  */
 @Component({
   selector: 'tg-question-modal',
