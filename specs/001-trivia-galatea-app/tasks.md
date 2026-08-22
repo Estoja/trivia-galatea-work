@@ -161,19 +161,19 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T058 [P] [US4] Test unitario exhaustivo de `AssignLevelUsecase` cubriendo los 7 niveles y sus límites exactos (59/60, 119/120, ... 359/360) en `src/app/domain/models/level/usecase/assign-level.usecase.spec.ts`
-- [ ] T059 [P] [US4] Test de componente `tg-celebration` (config visual por nivel, `prefers-reduced-motion`) en `src/app/ui/components/celebration/celebration.spec.ts`
-- [ ] T060 [P] [US4] Test de componente de la página `results` (muestra alias/puntaje/nivel, desglose de respuestas, botón "Jugar de nuevo") en `src/app/ui/pages/results/results.page.spec.ts`
-- [ ] T061 [P] [US4] Test de accesibilidad axe-core de la página `results` en `src/app/ui/pages/results/results.page.a11y.spec.ts`
+- [X] T058 [P] [US4] Test unitario exhaustivo de `AssignLevelUsecase` cubriendo los 7 niveles y sus límites exactos (59/60, 119/120, ... 359/360) en `src/app/domain/models/level/usecase/assign-level.usecase.spec.ts`
+- [X] T059 [P] [US4] Test de componente `tg-celebration` (config visual por nivel, `prefers-reduced-motion`) en `src/app/ui/components/celebration/celebration.spec.ts`
+- [X] T060 [P] [US4] Test de componente de la página `results` (muestra alias/puntaje/nivel, desglose de respuestas, botón "Jugar de nuevo") en `src/app/ui/pages/results/results.page.spec.ts`
+- [X] T061 [P] [US4] Test de accesibilidad axe-core de la página `results` en `src/app/ui/pages/results/results.page.a11y.spec.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T062 [US4] Implementar `AssignLevelUsecase` (mapeo de rangos FR-014) en `src/app/domain/models/level/usecase/assign-level.usecase.ts` (depende de T014)
-- [ ] T063 [US4] Registrar `AssignLevelUsecase` en `app.config.ts` y `app.config.local.ts`
-- [ ] T064 [P] [US4] Definir `LEVEL_CELEBRATION_CONFIG` (paleta Caribe, intensidad de confetti, fallback estático para `prefers-reduced-motion`, [research.md §5](./research.md)) en `src/app/ui/components/celebration/level-celebration.config.ts`
-- [ ] T065 [US4] Implementar componente `tg-celebration` (recibe `Level` vía `input()`, renderiza config declarativa) en `src/app/ui/components/celebration/celebration.ts` (depende de T064)
-- [ ] T066 [US4] Implementar página `results` (alias, puntaje total, título de nivel centrado, `tg-celebration`, desglose de respuestas por categoría FR-013/US4 Escenario 5) en `src/app/ui/pages/results/results.page.ts` (depende de T062, T065, T046)
-- [ ] T067 [US4] Implementar botón "Jugar de nuevo" (reinicia `MatchStore`, navega a `welcome`, FR-015) en la página `results`
+- [X] T062 [US4] Implementar `AssignLevelUsecase` (mapeo de rangos FR-014) en `src/app/domain/models/level/usecase/assign-level.usecase.ts` (depende de T014)
+- [X] T063 [US4] Registrar `AssignLevelUsecase` en `app.config.ts` y `app.config.local.ts`
+- [X] T064 [P] [US4] Definir `LEVEL_CELEBRATION_CONFIG` (paleta Caribe, intensidad de confetti, fallback estático para `prefers-reduced-motion`, [research.md §5](./research.md)) en `src/app/ui/components/celebration/level-celebration.config.ts`
+- [X] T065 [US4] Implementar componente `tg-celebration` (recibe `Level` vía `input()`, renderiza config declarativa) en `src/app/ui/components/celebration/celebration.ts` (depende de T064)
+- [X] T066 [US4] Implementar página `results` (alias, puntaje total, título de nivel centrado, `tg-celebration`, desglose de respuestas por categoría FR-013/US4 Escenario 5) en `src/app/ui/pages/results/results.page.ts` (depende de T062, T065, T046)
+- [X] T067 [US4] Implementar botón "Jugar de nuevo" (reinicia `MatchStore`, navega a `welcome`, FR-015) en la página `results`
 
 **Checkpoint**: Las 4 historias de usuario funcionan de punta a punta — flujo completo alias → tablero → puntaje → resultados/celebración → reinicio.
 

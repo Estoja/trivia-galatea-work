@@ -1,0 +1,10 @@
+<div
+  class="{{ hostClass() }}"
+  [style.background-color]="config().colorToken"
+  [attr.aria-label]="config().reducedMotionLabel"
+>
+  @if (config().emoji) {
+    <span class="tg-celebration__emoji" aria-hidden="true">{{ config().emoji }}</span>
+  }
+  <p class="tg-celebration__title">{{ level().title }}</p>
+</div>

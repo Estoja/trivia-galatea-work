@@ -1,0 +1,37 @@
+@if (match(); as m) {
+  <section class="tg-results-page" aria-label="Resultados de la partida">
+    <tg-celebration [level]="level()" />
+
+    <p class="tg-results-page__alias">Jugador: {{ playerAlias() }}</p>
+    <p class="tg-results-page__score" aria-live="polite">Puntaje total: {{ score().totalScore }}</p>
+
+    <section class="tg-results-page__breakdown" aria-label="Desglose de respuestas por categoría">
+      <h2>Desglose de respuestas</h2>
+      <p>Galatea: {{ score().galateaCorrectCount }} de {{ galateaAnsweredCount() }} correctas ({{ score().galateaPoints }} pts)</p>
+      <p>
+        {{ m.player.chosenTopic }}: {{ score().topicCorrectCount }} de {{ topicAnsweredCount() }} correctas ({{
+          score().topicPoints
+        }}
+        pts)
+      </p>
+
+      <ul class="tg-results-page__answers">
+        @for (card of answeredCards(); track card.id) {
+          <li
+            class="tg-results-page__answer"
+            [class.tg-results-page__answer--correct]="card.result === 'correct'"
+            [class.tg-results-page__answer--incorrect]="card.result === 'incorrect'"
+          >
+            <span class="tg-results-page__answer-category">{{ categoryLabel(card) }}</span>
+            <span class="tg-results-page__answer-text">{{ card.question.text }}</span>
+            <span class="tg-results-page__answer-result">{{ resultLabel(card) }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <cb-button id="results-play-again-button" typeButton="primary" (buttonClick)="playAgain()">
+      Jugar de nuevo
+    </cb-button>
+  </section>
+}

@@ -1,0 +1,70 @@
+:host {
+  display: block;
+}
+
+.tg-celebration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 16px;
+  border-radius: 16px;
+  text-align: center;
+  color: var(--cb-sys-text-default);
+}
+
+.tg-celebration__emoji {
+  font-size: 3rem;
+  line-height: 1;
+  display: inline-block;
+}
+
+.tg-celebration__title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+/**
+ * Las animaciones decorativas sólo se activan cuando el usuario NO ha
+ * solicitado `prefers-reduced-motion: reduce` (Principio VIII). El título y
+ * el emoji permanecen siempre visibles y estáticos por defecto.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .tg-celebration--confetti-ligero .tg-celebration__emoji,
+  .tg-celebration--confetti-medio .tg-celebration__emoji,
+  .tg-celebration--confetti-alto .tg-celebration__emoji,
+  .tg-celebration--trofeo .tg-celebration__emoji,
+  .tg-celebration--brillo .tg-celebration__emoji,
+  .tg-celebration--unicornio .tg-celebration__emoji {
+    animation: tg-celebration-bounce 1.2s ease-in-out infinite;
+  }
+
+  .tg-celebration--brillo,
+  .tg-celebration--unicornio {
+    animation: tg-celebration-glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes tg-celebration-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes tg-celebration-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgb(255 255 255 / 0%);
+  }
+
+  50% {
+    box-shadow: 0 0 24px 8px rgb(255 255 255 / 40%);
+  }
+}

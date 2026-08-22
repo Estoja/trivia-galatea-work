@@ -8,6 +8,7 @@ import { environment } from '../environments/environment';
 import { AnswerCardUsecase } from './domain/models/match/usecase/answer-card.usecase';
 import { BuildMatchUsecase } from './domain/models/match/usecase/build-match.usecase';
 import { CalculateMatchScoreUsecase } from './domain/models/match/usecase/calculate-match-score.usecase';
+import { AssignLevelUsecase } from './domain/models/level/usecase/assign-level.usecase';
 import { QuestionGateway } from './domain/models/question/gateway/question.gateway';
 import { QuestionService } from './infrastructure/question/question.service';
 import { MatchStoreService } from './shared/foundational/state/match-store.service';
@@ -27,6 +28,7 @@ export const provideQuestionFeature = () =>
     BuildMatchUsecase,
     AnswerCardUsecase,
     CalculateMatchScoreUsecase,
+    AssignLevelUsecase,
   ]);
 
 /**
