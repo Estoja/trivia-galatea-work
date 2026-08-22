@@ -1,6 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { VertexAI, getGenerativeModel } from '@angular/fire/vertexai';
-import { GEMINI_MAX_RETRIES, GEMINI_TIMEOUT_MS, GeminiClientService } from './gemini-client.service';
+import {
+  GEMINI_MAX_REQUESTS_PER_SESSION,
+  GEMINI_MAX_RETRIES,
+  GEMINI_TIMEOUT_MS,
+  GeminiClientService,
+  GeminiRequestLimitExceededError,
+} from './gemini-client.service';
 
 jest.mock('@angular/fire/vertexai', () => ({
   VertexAI: class {},
@@ -13,6 +19,7 @@ describe('GeminiClientService', () => {
 
   beforeEach(() => {
     jest.useFakeTimers();
+    sessionStorage.clear();
     generateContentMock = jest.fn();
     (getGenerativeModel as jest.Mock).mockReturnValue({ generateContent: generateContentMock });
 
@@ -85,5 +92,55 @@ describe('GeminiClientService', () => {
 
     expect(generateContentMock).toHaveBeenCalledTimes(1 + GEMINI_MAX_RETRIES);
     expect(error).toBeDefined();
+  });
+
+  describe('límite de solicitudes por sesión (FR-032)', () => {
+    beforeEach(() => {
+      generateContentMock.mockResolvedValue({ response: { text: () => '{"questions":[]}' } });
+    });
+
+    it(`permite hasta ${GEMINI_MAX_REQUESTS_PER_SESSION} solicitudes por sesión`, async () => {
+      for (let i = 0; i < GEMINI_MAX_REQUESTS_PER_SESSION; i++) {
+        let result: string | undefined;
+        service.generateJson('prompt').subscribe((text) => (result = text));
+        await jest.advanceTimersByTimeAsync(0);
+        expect(result).toBe('{"questions":[]}');
+      }
+
+      expect(generateContentMock).toHaveBeenCalledTimes(GEMINI_MAX_REQUESTS_PER_SESSION);
+    });
+
+    it('bloquea la solicitud número 4 sin llamar a Gemini y lanza GeminiRequestLimitExceededError', async () => {
+      for (let i = 0; i < GEMINI_MAX_REQUESTS_PER_SESSION; i++) {
+        service.generateJson('prompt').subscribe();
+        await jest.advanceTimersByTimeAsync(0);
+      }
+      generateContentMock.mockClear();
+
+      let error: unknown;
+      service.generateJson('prompt').subscribe({ error: (err) => (error = err) });
+      await jest.advanceTimersByTimeAsync(0);
+
+      expect(error).toBeInstanceOf(GeminiRequestLimitExceededError);
+      expect(generateContentMock).not.toHaveBeenCalled();
+    });
+
+    it('cuenta una solicitud fallida (con reintentos) como una única solicitud de la sesión', async () => {
+      generateContentMock.mockRejectedValue(new Error('fail'));
+
+      service.generateJson('prompt').subscribe({ error: () => undefined });
+      await jest.advanceTimersByTimeAsync(0);
+      await jest.advanceTimersByTimeAsync(2_000);
+      await jest.advanceTimersByTimeAsync(4_000);
+
+      expect(generateContentMock).toHaveBeenCalledTimes(1 + GEMINI_MAX_RETRIES);
+
+      generateContentMock.mockClear();
+      generateContentMock.mockResolvedValue({ response: { text: () => '{"questions":[]}' } });
+      service.generateJson('prompt').subscribe();
+      await jest.advanceTimersByTimeAsync(0);
+
+      expect(generateContentMock).toHaveBeenCalledTimes(1);
+    });
   });
 });

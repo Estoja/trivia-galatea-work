@@ -7,6 +7,7 @@ import { CbLoader } from '@bancolombia/caribe-design-system/loader';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
 import { MatchModel } from '../../../domain/models/match/match.model';
 import { BuildMatchUsecase } from '../../../domain/models/match/usecase/build-match.usecase';
+import { GeminiRequestLimitExceededError } from '../../../infrastructure/gemini/gemini-client.service';
 import { validateTopicSafety } from '../../../infrastructure/gemini/topic-safety-policy';
 import { CardState } from '../../../shared/foundational/state/match-store.port';
 import { MatchStoreService } from '../../../shared/foundational/state/match-store.service';
@@ -99,7 +100,7 @@ export class WelcomePage implements OnInit, OnDestroy {
 
     this.buildMatchUsecase.build({ alias, chosenTopic: topic }).subscribe({
       next: (match) => this.onMatchBuilt(match, alias, topic),
-      error: () => this.onBuildError(),
+      error: (error: unknown) => this.onBuildError(error),
     });
   }
 
@@ -135,11 +136,13 @@ export class WelcomePage implements OnInit, OnDestroy {
     this.router.navigateByUrl('/board');
   }
 
-  private onBuildError(): void {
+  private onBuildError(error: unknown): void {
     this.clearLoadingMessageTimer();
     this.isSubmitting.set(false);
     this.showLoadingMessage.set(false);
-    this.errorMessage.set(GENERIC_BUILD_ERROR_MESSAGE);
+    this.errorMessage.set(
+      error instanceof GeminiRequestLimitExceededError ? error.message : GENERIC_BUILD_ERROR_MESSAGE,
+    );
   }
 
   private toCardStates(match: MatchModel): CardState[] {

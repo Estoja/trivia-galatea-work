@@ -4,6 +4,7 @@ import { of, throwError } from 'rxjs';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
 import { MatchModel } from '../../../domain/models/match/match.model';
 import { BuildMatchUsecase } from '../../../domain/models/match/usecase/build-match.usecase';
+import { GeminiRequestLimitExceededError } from '../../../infrastructure/gemini/gemini-client.service';
 import { CurrentMatchStore } from '../../../shared/foundational/state/current-match.store';
 import { MatchStoreService } from '../../../shared/foundational/state/match-store.service';
 import { WelcomePage } from './welcome.page';
@@ -140,6 +141,19 @@ describe('WelcomePage', () => {
     expect(component.errorMessage()).toBeTruthy();
     expect(component.isSubmitting()).toBe(false);
     expect(component.form.controls.alias.value).toBe('Jugador1');
+  });
+
+  it('muestra el mensaje de agotamiento de solicitudes de sesión cuando se alcanza el límite (FR-032)', () => {
+    const fixture = createComponent();
+    const component = fixture.componentInstance;
+    component.form.controls.alias.setValue('Jugador1');
+    component.form.controls.topic.setValue('Fútbol');
+    const limitError = new GeminiRequestLimitExceededError();
+    buildMock.mockReturnValue(throwError(() => limitError));
+
+    component.submit();
+
+    expect(component.errorMessage()).toBe(limitError.message);
   });
 
   it('retry() reintenta la construcción de la partida', () => {

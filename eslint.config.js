@@ -12,6 +12,7 @@ const browserGlobals = {
   fetch: 'readonly',
   setTimeout: 'readonly',
   clearTimeout: 'readonly',
+  sessionStorage: 'readonly',
 };
 
 const jestGlobals = {
