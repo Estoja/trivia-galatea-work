@@ -140,3 +140,62 @@ Ambos son funciones puras testeables sin `TestBed`, apuntando a 100% de cobertur
 **Decision**: `LoggerService` inyectable (`providedIn: 'root'`) con métodos `info`, `warn`, `error`, que en desarrollo escribe a la consola del navegador y en producción es un no-op (o se conecta a un colector si se agrega en el futuro).
 
 **Rationale**: Cumple Principio X (sin `console.log` directo en código de producción).
+
+---
+
+## 9. Phase 7 (Polish) — evidencia de validación
+
+### 9.1 Bundle inicial (T071)
+
+Medido con `ng build --configuration production` (ver [checklists/security.md](./checklists/security.md) y Principio IX, "ningún bundle inicial supera 250 KB gzipped"):
+
+| Chunk inicial | Raw | Estimado de transferencia |
+|---|---|---|
+| chunk-VBQPINIU.js | 247.33 kB | 67.96 kB |
+| chunk-NRVSROWL.js | 66.34 kB | 18.37 kB |
+| polyfills | 34.59 kB | 11.33 kB |
+| main | 7.12 kB | 2.54 kB |
+| resto | ~2 kB | ~1.3 kB |
+| **Total inicial** | **357.37 kB** | **101.50 kB** |
+
+**Conclusión**: 101.50 kB estimados de transferencia inicial, muy por debajo del límite de 250 KB gzipped. Las 3 rutas (`welcome`, `board`, `results`) están lazy-loaded como chunks separados (27.78 kB, 3.21 kB, 2.16 kB de transferencia estimada respectivamente), cumpliendo el requisito de lazy loading por ruta.
+
+Los presupuestos de `angular.json` (`maximumWarning: 500kB` / `maximumError: 1MB`, en tamaño raw) son intencionalmente más laxos que el límite constitucional (que es sobre tamaño gzipped del bundle inicial, no sobre el total raw de todos los chunks); se documenta aquí la evidencia real medida en vez de ajustar esos presupuestos, ya que ambas métricas no son directamente comparables.
+
+### 9.2 Core Web Vitals (T071)
+
+**Limitación del entorno**: Lighthouse CLI no pudo instalarse en este entorno de desarrollo (`npx lighthouse` falla con `ECONNRESET` contra el registro npm privado corporativo, que no expone paquetes públicos de npmjs.org). Por lo tanto, el audit formal de Lighthouse (FCP/LCP/TBT vía su metodología exacta) **queda pendiente de ejecución manual** en un entorno con acceso de red completo, antes o durante el evento.
+
+Como evidencia aproximada y reproducible, se agregó [e2e/performance-metrics.spec.ts](../../e2e/performance-metrics.spec.ts), que mide FCP/LCP reales vía la Performance API del navegador (a través de Playwright/CDP) y aproxima Total Blocking Time sumando la duración de `longtask` entries por encima de 50ms. Resultado medido (modo `local`, página `welcome`):
+
+- FCP: 844 ms (umbral: ≤ 1500 ms) ✅
+- LCP: no reportado en este escenario (página basada en formulario, sin bloque de contenido "largest" claro en el viewport inicial) — no bloqueante.
+- TBT: 0 ms (umbral: ≤ 200 ms) ✅
+
+### 9.3 SC-001 — tiempo de partida completa (T087)
+
+Automatizado en [e2e/full-flow.spec.ts](../../e2e/full-flow.spec.ts) (usa el helper `playFullMatch` de [e2e/helpers.ts](../../e2e/helpers.ts)). Ejecuciones observadas del flujo completo (alias → tema → tablero → 6 respuestas → resultados): 11.7–13.5 s por corrida, muy por debajo del umbral de 5 minutos (300 s) de SC-001. No se requiere instrumentación adicional: el propio test e2e mide el tiempo de ejecución de principio a fin en cada corrida de CI.
+
+### 9.4 T077/T078 — validación de relevancia y latencia de IA en producción real
+
+Ambas tareas dependen de invocar el modelo Gemini real (no el modo `local`/mock), lo cual requiere credenciales de Firebase/Vertex AI válidas y acceso de red sin restricciones — no disponibles en este entorno de desarrollo. Se documentan aquí como **protocolo pendiente de ejecución manual antes del evento**:
+
+- **T077 (relevancia de preguntas de IA)**: ejecutar manualmente ≥10 temas libres variados contra el modo producción real, revisar que las preguntas generadas sean relevantes y no contengan contenido inapropiado (ver `checklists/ai-topic-questions.md`).
+- **T078 (latencia p90)**: registrar el tiempo de respuesta de `GeminiClientService.generateJson` en ≥20 llamadas reales (por ejemplo, agregando logging temporal con `LoggerService` o usando las DevTools de red), calcular el percentil 90 y confirmar que está dentro de un rango aceptable para UX (idealmente bajo el timeout de 30s definido en `GEMINI_TIMEOUT_MS`, con margen cómodo).
+
+### 9.5 T089 — cierre operativo
+
+El evento presencial aún no ha ocurrido al momento de este cierre de Phase 7; por lo tanto, la rotación de la API key de Gemini/Vertex AI post-evento (y cualquier limpieza de datos de sesión) **no aplica todavía** y queda como acción operativa a ejecutar después de finalizado el evento real.
+
+### 9.6 T070 — auditoría de componentes exclusivos de Caribe
+
+Revisado el árbol completo de templates (`src/app/**/*.html`): las únicas 3 páginas (`welcome.page.html`, `board.page.html`, `results.page.html`) sólo usan componentes Caribe (`cb-input-field`, `cb-button`, `cb-loader`) y exactamente 4 componentes propios (`tg-score-board`, `tg-question-card`, `tg-question-modal`, `tg-celebration`), todos ellos construidos sobre elementos HTML nativos (sin ningún otro componente custom anidado) y estilizados vía tokens `--cb-sys-*` de Caribe (incluyendo los 7 tokens `--cb-sys-status-*-fill` usados para diferenciar cada nivel de celebración). No se encontró ningún componente de UI personalizado fuera de estos 4, cumpliendo Principio VII.
+
+### 9.7 T073 — auditoría XSS/sanitización
+
+Búsqueda exhaustiva en `src/app/**` confirma que el proyecto **no usa** `[innerHTML]`, `DomSanitizer.bypassSecurityTrust*` ni ninguna otra API de inserción de HTML crudo. Todo el contenido dinámico (alias, tema elegido, texto de preguntas generado por Gemini) se renderiza vía interpolación `{{ }}` de Angular, que escapa HTML automáticamente; los pocos usos de atributos `aria-*` interpolados (donde Angular no escapa por defecto) ya pasan por `AriaEscapePipe` (T091). Se agregó una prueba de regresión explícita en `results.page.spec.ts` que confirma que un alias/tema con marcado malicioso (`<script>`, `<img onerror=...>`) se renderiza como texto plano, sin crear ningún nodo `<script>`/`<img>` real en el DOM.
+
+### 9.8 T088 — auditoría de no-envío del alias a Gemini
+
+La firma de `QuestionGateway.getChosenTopicQuestions(topic, count)` no acepta el alias del jugador en ningún punto de la cadena de llamada (`QuestionService` → `buildChosenTopicPrompt(topic, count)` → `GeminiClientService.generateJson(prompt)`), por lo que es estructuralmente imposible que el alias llegue al prompt. Se agregó una prueba explícita en `question.service.spec.ts` que espía el prompt real enviado a `generateJson` y confirma que no contiene un alias de prueba, sólo el tema y las instrucciones del prompt.
+
