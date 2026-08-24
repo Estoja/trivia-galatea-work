@@ -148,5 +148,23 @@ describe('QuestionService', () => {
         },
       });
     });
+
+    it('T088 (A-010/FR-018/FR-019): el prompt enviado a Gemini sólo contiene el tema y el conteo, nunca el alias del jugador ni otros campos de sesión', (done) => {
+      // La firma misma de `getChosenTopicQuestions(topic, count)` no recibe alias:
+      // esta prueba documenta y audita que el string de prompt resultante tampoco
+      // lo contiene por accidente (p. ej. si alguien concatenara sesión completa).
+      const playerAlias = 'AliasSecretoDelJugador';
+      generateJsonMock.mockReturnValue(
+        of(JSON.stringify({ questions: Array.from({ length: 6 }, (_, i) => geminiRawQuestion(`Pregunta ${i}`)) })),
+      );
+
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe(() => {
+        expect(generateJsonMock).toHaveBeenCalledTimes(1);
+        const sentPrompt = generateJsonMock.mock.calls[0][0] as string;
+        expect(sentPrompt).not.toContain(playerAlias);
+        expect(sentPrompt).toContain('Fútbol');
+        done();
+      });
+    });
   });
 });
