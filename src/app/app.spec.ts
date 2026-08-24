@@ -1,13 +1,23 @@
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { App } from './app';
 import { MatchStoreService } from './shared/foundational/state/match-store.service';
 
+@Component({ selector: 'tg-stub', template: '' })
+class StubPage {}
+
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([
+          { path: 'welcome', component: StubPage },
+          { path: 'board', component: StubPage },
+          { path: 'results', component: StubPage },
+        ]),
+      ],
     }).compileComponents();
   });
 
@@ -53,6 +63,7 @@ describe('App', () => {
       const matchStore = TestBed.inject(MatchStoreService);
       matchStore.initializeSession('Jugador1', 'Historia');
       matchStore.setQuestions([{ id: 'card-0', category: 'galatea', state: 'faceDown' }]);
+      matchStore.openCard('card-0');
       matchStore.confirmAnswer('card-0', '0', true);
       fixture.detectChanges();
 
@@ -67,6 +78,7 @@ describe('App', () => {
       const matchStore = TestBed.inject(MatchStoreService);
       matchStore.initializeSession('Jugador1', 'Historia');
       matchStore.setQuestions([{ id: 'card-0', category: 'galatea', state: 'faceDown' }]);
+      matchStore.openCard('card-0');
       matchStore.confirmAnswer('card-0', '0', true);
       fixture.detectChanges();
       addEventListenerSpy.mockClear();
@@ -85,6 +97,7 @@ describe('App', () => {
       const matchStore = TestBed.inject(MatchStoreService);
       matchStore.initializeSession('Jugador1', 'Historia');
       matchStore.setQuestions([{ id: 'card-0', category: 'galatea', state: 'faceDown' }]);
+      matchStore.openCard('card-0');
       matchStore.confirmAnswer('card-0', '0', true);
       fixture.detectChanges();
       addEventListenerSpy.mockClear();
