@@ -20,7 +20,9 @@ export async function fillWelcomeForm(page: Page, alias: string, topic: string):
 }
 
 export async function submitWelcomeForm(page: Page): Promise<void> {
-  await page.locator('#welcome-submit-button').click();
+  // `cb-button` usa ViewEncapsulation.ShadowDom: el host y el <button> interno
+  // comparten el mismo `id`, así que se acota al tag para evitar ambigüedad.
+  await page.locator('button#welcome-submit-button').click();
   await page.waitForURL('**/board');
 }
 

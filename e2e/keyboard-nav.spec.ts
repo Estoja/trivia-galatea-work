@@ -18,7 +18,7 @@ test('el flujo completo es navegable por teclado', async ({ page }) => {
   await page.keyboard.type('Astronomía');
 
   // Enviar el formulario con Enter (equivalente a activar "Comenzar" vía teclado).
-  await page.locator('#welcome-submit-button').focus();
+  await page.locator('button#welcome-submit-button').focus();
   await page.keyboard.press('Enter');
 
   await page.waitForURL('**/board');
@@ -50,6 +50,6 @@ test('el flujo completo es navegable por teclado', async ({ page }) => {
   await expect(page.locator('.tg-results-page__score')).toContainText('Puntaje total');
 
   // El botón "Jugar de nuevo" debe ser alcanzable y activable por teclado.
-  await page.locator('#results-play-again-button').focus();
-  await expect(page.locator('#results-play-again-button')).toBeFocused();
+  await page.locator('button#results-play-again-button').focus();
+  await expect(page.locator('button#results-play-again-button')).toBeFocused();
 });
