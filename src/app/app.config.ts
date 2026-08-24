@@ -14,6 +14,8 @@ import { QuestionService } from './infrastructure/question/question.service';
 import { MatchStoreService } from './shared/foundational/state/match-store.service';
 import { routes } from './app.routes';
 
+const recaptchaV3SiteKey = environment.appCheck?.recaptchaV3SiteKey?.trim() ?? '';
+
 export const provideFoundationalMatchStore = () =>
   makeEnvironmentProviders([{ provide: MatchStoreService, useClass: MatchStoreService }]);
 
@@ -42,13 +44,17 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAppCheck((injector) => {
-      const app = injector.get(FirebaseApp);
-      return initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider(environment.appCheck.recaptchaV3SiteKey),
-        isTokenAutoRefreshEnabled: true,
-      });
-    }),
+    ...(recaptchaV3SiteKey
+      ? [
+          provideAppCheck((injector) => {
+            const app = injector.get(FirebaseApp);
+            return initializeAppCheck(app, {
+              provider: new ReCaptchaV3Provider(recaptchaV3SiteKey),
+              isTokenAutoRefreshEnabled: true,
+            });
+          }),
+        ]
+      : []),
     provideVertexAI((injector) => {
       const app = injector.get(FirebaseApp);
       return getAI(app, { backend: new VertexAIBackend() });

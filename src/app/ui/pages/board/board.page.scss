@@ -1,0 +1,25 @@
+.tg-board-page {
+  margin: 0 auto;
+  max-width: 72rem;
+  padding: var(--cb-sys-spacing-6) var(--cb-sys-spacing-5) var(--cb-sys-spacing-10);
+  display: grid;
+  gap: var(--cb-sys-spacing-6);
+}
+
+.tg-board-page__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cb-sys-spacing-4);
+}
+
+@media (min-width: 48rem) {
+  .tg-board-page__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 72rem) {
+  .tg-board-page__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}

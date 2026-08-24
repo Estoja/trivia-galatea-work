@@ -24,6 +24,7 @@ const GENERIC_BUILD_ERROR_MESSAGE =
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, CbInput, CbButton, CbLoader],
   templateUrl: './welcome.page.html',
+  styleUrl: './welcome.page.scss',
 })
 export class WelcomePage implements OnInit, OnDestroy {
   private readonly router = inject(Router);

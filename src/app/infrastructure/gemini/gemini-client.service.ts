@@ -40,6 +40,10 @@ export class GeminiClientService {
   private readonly vertexAI = inject(VertexAI);
   private model: GenerativeModel | null = null;
 
+  constructor() {
+    this.resetRequestCountOnReload();
+  }
+
   private getModel(): GenerativeModel {
     this.model ??= getGenerativeModel(this.vertexAI, {
       model: GEMINI_MODEL_NAME,
@@ -64,16 +68,25 @@ export class GeminiClientService {
       return throwError(() => new GeminiRequestLimitExceededError());
     }
 
-    this.incrementSessionRequestCount();
-
     return defer(() => from(this.getModel().generateContent(prompt))).pipe(
-      map((result) => result.response.text()),
+      map((result) => {
+        // Count only completed model responses (not failed attempts).
+        this.incrementSessionRequestCount();
+        return result.response.text();
+      }),
       timeout(GEMINI_TIMEOUT_MS),
       retry({
         count: GEMINI_MAX_RETRIES,
         delay: (_error, retryCount) => timer(GEMINI_RETRY_DELAYS_MS[retryCount - 1] ?? GEMINI_RETRY_DELAYS_MS.at(-1)),
       }),
     );
+  }
+
+  private resetRequestCountOnReload(): void {
+    const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    if (navEntry?.type === 'reload') {
+      sessionStorage.removeItem(SESSION_REQUEST_COUNT_KEY);
+    }
   }
 
   private getSessionRequestCount(): number {

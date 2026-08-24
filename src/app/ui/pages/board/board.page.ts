@@ -23,6 +23,7 @@ export const ANSWER_FEEDBACK_DISPLAY_MS = 1_500;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [QuestionCard, QuestionModal, ScoreBoard],
   templateUrl: './board.page.html',
+  styleUrl: './board.page.scss',
 })
 export class BoardPage implements OnInit, OnDestroy {
   private readonly router = inject(Router);

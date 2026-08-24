@@ -1,0 +1,10 @@
+.tg-score-board {
+  margin: 0;
+  padding: var(--cb-sys-spacing-3) var(--cb-sys-spacing-4);
+  border-radius: var(--cb-sys-radius-md);
+  width: fit-content;
+  background-color: var(--cb-sys-background-primary-01);
+  border: 1px solid var(--cb-sys-border-default);
+  color: var(--cb-sys-text-default);
+  font: var(--cb-sys-plain-font-style-3-bold);
+}

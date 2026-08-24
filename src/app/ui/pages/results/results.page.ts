@@ -20,6 +20,7 @@ import { Celebration } from '../../components/celebration/celebration';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Celebration, CbButton],
   templateUrl: './results.page.html',
+  styleUrl: './results.page.scss',
 })
 export class ResultsPage implements OnInit {
   private readonly router = inject(Router);
