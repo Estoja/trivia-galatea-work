@@ -113,7 +113,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - **FR-011**: El sistema DEBE mostrar el puntaje parcial actualizado en tiempo real mientras el jugador responde preguntas.
 - **FR-012**: El sistema DEBE mostrar la pantalla de resultados automáticamente al completar la 6ª pregunta.
 - **FR-013**: La pantalla de resultados DEBE mostrar: alias del jugador, puntuación total, título del nivel ganado y efectos visuales de celebración acordes al nivel.
-- **FR-014**: El sistema DEBE asignar el título según la escala: 0–59=Visitante, 60–119=Explorador, 120–179=Aprendiz, 180–239=Constructor, 240–299=Estratega, 300–359=Maestro Galatea, 360=Unicornio Galatea 🦄.
+- **FR-014**: El sistema DEBE asignar el título según la escala: 0–59=Visitante, 60–99=Explorador, 100–129=Aprendiz, 130–179=Constructor, 180–239=Estratega, 240–359=Maestro Galatea, 360=Unicornio Galatea 🦄.
 - **FR-015**: La pantalla de resultados DEBE ofrecer la opción de iniciar una nueva partida. Al activarla, la app navega a la pantalla de inicio con el alias de la partida anterior pre-rellenado (editable) y el campo de tema vacío.
 - **FR-016**: El sistema DEBE mostrar retroalimentación inmediata (correcto/incorrecto) al confirmar cada respuesta.
 - **FR-017**: El sistema DEBE mostrar un indicador de carga durante la generación de preguntas por IA.
@@ -232,3 +232,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 ### Session 2026-08-25 (ajuste operativo FR-032 para modo kiosco)
 
 - Q: Durante el evento, múltiples jugadores usarán el mismo computador/navegador por horas continuas. ¿Debe mantenerse el límite local de 3 solicitudes IA por sesión (`sessionStorage`)? → A: No. Se elimina el límite local por sesión del cliente para evitar bloquear partidas válidas en uso compartido continuo (modo kiosco). El control de abuso/cuota se traslada a Google Cloud (HTTP Referer restriction, App Check y cuotas/rate limits del proyecto). FR-032 se actualiza para reflejar esta decisión.
+
+### Session 2026-08-25 (recalibración de rangos FR-014)
+
+- Q: Con FR-010 (`(N_galatea×10)×N_galatea + N_tema×10`) y FR-012 (máximo 6 respuestas), algunos puntajes intermedios no son alcanzables y el rango 300–359 quedaba vacío en operación real. ¿Se ajustan rangos o fórmula? → A: Ajustar rangos (sin cambiar fórmula). Se mantiene la mecánica de puntaje y se recalibra FR-014 para que los 7 niveles sigan existiendo pero todos sean alcanzables: 0–59, 60–99, 100–129, 130–179, 180–239, 240–359, 360.

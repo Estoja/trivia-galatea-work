@@ -151,11 +151,11 @@ export interface LevelModel {
 | `tier` | `title` | `minScore` | `maxScore` |
 |---|---|---|---|
 | `visitante` | Visitante | 0 | 59 |
-| `explorador` | Explorador | 60 | 119 |
-| `aprendiz` | Aprendiz | 120 | 179 |
-| `constructor` | Constructor | 180 | 239 |
-| `estratega` | Estratega | 240 | 299 |
-| `maestro-galatea` | Maestro Galatea | 300 | 359 |
+| `explorador` | Explorador | 60 | 99 |
+| `aprendiz` | Aprendiz | 100 | 129 |
+| `constructor` | Constructor | 130 | 179 |
+| `estratega` | Estratega | 180 | 239 |
+| `maestro-galatea` | Maestro Galatea | 240 | 359 |
 | `unicornio-galatea` | Unicornio Galatea 🦄 | 360 | 360 |
 
 Calculado por `AssignLevelUsecase` (dominio puro).

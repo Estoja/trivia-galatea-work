@@ -17,24 +17,24 @@ describe('AssignLevelUsecase', () => {
     expect(usecase.assign(60).tier).toBe(LevelTier.Explorador);
   });
 
-  it('asigna Explorador en su límite superior (119) y Aprendiz justo en 120', () => {
-    expect(usecase.assign(119).tier).toBe(LevelTier.Explorador);
-    expect(usecase.assign(120).tier).toBe(LevelTier.Aprendiz);
+  it('asigna Explorador en su límite superior (99) y Aprendiz justo en 100', () => {
+    expect(usecase.assign(99).tier).toBe(LevelTier.Explorador);
+    expect(usecase.assign(100).tier).toBe(LevelTier.Aprendiz);
   });
 
-  it('asigna Aprendiz en su límite superior (179) y Constructor justo en 180', () => {
-    expect(usecase.assign(179).tier).toBe(LevelTier.Aprendiz);
-    expect(usecase.assign(180).tier).toBe(LevelTier.Constructor);
+  it('asigna Aprendiz en su límite superior (129) y Constructor justo en 130', () => {
+    expect(usecase.assign(129).tier).toBe(LevelTier.Aprendiz);
+    expect(usecase.assign(130).tier).toBe(LevelTier.Constructor);
   });
 
-  it('asigna Constructor en su límite superior (239) y Estratega justo en 240', () => {
-    expect(usecase.assign(239).tier).toBe(LevelTier.Constructor);
-    expect(usecase.assign(240).tier).toBe(LevelTier.Estratega);
+  it('asigna Constructor en su límite superior (179) y Estratega justo en 180', () => {
+    expect(usecase.assign(179).tier).toBe(LevelTier.Constructor);
+    expect(usecase.assign(180).tier).toBe(LevelTier.Estratega);
   });
 
-  it('asigna Estratega en su límite superior (299) y Maestro Galatea justo en 300', () => {
-    expect(usecase.assign(299).tier).toBe(LevelTier.Estratega);
-    expect(usecase.assign(300).tier).toBe(LevelTier.MaestroGalatea);
+  it('asigna Estratega en su límite superior (239) y Maestro Galatea justo en 240', () => {
+    expect(usecase.assign(239).tier).toBe(LevelTier.Estratega);
+    expect(usecase.assign(240).tier).toBe(LevelTier.MaestroGalatea);
   });
 
   it('asigna Maestro Galatea en su límite superior (359) y Unicornio Galatea justo en 360', () => {
@@ -50,7 +50,7 @@ describe('AssignLevelUsecase', () => {
       tier: LevelTier.Explorador,
       title: 'Explorador',
       minScore: 60,
-      maxScore: 119,
+      maxScore: 99,
     });
   });
 

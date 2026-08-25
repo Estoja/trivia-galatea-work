@@ -21,7 +21,7 @@
 
 ## Rangos de nivel
 
-- [x] CHK006 - ¿Están completamente especificados los límites de rango de cada nivel (0–59, 60–119, ... 360) sin huecos ni solapamientos? ¿Todo entero entre 0 y 360 queda cubierto por exactamente un nivel? [Completeness, Measurability, Spec §FR-014]
+- [x] CHK006 - ¿Están completamente especificados los límites de rango de cada nivel (0–59, 60–99, 100–129, 130–179, 180–239, 240–359, 360) sin huecos ni solapamientos? ¿Todo entero entre 0 y 360 queda cubierto por exactamente un nivel? [Completeness, Measurability, Spec §FR-014]
 - [x] CHK007 - ¿Están definidos requisitos sobre qué puntaje/nivel se muestra si una partida se abandona antes de responder las 6 preguntas (no existe un puntaje "final" formal según A-001)? [Gap, Edge Case]
 - [x] CHK008 - ¿Existe un requisito sobre el desempate o tratamiento igualitario cuando dos combinaciones distintas de aciertos galatea/tema producen el mismo puntaje total (¿es intencional y está declarado como tal?)? [Gap, Ambiguity]
 
