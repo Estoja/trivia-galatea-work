@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-trivia-galatea-app`  
 **Created**: 2026-08-18  
-**Status**: Draft  
+**Status**: Completed  
 **Input**: Aplicación de trivia donde el usuario elige un tema, responde preguntas generadas por IA (mitad Galatea, mitad tema elegido) y recibe un título según su puntaje con efectos de celebración.
 
 ---
