@@ -21,20 +21,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build Angular (GitHub Pages base href)
-        run: npx ng build --configuration production --base-href /trivia-galatea-work/
-
-      - name: SPA fallback for deep links
-        run: cp dist/trivia-galatea/browser/index.html dist/trivia-galatea/browser/404.html
+      - name: Validate prebuilt artifact exists
+        run: |
+          if [ ! -f "dist/trivia-galatea/browser/index.html" ]; then
+            echo "Missing prebuilt artifact: dist/trivia-galatea/browser/index.html"
+            echo "Build locally and commit dist/trivia-galatea/browser before pushing to master."
+            exit 1
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

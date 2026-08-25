@@ -1,0 +1,610 @@
+{
+  "version": 2,
+  "questions": [
+    {
+      "id": "gal-v2-001",
+      "text": "¿Cuál fue el propósito original con el que nació el Proyecto Y dentro de Empresa X?",
+      "options": [
+        "Centralizar y estandarizar la distribución digital para los canales de la organización",
+        "Reemplazar los canales físicos con una sola aplicación",
+        "Administrar exclusivamente las campañas de marketing digital",
+        "Gestionar la nómina de equipos tecnológicos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-002",
+      "text": "¿En qué etapa histórica de Empresa X surgió el Proyecto Y?",
+      "options": [
+        "Durante la pandemia de 2020, como respuesta a la necesidad de acelerar la distribución digital",
+        "En 2018 como iniciativa de transformación física",
+        "En 2023 como respuesta a regulaciones externas",
+        "En 2015 como proyecto de infraestructura de datos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-003",
+      "text": "¿Qué relato o metáfora fundacional identificó al Proyecto Y en sus orígenes?",
+      "options": [
+        "Pigmaleón: el futuro está en nuestras manos",
+        "El faro: iluminando el camino digital",
+        "El tejido: conectando todos los sistemas",
+        "La brújula: orientando la estrategia tecnológica"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-004",
+      "text": "¿Cuál fue la primera gran necesidad que el Proyecto Y buscó resolver para los equipos digitales?",
+      "options": [
+        "Evitar que cada canal resolviera de forma distinta los mismos problemas de seguridad y distribución",
+        "Reducir el número de aplicaciones disponibles en la organización",
+        "Centralizar la gestión de contratos y proveedores externos",
+        "Unificar los procesos de contratación de personal tecnológico"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-005",
+      "text": "¿Cuál fue la primera gran capacidad de experiencia de usuario que el Proyecto Y desarrolló para los canales digitales?",
+      "options": [
+        "Un Sistema de Diseño compartido para aplicaciones web y móviles",
+        "Un motor de pagos automatizados para clientes corporativos",
+        "Una herramienta de análisis de datos en tiempo real",
+        "Un sistema de gestión de colas de atención presencial"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-006",
+      "text": "¿Qué describe mejor la propuesta de valor del Proyecto Y para los equipos de desarrollo de Empresa X?",
+      "options": [
+        "Proveer capacidades reutilizables que aceleran la construcción de experiencias digitales consistentes",
+        "Ser el único equipo autorizado para desplegar aplicaciones en producción",
+        "Administrar los presupuestos de inversión tecnológica de la organización",
+        "Gestionar los datos personales de los clientes finales"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-007",
+      "text": "¿Qué ventaja estratégica busca el Proyecto Y al centralizar componentes y capacidades transversales?",
+      "options": [
+        "Reducir la duplicación de esfuerzos y acelerar el tiempo de salida al mercado de los canales",
+        "Eliminar la autonomía de los equipos de producto para tomar decisiones",
+        "Concentrar todo el desarrollo en un único equipo centralizado",
+        "Reemplazar las herramientas de terceros con desarrollos completamente internos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-008",
+      "text": "¿Qué papel juega el Sistema de Diseño dentro de la estrategia del Proyecto Y?",
+      "options": [
+        "Garantizar una experiencia visual y de interacción consistente en todos los canales digitales",
+        "Definir las paletas de color exclusivas para publicidad externa",
+        "Establecer los estándares de vestimenta corporativa digital",
+        "Controlar el acceso de los usuarios a las aplicaciones internas"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-009",
+      "text": "¿Qué modelo organizacional adoptó el Proyecto Y para escalar sus capacidades hacia múltiples canales?",
+      "options": [
+        "Organización por células especializadas en diferentes dominios como diseño, seguridad, gestión y analítica",
+        "Un único equipo centralizado con acceso completo a todos los sistemas",
+        "Tercerización completa de todas las capacidades de desarrollo",
+        "Creación de equipos independientes sin coordinación entre ellos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-010",
+      "text": "¿Qué tipo de canales digitales son beneficiarios directos de las capacidades del Proyecto Y?",
+      "options": [
+        "Canales de personas, empresas, pymes, inversiones y sucursales virtuales, entre otros",
+        "Únicamente los canales de atención presencial en oficinas",
+        "Solo las aplicaciones de uso interno de empleados",
+        "Exclusivamente los portales externos de aliados comerciales"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-011",
+      "text": "¿Cómo describe el Proyecto Y su relación con los canales que consumen sus capacidades?",
+      "options": [
+        "Como una plataforma habilitadora que provee capacidades sin ser dueña exclusiva de todos los productos finales",
+        "Como el único propietario de los productos digitales de la organización",
+        "Como proveedor exclusivo de infraestructura física para los centros de datos",
+        "Como intermediario de ventas entre la organización y sus clientes"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-012",
+      "text": "¿Qué significa para el Proyecto Y la adopción de un modelo de InnerSource?",
+      "options": [
+        "Permitir que equipos internos contribuyan a capacidades compartidas siguiendo prácticas de código abierto",
+        "Publicar todo el código de la organización en repositorios públicos de internet",
+        "Contratar exclusivamente desarrolladores con experiencia en proyectos open source externos",
+        "Comprar licencias de software de terceros para distribuir internamente"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-013",
+      "text": "¿Qué capacidad de gestión introdujo el Proyecto Y para administrar la información transaccional de los canales?",
+      "options": [
+        "Un Repositorio Central de Canales que centraliza y estandariza la información de distribución de forma segura",
+        "Una base de datos descentralizada accesible solo por auditoría externa",
+        "Un sistema de archivos compartidos en servidores físicos locales",
+        "Una herramienta de videoconferencias para reuniones de equipos remotos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-014",
+      "text": "¿Qué problema estratégico resuelve el módulo de administración de canales del Proyecto Y?",
+      "options": [
+        "Gestionar de manera centralizada los parámetros y configuraciones que antes cada canal manejaba por separado",
+        "Generar reportes financieros para la junta directiva de la organización",
+        "Automatizar el proceso de contratación de nuevos empleados tecnológicos",
+        "Controlar el inventario de dispositivos físicos en todas las oficinas"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-015",
+      "text": "¿Qué tipo de experiencias transversales desarrolló el Proyecto Y para los canales web?",
+      "options": [
+        "Flujos comunes como pagos, transferencias, consulta de saldos, inscripción de productos y actualización de datos",
+        "Sistemas de gestión de recursos humanos para toda la organización",
+        "Herramientas de diseño gráfico para el equipo de marketing",
+        "Plataformas de e-commerce para la venta de productos no financieros"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-016",
+      "text": "¿Qué representó para el Proyecto Y la estrategia de microfrontends?",
+      "options": [
+        "La posibilidad de construir experiencias modulares que diferentes canales puedan integrar de forma independiente",
+        "La creación de aplicaciones pequeñas exclusivamente para dispositivos de baja gama",
+        "La eliminación de todas las aplicaciones web en favor de experiencias solo móviles",
+        "La migración de todos los sistemas heredados a una sola aplicación monolítica"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-017",
+      "text": "¿Por qué es estratégicamente relevante que el Proyecto Y ofrezca capacidades de accesibilidad en sus componentes?",
+      "options": [
+        "Porque garantiza que los canales digitales sean inclusivos y cumplan estándares de usabilidad para todos los usuarios",
+        "Porque es un requisito exclusivo para canales de atención a personas en situación de discapacidad física",
+        "Porque reduce el tiempo de carga de las aplicaciones en conexiones lentas",
+        "Porque es una exigencia de los proveedores de infraestructura en la nube"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-018",
+      "text": "¿Qué es lo que el Proyecto Y describe como capacidades fundacionales de backend?",
+      "options": [
+        "Servicios transversales de seguridad y distribución que todos los canales digitales deben consumir de forma estándar",
+        "El conjunto de servidores físicos donde se alojan las aplicaciones de la organización",
+        "Las bases de datos que almacenan la información contable y financiera corporativa",
+        "Los sistemas de monitoreo de energía de los centros de procesamiento de datos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-019",
+      "text": "¿Qué papel juega la observabilidad dentro de la estrategia de madurez del Proyecto Y?",
+      "options": [
+        "Permite detectar y resolver proactivamente incidentes en los canales antes de que impacten a los usuarios finales",
+        "Sirve para monitorear el comportamiento de los empleados en sus jornadas laborales",
+        "Facilita la auditoría de las transacciones financieras por parte de entes reguladores externos",
+        "Controla el uso de datos móviles de los dispositivos corporativos de la organización"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-020",
+      "text": "¿Qué demuestra la eliminación de vulnerabilidades de seguridad como logro trimestral del Proyecto Y?",
+      "options": [
+        "La madurez operativa del equipo para mantener los canales digitales seguros y confiables de forma continua",
+        "Que el Proyecto Y gestiona directamente las auditorías externas de cumplimiento regulatorio",
+        "Que el equipo tiene la autoridad para bloquear el acceso de usuarios sospechosos en tiempo real",
+        "Que se ha eliminado el riesgo de fraude en todos los canales de la organización"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-021",
+      "text": "¿Qué implica para los canales la existencia de un modelo de soporte sostenido por el Proyecto Y?",
+      "options": [
+        "Que los equipos de producto tienen un punto de referencia para resolver dudas técnicas, recibir asesoría y escalar incidentes",
+        "Que el Proyecto Y asume la responsabilidad operativa de todos los canales digitales de la organización",
+        "Que los desarrolladores de canales no necesitan documentación propia de sus integraciones",
+        "Que el Proyecto Y puede modificar cualquier canal sin autorización del equipo propietario"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-022",
+      "text": "¿Qué valor aporta la trazabilidad de cambios de estado en el Repositorio Central de Canales?",
+      "options": [
+        "Permite a equipos de operación y gerencia entender el historial de configuraciones y tomar decisiones informadas",
+        "Facilita la modificación retroactiva de transacciones financieras ya procesadas",
+        "Permite a los clientes finales ver el historial completo de cambios en sus productos",
+        "Habilita la facturación automática de servicios entre equipos internos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-023",
+      "text": "¿Qué significa para el Proyecto Y la depuración de su portafolio de capacidades?",
+      "options": [
+        "Retirar servicios que ya no tienen consumidores activos para enfocarse en las capacidades que realmente aportan valor",
+        "Eliminar todos los proyectos heredados para empezar desde cero con nuevas tecnologías",
+        "Reducir el número de equipos que conforman el Proyecto Y",
+        "Suspender el soporte a canales que no cumplan los estándares de adopción mínimos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-024",
+      "text": "¿Qué beneficio estratégico aporta la personalización de experiencias dentro del Proyecto Y?",
+      "options": [
+        "Permitir que los canales presenten contenidos y flujos relevantes para cada usuario según su perfil y comportamiento",
+        "Asignar automáticamente ejecutivos de cuenta a clientes según su historial financiero",
+        "Generar contratos personalizados para cada nuevo empleado de la organización",
+        "Calcular tarifas de servicio individualizadas para cada cliente corporativo"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-025",
+      "text": "¿Cómo contribuye el Proyecto Y a la adopción de inteligencia artificial en los canales digitales de Empresa X?",
+      "options": [
+        "Actuando como plataforma habilitadora que integra capacidades de IA en la capa de distribución y soporte para los equipos",
+        "Desarrollando algoritmos propios de aprendizaje automático para reemplazar a analistas de datos",
+        "Administrando directamente los modelos de crédito y riesgo de la organización",
+        "Centralizando toda la analítica de negocio en un único equipo de científicos de datos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-026",
+      "text": "¿Qué representa la estrategia de gestión de identidad y acceso (CIAM) dentro del Proyecto Y?",
+      "options": [
+        "Una capacidad transversal que estandariza la autenticación y autorización de usuarios en los canales digitales",
+        "Un sistema de control de acceso físico a las instalaciones de la organización",
+        "Una plataforma de gestión de contraseñas para empleados internos",
+        "Un módulo de validación de identidad exclusivo para nuevas contrataciones"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-027",
+      "text": "¿Qué impacto tiene para los canales digitales que el Proyecto Y gestione la autenticación de forma centralizada?",
+      "options": [
+        "Todos los canales aplican los mismos estándares de seguridad en el ingreso de usuarios, reduciendo riesgos y esfuerzo duplicado",
+        "Solo el equipo de seguridad puede acceder a los reportes de intentos de autenticación fallidos",
+        "Los usuarios deben autenticarse de forma independiente en cada canal sin posibilidad de sesión única",
+        "La autenticación se delega completamente a proveedores externos sin participación del equipo interno"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-028",
+      "text": "¿Qué caracteriza el enfoque de plataforma del Proyecto Y frente a un modelo de desarrollo tradicional?",
+      "options": [
+        "Priorizar la construcción de capacidades reutilizables que múltiples equipos pueden consumir, en lugar de desarrollar soluciones ad-hoc para cada canal",
+        "Concentrar todos los recursos en un único producto estrella que reemplaza a los demás canales",
+        "Externalizar el desarrollo a proveedores especializados para cada dominio de negocio",
+        "Desarrollar soluciones únicas e irrepetibles para cada canal según sus necesidades específicas"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-029",
+      "text": "¿Qué significa para el Proyecto Y medir el retorno sobre la inversión de sus capacidades?",
+      "options": [
+        "Cuantificar el ahorro en tiempo, costo y esfuerzo que generan las capacidades compartidas frente a que cada canal las desarrolle por separado",
+        "Calcular las ganancias financieras directas generadas por las transacciones procesadas en los canales",
+        "Evaluar el desempeño individual de cada desarrollador del equipo frente a sus objetivos anuales",
+        "Determinar el precio de venta de las capacidades a otras organizaciones del sector"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-030",
+      "text": "¿Qué tipo de métricas utiliza el Proyecto Y para evaluar la salud de las capacidades que entrega?",
+      "options": [
+        "Disponibilidad, número de incidentes, adopción por canales, vulnerabilidades resueltas y asesorías brindadas",
+        "Ingresos generados por suscripciones a los servicios de la plataforma",
+        "Tiempo de permanencia de los usuarios en cada pantalla de los canales digitales",
+        "Número de contratos firmados con proveedores tecnológicos externos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-031",
+      "text": "¿Qué implica para la estrategia del Proyecto Y avanzar hacia un modelo de experiencias digitales federadas?",
+      "options": [
+        "Que distintos equipos pueden construir y publicar componentes de experiencia que se integran en los canales de forma modular y autónoma",
+        "Que un único equipo centralizado administra y despliega todas las experiencias en todos los canales",
+        "Que los canales dejan de consumir capacidades transversales y desarrollan todo de forma independiente",
+        "Que la personalización de experiencias queda suspendida hasta tener un estándar definitivo aprobado"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-032",
+      "text": "¿Qué reto organizacional enfrenta el Proyecto Y para garantizar la adopción real de sus capacidades?",
+      "options": [
+        "Combinar la entrega técnica con comunicación, documentación, soporte y acompañamiento activo a los equipos consumidores",
+        "Obligar a todos los canales a migrar a las nuevas capacidades en plazos no negociables",
+        "Reducir la autonomía de los equipos de producto para que dependan del Proyecto Y en todas sus decisiones",
+        "Limitar el acceso a las capacidades a los equipos que paguen por su uso dentro de la organización"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-033",
+      "text": "¿Qué lección estratégica aprendió el Proyecto Y en su evolución respecto a la relación con sus consumidores?",
+      "options": [
+        "Que no basta con construir buenas capacidades: la experiencia del desarrollador y el soporte activo son igual de importantes para lograr adopción",
+        "Que mientras más capacidades se ofrezcan, mayor será automáticamente su adopción sin necesidad de acompañamiento",
+        "Que los equipos consumidores son los únicos responsables de aprender a integrar las capacidades por su cuenta",
+        "Que la documentación técnica detallada elimina la necesidad de cualquier tipo de soporte directo"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-034",
+      "text": "¿Qué papel cumple la experiencia del desarrollador (DX) en la estrategia del Proyecto Y?",
+      "options": [
+        "Es un factor clave para que los equipos adopten y aprovechen las capacidades de la plataforma de manera efectiva",
+        "Es una métrica secundaria que solo se evalúa en encuestas anuales de satisfacción",
+        "Es responsabilidad exclusiva de los equipos de recursos humanos y no del equipo técnico",
+        "Solo aplica para desarrolladores externos; los internos deben adaptarse sin soporte especial"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-035",
+      "text": "¿Qué tipo de seguridad transversal ofrece el Proyecto Y a los canales digitales de Empresa X?",
+      "options": [
+        "Filtros y servicios de autorización que protegen las comunicaciones y accesos de forma estandarizada en todos los canales",
+        "Custodia física de los servidores de producción en instalaciones de alta seguridad",
+        "Asesoría legal para el cumplimiento de regulaciones de privacidad de datos a nivel internacional",
+        "Sistemas de detección de intrusos instalados en los equipos personales de los empleados"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-036",
+      "text": "¿Qué significa para el Proyecto Y la modernización continua de sus componentes y plataformas de base?",
+      "options": [
+        "Garantizar que los canales que consumen sus capacidades se beneficien de mejoras de rendimiento, seguridad y soporte de largo plazo",
+        "Reemplazar anualmente todas las capacidades por versiones completamente nuevas sin compatibilidad con lo anterior",
+        "Migrar todos los sistemas a proveedores de nube internacionales eliminando la infraestructura local",
+        "Exigir a los canales que actualicen sus integraciones cada vez que el Proyecto Y lance una nueva versión"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-037",
+      "text": "¿Cómo aborda el Proyecto Y la gestión de la deuda técnica acumulada en sus componentes?",
+      "options": [
+        "Con ciclos planificados de revisión, refactorización y cierre de vulnerabilidades para mantener la calidad de las capacidades",
+        "Ignorando la deuda técnica hasta que cause incidentes visibles en producción",
+        "Descartando los componentes con deuda y reemplazándolos siempre por nuevos sin reutilizar nada anterior",
+        "Delegando la resolución de deuda técnica a los equipos consumidores que reportan los problemas"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-038",
+      "text": "¿Cuál es el beneficio principal de estandarizar la experiencia digital a través del Sistema de Diseño del Proyecto Y?",
+      "options": [
+        "Los usuarios perciben una experiencia coherente y familiar sin importar qué canal o aplicación estén usando",
+        "Los diseñadores de cada canal pueden crear identidades visuales completamente distintas sin restricciones",
+        "Se elimina la necesidad de hacer pruebas de usabilidad con usuarios reales en cada canal",
+        "La organización puede ofrecer su Sistema de Diseño como producto comercial a otras empresas"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-039",
+      "text": "¿Qué motivó al Proyecto Y a desarrollar capacidades de contactabilidad para los canales digitales?",
+      "options": [
+        "La necesidad de que la organización pueda comunicarse proactivamente con sus clientes de forma centralizada y consistente",
+        "La exigencia de reguladores externos de registrar todas las comunicaciones con clientes en un único repositorio",
+        "La reducción de costos en atención telefónica mediante el cierre de centros de contacto presenciales",
+        "La creación de un canal de publicidad digital exclusivo para productos de inversión"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-040",
+      "text": "¿Qué representa para Empresa X contar con una plataforma como el Proyecto Y a nivel de eficiencia organizacional?",
+      "options": [
+        "Reduce el tiempo y costo de construir nuevas capacidades digitales porque los equipos de canales parten de una base común ya probada",
+        "Centraliza toda la toma de decisiones tecnológicas en un único equipo para simplificar la gobernanza",
+        "Elimina la necesidad de que los canales tengan equipos propios de tecnología y diseño",
+        "Garantiza que ningún canal pueda desarrollar capacidades fuera del portafolio aprobado por el Proyecto Y"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-041",
+      "text": "¿Qué dimensión organizacional cubre el concepto de células especializadas dentro del Proyecto Y?",
+      "options": [
+        "Agrupa capacidades afines en equipos enfocados para gestionar mejor la especialización y la calidad de entrega",
+        "Divide los equipos por regiones geográficas para atender canales de distintas ciudades",
+        "Separa los equipos según el nivel de seniority de sus miembros para facilitar la carrera profesional",
+        "Organiza los equipos según el canal al que sirven exclusivamente, sin cruzar conocimiento entre células"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-042",
+      "text": "¿Qué tipo de consumidores no digitales también se benefician de las capacidades del Proyecto Y?",
+      "options": [
+        "Áreas de operación, gerencia de atención al cliente e indicadores estratégicos que usan datos centralizados de los canales",
+        "Únicamente los clientes finales que usan las aplicaciones móviles de la organización",
+        "Solo los equipos de auditoría interna que verifican el cumplimiento de normativas",
+        "Exclusivamente los equipos de infraestructura que administran los servidores de producción"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-043",
+      "text": "¿Qué significa para el Proyecto Y avanzar hacia una arquitectura de plataforma modular?",
+      "options": [
+        "Que las capacidades pueden combinarse, extenderse y reemplazarse de forma independiente sin afectar todo el sistema",
+        "Que se construye una única aplicación monolítica que integra todos los canales en un solo despliegue",
+        "Que cada módulo de la plataforma pertenece a un proveedor externo diferente sin integración central",
+        "Que los canales deben adoptar todos los módulos disponibles sin posibilidad de elegir solo los que necesitan"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-044",
+      "text": "¿Qué aprendizaje estratégico dejó la evolución del Proyecto Y sobre la construcción de plataformas internas?",
+      "options": [
+        "Que la plataforma debe evolucionar junto con las necesidades de los canales y no solo según la visión interna del equipo que la construye",
+        "Que una vez definida la arquitectura inicial, esta no debe modificarse para garantizar la estabilidad",
+        "Que las plataformas internas siempre deben priorizar la adopción por encima de la calidad técnica",
+        "Que el equipo de la plataforma debe tener control total sobre los roadmaps de todos los canales consumidores"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-045",
+      "text": "¿Qué rol juegan las encuestas de experiencia del cliente interno (CX) dentro de la estrategia del Proyecto Y?",
+      "options": [
+        "Miden la satisfacción de los equipos que consumen las capacidades para identificar áreas de mejora en soporte y entrega",
+        "Evalúan la satisfacción de los clientes finales de los canales con respecto a los servicios financieros ofrecidos",
+        "Determinan el salario variable de los miembros del equipo del Proyecto Y según resultados trimestrales",
+        "Recopilan retroalimentación exclusivamente de la alta gerencia sobre el portafolio de capacidades disponibles"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-046",
+      "text": "¿Qué impacto tuvo para los canales móviles de Empresa X que el Proyecto Y centralizara las capacidades de diseño y experiencia?",
+      "options": [
+        "Aceleró la entrega de nuevas funcionalidades manteniendo una identidad visual coherente en todas las aplicaciones",
+        "Obligó a todos los canales móviles a lanzar sus actualizaciones de forma sincronizada en la misma fecha",
+        "Eliminó la necesidad de realizar pruebas de usuario en dispositivos con diferentes sistemas operativos",
+        "Generó conflictos de identidad de marca entre las distintas aplicaciones de la organización"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-047",
+      "text": "¿Qué ventaja operativa genera para Empresa X tener capacidades de seguridad centralizadas en el Proyecto Y?",
+      "options": [
+        "Una vulnerabilidad corregida en el componente central se aplica automáticamente a todos los canales que lo consumen",
+        "Solo el equipo de seguridad tiene acceso a los logs de todos los canales para gestionar los incidentes",
+        "Los canales pueden desactivar las políticas de seguridad en ambientes de prueba sin aprobación del equipo central",
+        "La organización puede prescindir de auditorías externas de seguridad al tener controles internos centralizados"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-048",
+      "text": "¿Qué diferencia hay entre capacidades entregadas en producción y pilotos o MVPs dentro del portafolio del Proyecto Y?",
+      "options": [
+        "Las capacidades productivas tienen consumidores reales y soporte activo, mientras que los pilotos exploran viabilidad antes de comprometerse con una entrega completa",
+        "Los pilotos son versiones más avanzadas que las productivas porque incorporan las últimas tendencias tecnológicas",
+        "No hay diferencia: el Proyecto Y trata todos sus desarrollos como productivos desde el primer día de entrega",
+        "Los pilotos son exclusivamente experimentos de design thinking sin código funcional"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-049",
+      "text": "¿Qué representa para el Proyecto Y la evolución hacia capacidades con soporte de inteligencia artificial?",
+      "options": [
+        "La posibilidad de automatizar tareas de soporte, documentación y asistencia a desarrolladores para acelerar la adopción",
+        "La sustitución completa de los equipos humanos de soporte por sistemas automatizados sin supervisión",
+        "La obligatoriedad de que todos los canales integren modelos de IA en sus flujos de usuario",
+        "El desarrollo de productos de inversión automatizados para clientes de alto patrimonio"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-050",
+      "text": "¿Qué papel tiene la gestión de programación de transacciones dentro del portafolio del Proyecto Y?",
+      "options": [
+        "Permite a los canales ofrecer a los usuarios la posibilidad de agendar operaciones financieras en fechas futuras de forma centralizada",
+        "Administra los calendarios internos de reuniones del equipo del Proyecto Y",
+        "Gestiona los turnos de atención en oficinas físicas para reducir tiempos de espera",
+        "Controla la ejecución de scripts de mantenimiento en los servidores de producción"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-051",
+      "text": "¿Cuál fue el primer canal digital que utilizó el Sistema de Diseño web del Proyecto Y?",
+      "options": [
+        "La Sucursal Virtual de Inversiones, que fue identificada como el primer consumidor del sistema de diseño para aplicaciones web",
+        "El portal de empleados internos de la organización para gestión de nómina",
+        "La tienda digital de productos de consumo masivo de la organización",
+        "El portal de proveedores externos para gestión de facturación y contratos"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-052",
+      "text": "¿Qué significa que el Proyecto Y adopte un modelo de plataforma 'sin ser propietario de todo'?",
+      "options": [
+        "Que habilita capacidades del ecosistema corporativo pero los equipos de producto conservan la propiedad y autonomía sobre sus canales",
+        "Que el Proyecto Y puede modificar cualquier canal consumidor sin requerir aprobación del equipo dueño del producto",
+        "Que el Proyecto Y solo provee asesoría estratégica sin desarrollar ninguna capacidad técnica propia",
+        "Que los canales financian directamente el desarrollo de las capacidades que consumen del Proyecto Y"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-053",
+      "text": "¿Qué implica para los equipos de canal que el Proyecto Y ofrezca plantillas y estándares de referencia?",
+      "options": [
+        "Que pueden comenzar sus desarrollos desde una base probada, reduciendo el tiempo de configuración inicial y errores comunes",
+        "Que deben implementar exactamente los patrones propuestos sin posibilidad de adaptación a sus necesidades específicas",
+        "Que el Proyecto Y asume la responsabilidad de todas las decisiones técnicas del equipo consumidor",
+        "Que los canales pierden la capacidad de innovar en sus propias experiencias de usuario"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-054",
+      "text": "¿Cómo contribuye el Proyecto Y a la sostenibilidad tecnológica de largo plazo de los canales digitales?",
+      "options": [
+        "Manteniendo actualizadas las capacidades base para que los canales se beneficien de mejoras sin tener que invertir en ello individualmente",
+        "Exigiendo que todos los canales refactoren su código cada vez que sale una nueva versión de las capacidades base",
+        "Garantizando que ningún canal pueda adoptar tecnologías externas que no hayan sido evaluadas por el Proyecto Y",
+        "Centralizando todos los presupuestos de tecnología para asignarlos según las prioridades del equipo central"
+      ],
+      "correctOptionIndex": 0
+    },
+    {
+      "id": "gal-v2-055",
+      "text": "¿Qué aprendizaje dejó para el Proyecto Y la experiencia de gestionar canales con poblaciones de usuarios muy distintas como personas, empresas y pymes?",
+      "options": [
+        "Que las capacidades transversales deben ser suficientemente flexibles para adaptarse a contextos y necesidades muy diferentes sin fragmentar la plataforma",
+        "Que es más eficiente construir plataformas completamente independientes para cada segmento de usuarios",
+        "Que las personas y empresas tienen las mismas necesidades digitales y por tanto deben usar exactamente los mismos flujos",
+        "Que la segmentación de usuarios es responsabilidad exclusiva de los equipos de negocio y no de la plataforma"
+      ],
+      "correctOptionIndex": 0
+    }
+  ]
+}
