@@ -34,6 +34,7 @@ export class BoardPage implements OnInit, OnDestroy {
 
   readonly match = this.currentMatchStore.match;
   readonly liveScore = this.matchStore.liveScore;
+  readonly isOffline = this.currentMatchStore.isOffline;
   readonly activeCardId = signal<string | null>(null);
   readonly feedback = signal<QuestionModalFeedback>(null);
 

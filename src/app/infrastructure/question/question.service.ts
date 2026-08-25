@@ -54,6 +54,7 @@ Reglas estrictas:
 - Cada pregunta debe tener exactamente 4 opciones de respuesta.
 - Solo una opción es correcta.
 - Dificultad equilibrada: ni trivial ni oscura para el público general.
+- El enunciado debe tener entre 30 y 180 caracteres, y cada opción entre 10 y 100 caracteres.
 - Responde ÚNICAMENTE con JSON válido, sin texto adicional, siguiendo este esquema exacto:
 
 {
@@ -78,6 +79,7 @@ Reglas estrictas:
 - Cada pregunta debe tener exactamente 4 opciones de respuesta.
 - Solo una opción es correcta.
 - No inventes datos que no estén en el contexto proporcionado.
+- El enunciado debe tener entre 30 y 180 caracteres, y cada opción entre 10 y 100 caracteres.
 - Responde ÚNICAMENTE con JSON válido, sin texto adicional, siguiendo este esquema exacto:
 
 {

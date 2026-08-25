@@ -143,6 +143,37 @@ describe('WelcomePage', () => {
     expect(component.form.controls.alias.value).toBe('Jugador1');
   });
 
+  it('deja el estado limpio (sin partida a medio construir) cuando el usecase falla (FR-025)', () => {
+    const fixture = createComponent();
+    const component = fixture.componentInstance;
+    component.form.controls.alias.setValue('Jugador1');
+    component.form.controls.topic.setValue('Fútbol');
+    buildMock.mockReturnValue(throwError(() => new Error('fallo de conectividad')));
+
+    component.submit();
+
+    expect(setMatchMock).not.toHaveBeenCalled();
+    expect(initializeSessionMock).not.toHaveBeenCalled();
+    expect(setQuestionsMock).not.toHaveBeenCalled();
+    expect(navigateByUrlMock).not.toHaveBeenCalled();
+    expect(component.errorMessage()).toBeTruthy();
+  });
+
+  it('muestra un mensaje específico de conectividad cuando falla estando offline (FR-025)', () => {
+    const onLineSpy = jest.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(false);
+    const fixture = createComponent();
+    const component = fixture.componentInstance;
+    component.form.controls.alias.setValue('Jugador1');
+    component.form.controls.topic.setValue('Fútbol');
+    buildMock.mockReturnValue(throwError(() => new Error('fallo de conectividad')));
+
+    component.submit();
+
+    expect(component.errorMessage()).toBe('Perdiste la conexión a internet. Verifica tu red e intenta nuevamente.');
+
+    onLineSpy.mockRestore();
+  });
+
   it('muestra el mensaje de agotamiento de solicitudes de sesión cuando se alcanza el límite (FR-032)', () => {
     const fixture = createComponent();
     const component = fixture.componentInstance;

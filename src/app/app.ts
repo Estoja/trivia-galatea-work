@@ -1,6 +1,7 @@
 import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
+import { CurrentMatchStore } from './shared/foundational/state/current-match.store';
 import { MatchStoreService } from './shared/foundational/state/match-store.service';
 
 /**
@@ -18,6 +19,7 @@ const RESET_ROUTE_PREFIXES = ['/welcome', '/results'] as const;
 })
 export class App {
   private readonly matchStore = inject(MatchStoreService);
+  private readonly currentMatchStore = inject(CurrentMatchStore);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -32,6 +34,14 @@ export class App {
     event.preventDefault();
     event.returnValue = '';
   };
+
+  /**
+   * Handlers nativos `online`/`offline` (FR-025): actualizan `CurrentMatchStore.isOffline`,
+   * leído por `board.page.ts` para mostrar (u ocultar, al recuperar conexión) el aviso de
+   * que la generación por IA no está disponible sin conexión.
+   */
+  private readonly handleOnline = (): void => this.currentMatchStore.setOffline(false);
+  private readonly handleOffline = (): void => this.currentMatchStore.setOffline(true);
 
   constructor() {
     this.router.events
@@ -51,6 +61,13 @@ export class App {
       }
     });
 
-    this.destroyRef.onDestroy(() => window.removeEventListener('beforeunload', this.handleBeforeUnload));
+    window.addEventListener('online', this.handleOnline);
+    window.addEventListener('offline', this.handleOffline);
+
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('beforeunload', this.handleBeforeUnload);
+      window.removeEventListener('online', this.handleOnline);
+      window.removeEventListener('offline', this.handleOffline);
+    });
   }
 }

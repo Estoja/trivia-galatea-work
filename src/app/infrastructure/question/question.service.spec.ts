@@ -17,7 +17,12 @@ function bankQuestion(id: string, text = `Pregunta ${id}`) {
 function geminiRawQuestion(text: string) {
   return {
     text,
-    options: ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+    options: [
+      'Primera opción de respuesta',
+      'Segunda opción de respuesta',
+      'Tercera opción de respuesta',
+      'Cuarta opción de respuesta',
+    ],
     correctOptionIndex: 1,
   };
 }
@@ -67,10 +72,10 @@ describe('QuestionService', () => {
         of(
           JSON.stringify({
             questions: [
-              geminiRawQuestion('Pregunta IA 1'),
-              geminiRawQuestion('Pregunta IA 2'),
-              geminiRawQuestion('Pregunta IA 3'),
-              geminiRawQuestion('Pregunta IA 4'),
+              geminiRawQuestion('Pregunta generada por IA número uno para el banco de Galatea'),
+              geminiRawQuestion('Pregunta generada por IA número dos para el banco de Galatea'),
+              geminiRawQuestion('Pregunta generada por IA número tres para el banco de Galatea'),
+              geminiRawQuestion('Pregunta generada por IA número cuatro para el banco de Galatea'),
             ],
           }),
         ),
@@ -88,11 +93,15 @@ describe('QuestionService', () => {
     });
 
     it('deduplica por texto entre preguntas del banco y del fallback de IA (FR-021)', (done) => {
-      const bank = { version: 1, questions: [bankQuestion('gal-0', 'Texto duplicado')] };
+      const duplicatedText = 'Este es un texto duplicado de prueba entre el banco y la IA generativa';
+      const bank = { version: 1, questions: [bankQuestion('gal-0', duplicatedText)] };
       generateJsonMock.mockReturnValue(
         of(
           JSON.stringify({
-            questions: [geminiRawQuestion('Texto duplicado'), geminiRawQuestion('Texto único')],
+            questions: [
+              geminiRawQuestion(duplicatedText),
+              geminiRawQuestion('Este es un texto completamente único generado por la IA'),
+            ],
           }),
         ),
       );
@@ -106,6 +115,31 @@ describe('QuestionService', () => {
       const req = httpMock.expectOne('assets/galatea-questions.json');
       req.flush(bank);
     });
+
+    it('descarta las preguntas de IA fuera del rango de longitud (FR-005A) y no completa el faltante con ellas (FR-004)', (done) => {
+      const bank = { version: 1, questions: [bankQuestion('gal-0'), bankQuestion('gal-1')] };
+      generateJsonMock.mockReturnValue(
+        of(
+          JSON.stringify({
+            questions: [
+              geminiRawQuestion('Muy corta'), // menos de 30 caracteres: se descarta (FR-005A)
+              geminiRawQuestion('Pregunta generada por IA número dos para el banco de Galatea'),
+              geminiRawQuestion('Pregunta generada por IA número tres para el banco de Galatea'),
+              geminiRawQuestion('Pregunta generada por IA número cuatro para el banco de Galatea'),
+            ],
+          }),
+        ),
+      );
+
+      service.getGalateaQuestions(6).subscribe((questions) => {
+        // El banco aporta 2, la IA aporta sólo 3 válidas (la 4ª se descartó) => 5 en total, no 6.
+        expect(questions.length).toBe(5);
+        done();
+      });
+
+      const req = httpMock.expectOne('assets/galatea-questions.json');
+      req.flush(bank);
+    });
   });
 
   describe('getChosenTopicQuestions', () => {
@@ -113,7 +147,9 @@ describe('QuestionService', () => {
       generateJsonMock.mockReturnValue(
         of(
           JSON.stringify({
-            questions: Array.from({ length: 6 }, (_, i) => geminiRawQuestion(`Pregunta tema ${i}`)),
+            questions: Array.from({ length: 6 }, (_, i) =>
+              geminiRawQuestion(`Pregunta número ${i} sobre el tema elegido por el jugador en la partida`),
+            ),
           }),
         ),
       );
@@ -127,7 +163,33 @@ describe('QuestionService', () => {
 
     it('lanza InsufficientGeneratedQuestionsError si Gemini retorna menos de 6 preguntas válidas', (done) => {
       generateJsonMock.mockReturnValue(
-        of(JSON.stringify({ questions: [geminiRawQuestion('Solo una pregunta')] })),
+        of(
+          JSON.stringify({
+            questions: [geminiRawQuestion('Esta es la única pregunta válida generada por Gemini en la prueba')],
+          }),
+        ),
+      );
+
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe({
+        error: (err) => {
+          expect(err).toBeInstanceOf(InsufficientGeneratedQuestionsError);
+          done();
+        },
+      });
+    });
+
+    it('lanza InsufficientGeneratedQuestionsError cuando una pregunta fuera de rango de longitud (FR-005A) deja menos de 6 válidas — no permite un tablero incompleto', (done) => {
+      generateJsonMock.mockReturnValue(
+        of(
+          JSON.stringify({
+            questions: [
+              ...Array.from({ length: 5 }, (_, i) =>
+                geminiRawQuestion(`Pregunta número ${i} sobre el tema elegido por el jugador en la partida`),
+              ),
+              geminiRawQuestion('Muy corta'), // menos de 30 caracteres: se descarta (FR-005A), quedan sólo 5 válidas
+            ],
+          }),
+        ),
       );
 
       service.getChosenTopicQuestions('Fútbol', 6).subscribe({
@@ -155,7 +217,13 @@ describe('QuestionService', () => {
       // lo contiene por accidente (p. ej. si alguien concatenara sesión completa).
       const playerAlias = 'AliasSecretoDelJugador';
       generateJsonMock.mockReturnValue(
-        of(JSON.stringify({ questions: Array.from({ length: 6 }, (_, i) => geminiRawQuestion(`Pregunta ${i}`)) })),
+        of(
+          JSON.stringify({
+            questions: Array.from({ length: 6 }, (_, i) =>
+              geminiRawQuestion(`Pregunta número ${i} de prueba con longitud suficiente para pasar la validación`),
+            ),
+          }),
+        ),
       );
 
       service.getChosenTopicQuestions('Fútbol', 6).subscribe(() => {

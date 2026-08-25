@@ -53,4 +53,16 @@ describe('CurrentMatchStore', () => {
 
     expect(store.match()).toBeNull();
   });
+
+  it('debe iniciar con isOffline reflejando navigator.onLine', () => {
+    expect(store.isOffline()).toBe(!navigator.onLine);
+  });
+
+  it('debe actualizar isOffline vía setOffline', () => {
+    store.setOffline(true);
+    expect(store.isOffline()).toBe(true);
+
+    store.setOffline(false);
+    expect(store.isOffline()).toBe(false);
+  });
 });

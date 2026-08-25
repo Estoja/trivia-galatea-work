@@ -7,6 +7,7 @@ const browserGlobals = {
   console: 'readonly',
   window: 'readonly',
   document: 'readonly',
+  navigator: 'readonly',
   self: 'readonly',
   globalThis: 'readonly',
   fetch: 'readonly',

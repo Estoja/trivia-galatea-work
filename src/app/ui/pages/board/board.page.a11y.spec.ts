@@ -38,7 +38,7 @@ describe('BoardPage accessibility', () => {
       imports: [BoardPage],
       providers: [
         { provide: Router, useValue: { navigateByUrl: jest.fn() } },
-        { provide: CurrentMatchStore, useValue: { match: signal(match), setMatch: jest.fn() } },
+        { provide: CurrentMatchStore, useValue: { match: signal(match), setMatch: jest.fn(), isOffline: signal(false) } },
         {
           provide: MatchStoreService,
           useValue: {
