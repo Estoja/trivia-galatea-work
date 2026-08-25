@@ -184,10 +184,10 @@ Proyecto único Angular 20 (frontend-only, sin backend): `src/app/` con capas `d
 
 **Purpose**: Mejoras que afectan a todas las historias de usuario
 
-- [X] T068 [P] Ejecutar y corregir hallazgos de axe-core en las 3 páginas (`welcome`, `board`, `results`) — Lighthouse Accessibility ≥95 (spec.md Accessibility Criteria)
+- [~] T068 [P] Ejecutar y corregir hallazgos de axe-core en las 3 páginas (`welcome`, `board`, `results`) — Lighthouse Accessibility ≥95 (spec.md Accessibility Criteria) — **axe-core ejecutado y sin violaciones** (evidencia en tests `.a11y.spec.ts`), pero el **score de Lighthouse ≥95 no ha sido medido**: Lighthouse CLI no pudo instalarse en este entorno (ver [research.md §9.2](./research.md)). ACCIÓN MANUAL PENDIENTE antes del evento: ejecutar Lighthouse real en un entorno con acceso completo a la red y confirmar el score ≥95 (ver [research.md §9.9](./research.md))
 - [X] T069 [P] Verificar navegación completa por teclado del flujo end-to-end (inicio → tablero → pregunta → resultados) — automatizado en `e2e/keyboard-nav.spec.ts` (Playwright), validado contra la app real (ver bug crítico de `index.html` corregido en esta misma unidad de trabajo)
 - [X] T070 [P] Auditar uso exclusivo de componentes Caribe (`cb-*`) y tokens `--cb-sys-*`; confirmar que sólo `tg-question-card`, `tg-question-modal`, `tg-score-board`, `tg-celebration` son componentes propios (Principio VII) — evidencia en [research.md §9.6](./research.md)
-- [X] T071 [P] Medir bundle size (presupuesto ≤250 KB) y Core Web Vitals (FCP≤1.5s, LCP≤2.5s, TBT≤200ms, Principio IX) — evidencia en [research.md §9.1-9.2](./research.md); bundle inicial 101.50 kB estimados de transferencia; CWV aproximados vía `e2e/performance-metrics.spec.ts` (Lighthouse real no instalable en este entorno, sandbox sin acceso al registro npm público — queda como validación manual pendiente)
+- [~] T071 [P] Medir bundle size (presupuesto ≤250 KB) y Core Web Vitals (FCP≤1.5s, LCP≤2.5s, TBT≤200ms, Principio IX) — evidencia en [research.md §9.1-9.2](./research.md); bundle inicial 101.50 kB estimados de transferencia **medido y dentro del presupuesto**; CWV **aproximados** vía `e2e/performance-metrics.spec.ts` (Lighthouse real no instalable en este entorno, sandbox sin acceso al registro npm público). ACCIÓN MANUAL PENDIENTE antes del evento: medir CWV reales con Lighthouse en un entorno con acceso completo a la red (ver [research.md §9.9](./research.md))
 - [X] T072 [P] Escribir tests e2e (Playwright) del flujo completo US1→US4 incluyendo el caso de error de IA (FR-003) — automatizado en `e2e/full-flow.spec.ts` (happy path completo + "Jugar de nuevo"); el caso de error de IA (FR-003) se cubre con tests unitarios existentes en `welcome.page.spec.ts` (vía `throwError`) en lugar de e2e, ya que el modo `local`/mock no tiene punto de inyección de fallos y el modo real requiere credenciales de Gemini en vivo (no determinístico) — decisión documentada como comentario de código en `e2e/full-flow.spec.ts`
 - [X] T073 [P] Sanitizar/escapar alias y tema libre antes de renderizarlos en pantalla (prevención XSS, ver checklists/security.md) — auditoría y test de regresión en [research.md §9.7](./research.md) y `results.page.spec.ts`
 - [X] T074 Verificar cobertura de tests ≥80% global y ≥95% en todos los usecases (Principio V, NO NEGOCIABLE) — ajustar tests faltantes — ya se cumplía (86.05% Stmts/89.25% Branch/84.74% Funcs/86.81% Lines global; 100% en todos los usecases), no se requirieron tests adicionales
@@ -301,3 +301,10 @@ Con múltiples desarrolladores:
 - Detenerse en cada checkpoint para validar la historia de forma independiente
 - Evitar: tareas vagas, conflictos de mismo archivo, dependencias cruzadas entre historias que rompan la independencia
 - Ver [checklists/](./checklists/) para gaps de requisitos detectados que pueden requerir aclaración de spec.md antes o durante la implementación
+
+---
+
+## Phase 8: Convergence
+
+- [ ] T092 Corregir marcador de T068 de `[X]` a `[~]` y ejecutar auditoría Lighthouse Accessibility real (≥95) en un entorno con acceso completo a la red antes del evento; archivar evidencia (captura/reporte) en research.md, per Accessibility Criteria (contradicts)
+- [ ] T093 Corregir marcador de T071 de `[X]` a `[~]` y medir Core Web Vitals reales (FCP≤1.5s, LCP≤2.5s, TBT≤200ms) con Lighthouse u herramienta equivalente en un entorno con acceso completo a la red antes del evento; archivar evidencia en research.md, per Constitution Principio IX (contradicts)

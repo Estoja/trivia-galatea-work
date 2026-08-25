@@ -199,13 +199,22 @@ Búsqueda exhaustiva en `src/app/**` confirma que el proyecto **no usa** `[inner
 
 La firma de `QuestionGateway.getChosenTopicQuestions(topic, count)` no acepta el alias del jugador en ningún punto de la cadena de llamada (`QuestionService` → `buildChosenTopicPrompt(topic, count)` → `GeminiClientService.generateJson(prompt)`), por lo que es estructuralmente imposible que el alias llegue al prompt. Se agregó una prueba explícita en `question.service.spec.ts` que espía el prompt real enviado a `generateJson` y confirma que no contiene un alias de prueba, sólo el tema y las instrucciones del prompt.
 
-### 9.9 Resumen consolidado de acciones manuales pendientes (T077, T078, T089)
+### 9.9 Checklist operativo consolidado de acciones manuales pendientes (T077, T078, T089, T092, T093)
 
-Estas 3 tareas tienen su **protocolo/mecanismo ya definido y documentado** (§9.4, §9.5), pero su **ejecución en vivo NO se ha realizado** — quedan marcadas `[~]` (no `[X]`) en [tasks.md](./tasks.md) hasta que alguien las corra manualmente:
+Estas 5 tareas tienen su **protocolo/mecanismo ya definido y documentado** (§9.2, §9.4, §9.5), pero su **ejecución en vivo NO se ha realizado** — quedan marcadas `[~]` (no `[X]`) en [tasks.md](./tasks.md) hasta que alguien las corra manualmente. Se consolidan aquí en un único checklist operativo, agrupadas por fecha límite, para que no se dispersen entre secciones (hallazgo de convergencia F1/F2, 2026-08-25):
 
-| Tarea | Cuándo | Qué hacer | Dónde registrar evidencia |
-|---|---|---|---|
-| T077 | Antes del evento | Ejecutar ≥10 temas libres variados contra el modo producción real (Gemini real, no mock) y completar la rúbrica de relevancia en `checklists/ai-topic-questions.md` | `checklists/ai-topic-questions.md` + nota en este research.md |
-| T078 | Antes del evento | Registrar ≥20 llamadas reales a `GeminiClientService.generateJson`, calcular el percentil p90 de latencia y confirmar que está dentro de un margen cómodo bajo `GEMINI_TIMEOUT_MS` (30s) | Este research.md (§9.4) |
-| T089 | Dentro de las 24h posteriores al cierre del evento | Rotar o deshabilitar la API key de Gemini/Vertex AI en Google Cloud Console; confirmar que la restricción de HTTP Referer estuvo activa todo el período | Captura de pantalla archivada junto a este research.md |
+**Pre-evento** (antes de que arranque la ventana pública del evento):
+
+| Tarea | Qué hacer | Dónde registrar evidencia |
+|---|---|---|
+| T077 | Ejecutar ≥10 temas libres variados contra el modo producción real (Gemini real, no mock) y completar la rúbrica de relevancia en `checklists/ai-topic-questions.md` | `checklists/ai-topic-questions.md` + nota en este research.md |
+| T078 | Registrar ≥20 llamadas reales a `GeminiClientService.generateJson`, calcular el percentil p90 de latencia y confirmar que está dentro de un margen cómodo bajo `GEMINI_TIMEOUT_MS` (30s) | Este research.md (§9.4) |
+| T092 | Ejecutar auditoría Lighthouse Accessibility real (≥95) en un entorno con acceso completo a la red (Lighthouse no instalable en este sandbox, ver §9.2) | Este research.md (§9.2) + captura/reporte archivado |
+| T093 | Medir Core Web Vitals reales (FCP≤1.5s, LCP≤2.5s, TBT≤200ms) con Lighthouse u herramienta equivalente en un entorno con acceso completo a la red | Este research.md (§9.2) + captura/reporte archivado |
+
+**Post-evento, dentro de las 24h posteriores al cierre**:
+
+| Tarea | Qué hacer | Dónde registrar evidencia |
+|---|---|---|
+| T089 | Rotar o deshabilitar la API key de Gemini/Vertex AI en Google Cloud Console; confirmar que la restricción de HTTP Referer estuvo activa todo el período | Captura de pantalla archivada junto a este research.md |
 
