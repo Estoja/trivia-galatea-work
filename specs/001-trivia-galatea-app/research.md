@@ -218,3 +218,51 @@ Estas 5 tareas tienen su **protocolo/mecanismo ya definido y documentado** (§9.
 |---|---|---|
 | T089 | Rotar o deshabilitar la API key de Gemini/Vertex AI en Google Cloud Console; confirmar que la restricción de HTTP Referer estuvo activa todo el período | Captura de pantalla archivada junto a este research.md |
 
+---
+
+## 10. Bug Reports (2026-08-25) — IA options bias + sensitive-topic moderation
+
+### 10.1 Bug A — Sesgo de posición en respuestas correctas (solo IA)
+
+**Síntoma reportado**: En partidas reales, muchas preguntas generadas por IA concentran `correctOptionIndex` en la misma posición (p. ej. casi todas opción 1 o 2), permitiendo estrategias triviales (marcar siempre la misma opción).
+
+**Alcance confirmado**:
+- Aplica únicamente a preguntas generadas por IA (`ChosenTopic` + fallback IA de Galatea).
+- No aplica al banco curado manual de Galatea (`galatea-questions.json`).
+
+**Riesgo de negocio**: Disminuye la calidad competitiva del juego y falsea resultados (acierto por patrón posicional, no por conocimiento).
+
+**Decisión**: Se formaliza en `FR-033` un control de distribución por lote de 6 preguntas IA, evitando concentración dominante de índices (>3 en una misma posición). Estrategia permitida: reordenar opciones preservando correcta o regenerar lote antes de iniciar partida.
+
+**Evidencia mínima esperada de cierre**:
+- Tests unitarios de regresión que verifiquen diversidad de `correctOptionIndex` en lotes IA.
+- Confirmación explícita de no impacto en banco curado manual.
+
+### 10.2 Bug B — Moderación sensible con falsos negativos y falsos positivos
+
+**Síntoma reportado**:
+- Falsos negativos: términos sensibles (`sexo`, `kamasutra`, `nopor`, `porno`) pasan sin bloqueo.
+- Falso positivo: término neutro (`computación`) bloqueado como tema sensible.
+
+**Riesgo de negocio**: Se expone contenido no apto y, a la vez, se frustra a usuarios con bloqueos incorrectos de temas válidos.
+
+**Hipótesis de causa raíz**:
+- Reglas de coincidencia demasiado frágiles (normalización incompleta).
+- Posible matching por subcadenas sin tokenización adecuada.
+- Cobertura insuficiente de variantes ortográficas/leet en la lista de términos prohibidos.
+
+**Decisión**: Se formaliza en `FR-034` una política de moderación normalizada y testeable (case-insensitive, sin tildes, variantes comunes/leetspeak básico, minimizando falsos positivos por subcadenas no ofensivas).
+
+**Evidencia mínima esperada de cierre**:
+- Tests unitarios que bloqueen `sexo`, `kamasutra`, `nopor`, `porno`.
+- Tests unitarios que permitan `computación` y otros temas neutros.
+- Casos de regresión de falsos positivos/negativos documentados en suite.
+
+### 10.3 Plan de ejecución trazable
+
+Ambos bugs quedan trazados en `tasks.md` como:
+- `T096` y `T098` para `FR-033` (sesgo de opciones IA).
+- `T097` y `T099` para `FR-034` (filtro sensible).
+
+El cierre técnico de esta sección requiere completar dichas tareas y anexar resultados de pruebas.
+

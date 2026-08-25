@@ -132,6 +132,8 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - **FR-030**: Toda interpolación de texto libre ingresado por el jugador (categoría/tema elegido) en atributos `aria-*` DEBE escapar entidades HTML (`"` → `&quot;`, `'` → `&#x27;`, `<` → `&lt;`, `>` → `&gt;`) mediante un pipe Angular reutilizable, para evitar inyección de contenido accesible no esperado.
 - **FR-031**: El botón que dispara la generación de preguntas vía IA DEBE deshabilitarse inmediatamente al primer clic y permanecer deshabilitado hasta que la operación complete o falle, para prevenir solicitudes concurrentes, consumo doble de cuota y estados inconsistentes en `MatchStore`.
 - **FR-032**: El sistema NO DEBE imponer un límite de solicitudes de IA por sesión en el cliente. El control de abuso/cuota DEBE gestionarse de forma centralizada en Google Cloud (restricciones de API key por HTTP Referer, App Check y cuotas/rate limits del proyecto), para permitir operación continua en modo evento/kiosco con múltiples jugadores en un mismo navegador durante todo el día.
+- **FR-033**: En preguntas generadas por IA (tema elegido y fallback Galatea), el sistema DEBE evitar sesgos de posición de respuesta correcta. En cada lote de 6 preguntas IA, la distribución de correctOptionIndex (0..3) NO DEBE concentrarse en una sola posición de forma dominante (por ejemplo, >3 respuestas correctas en el mismo índice). Si se detecta concentración no válida, el sistema DEBE reordenar opciones preservando la opción correcta o regenerar el lote antes de iniciar la partida. Esta regla NO aplica al banco curado manual.
+- **FR-034**: La validación de temas sensibles (FR-020) DEBE aplicar coincidencia por términos prohibidos normalizados (case-insensitive, sin tildes, con variantes comunes y leetspeak básico) y DEBE minimizar falsos positivos por subcadenas no ofensivas. El sistema DEBE bloquear temas explícitos como “sexo”, “kamasutra”, “nopor” y “porno”, y DEBE permitir temas neutros como “computación”.
 
 ### Key Entities
 
@@ -236,3 +238,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 ### Session 2026-08-25 (recalibración de rangos FR-014)
 
 - Q: Con FR-010 (`(N_galatea×10)×N_galatea + N_tema×10`) y FR-012 (máximo 6 respuestas), algunos puntajes intermedios no son alcanzables y el rango 300–359 quedaba vacío en operación real. ¿Se ajustan rangos o fórmula? → A: Ajustar rangos (sin cambiar fórmula). Se mantiene la mecánica de puntaje y se recalibra FR-014 para que los 7 niveles sigan existiendo pero todos sean alcanzables: 0–59, 60–99, 100–129, 130–179, 180–239, 240–359, 360.
+
+### Session 2026-08-25 (bugfix IA: sesgo de opciones + filtro sensible)
+- Q: En producción se observó concentración de respuestas correctas en la misma opción (1 o 2), permitiendo estrategias triviales. ¿Qué alcance aplica? → A: Solo preguntas generadas por IA. El banco manual queda fuera.
+- Q: El filtro sensible dejó pasar “sexo/kamasutra/nopor/porno” y bloqueó “computación”. ¿Cómo se corrige? → A: Política de moderación normalizada con lista explícita de bloqueos y pruebas de regresión de falsos positivos/negativos.
