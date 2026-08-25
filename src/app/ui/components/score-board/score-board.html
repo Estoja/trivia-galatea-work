@@ -1,1 +1,5 @@
-<p class="tg-score-board" aria-live="polite">Puntos: {{ score() }}</p>
+<p class="tg-score-board" aria-live="polite">
+  <span class="tg-score-board__icon" aria-hidden="true">🏆</span>
+  <span class="tg-score-board__label">Puntos</span>
+  <span class="tg-score-board__value">{{ score() }}</span>
+</p>

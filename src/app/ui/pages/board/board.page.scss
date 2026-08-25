@@ -1,0 +1,53 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 90% 8%, rgb(1 66 109 / 14%), transparent 32%),
+    radial-gradient(circle at 8% 92%, rgb(252 220 55 / 18%), transparent 30%),
+    linear-gradient(135deg, rgb(250 251 255), rgb(241 246 255));
+}
+
+.tg-board-page {
+  margin: 0 auto;
+  max-width: 78rem;
+  padding: 2.5rem 1.5rem 4rem;
+  display: grid;
+  gap: 2.5rem;
+}
+
+.tg-board-page tg-score-board {
+  position: sticky;
+  top: 1.25rem;
+  z-index: 10;
+  width: fit-content;
+}
+
+.tg-board-page__offline-banner {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: rgb(252 220 55 / 22%);
+  color: rgb(61 46 0);
+  font-size: 0.9rem;
+}
+
+.tg-board-page__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem 1.5rem;
+  justify-items: stretch;
+}
+
+@media (min-width: 48rem) {
+  .tg-board-page__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2.25rem;
+  }
+}
+
+@media (min-width: 72rem) {
+  .tg-board-page__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 2.5rem;
+  }
+}

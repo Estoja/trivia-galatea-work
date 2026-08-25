@@ -9,6 +9,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   selector: 'tg-score-board',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './score-board.html',
+  styleUrl: './score-board.scss',
 })
 export class ScoreBoard {
   readonly score = input.required<number>();

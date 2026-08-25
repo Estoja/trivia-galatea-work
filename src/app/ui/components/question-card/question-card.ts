@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { CbStroke } from '@bancolombia/caribe-design-system/stroke';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
 import { AnswerResult, CardModel } from '../../../domain/models/match/match.model';
 import { AriaEscapePipe } from '../../../shared/pipes/aria-escape.pipe';
@@ -11,6 +12,7 @@ import { AriaEscapePipe } from '../../../shared/pipes/aria-escape.pipe';
 @Component({
   selector: 'tg-question-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CbStroke],
   templateUrl: './question-card.html',
   styleUrl: './question-card.scss',
 })

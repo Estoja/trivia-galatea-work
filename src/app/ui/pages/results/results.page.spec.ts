@@ -130,4 +130,19 @@ describe('ResultsPage', () => {
     expect(clearMock).toHaveBeenCalled();
     expect(navigateMock).toHaveBeenCalledWith(['/welcome'], { queryParams: { alias: 'Jugador1' } });
   });
+
+  it('T073 (XSS): un alias/tema con marcado malicioso se renderiza como texto plano escapado, nunca como HTML/script ejecutable', () => {
+    const maliciousAlias = '<script>window.__xss = true;</script>';
+    const match = buildMatch();
+    const maliciousMatch: MatchModel = { ...match, player: { ...match.player, chosenTopic: '<img src=x onerror=alert(1)>' } };
+    const fixture = createComponent(maliciousMatch, maliciousAlias);
+
+    const root = fixture.nativeElement as HTMLElement;
+    // Angular interpola `{{ }}` como texto: no debe existir ningún nodo <script>/<img> real en el DOM.
+    expect(root.querySelector('script')).toBeNull();
+    expect(root.querySelector('img')).toBeNull();
+    // El texto literal (escapado) sí debe estar presente como contenido de texto plano.
+    expect(root.textContent).toContain(maliciousAlias);
+    expect(root.textContent).toContain('<img src=x onerror=alert(1)>');
+  });
 });

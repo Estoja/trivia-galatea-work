@@ -35,6 +35,7 @@ describe('BoardPage', () => {
   let openCardMock: jest.Mock;
   let confirmAnswerMock: jest.Mock;
   let currentMatchSignal: ReturnType<typeof signal<MatchModel | null>>;
+  let isOfflineSignal: ReturnType<typeof signal<boolean>>;
   let setMatchMock: jest.Mock;
 
   function createComponent(initialMatch: MatchModel | null) {
@@ -42,6 +43,7 @@ describe('BoardPage', () => {
     openCardMock = jest.fn().mockReturnValue({ ok: true });
     confirmAnswerMock = jest.fn().mockReturnValue({ ok: true });
     currentMatchSignal = signal(initialMatch);
+    isOfflineSignal = signal(false);
     setMatchMock = jest.fn((match: MatchModel) => currentMatchSignal.set(match));
 
     TestBed.configureTestingModule({
@@ -50,7 +52,7 @@ describe('BoardPage', () => {
         { provide: Router, useValue: { navigateByUrl: navigateByUrlMock } },
         {
           provide: CurrentMatchStore,
-          useValue: { match: currentMatchSignal, setMatch: setMatchMock },
+          useValue: { match: currentMatchSignal, setMatch: setMatchMock, isOffline: isOfflineSignal },
         },
         {
           provide: MatchStoreService,
@@ -108,6 +110,30 @@ describe('BoardPage', () => {
     expect(openCardMock).toHaveBeenCalledTimes(1);
   });
 
+  it('no voltea la tarjeta si el store fundacional rechaza abrirla', () => {
+    const fixture = createComponent(buildMatch());
+    const component = fixture.componentInstance;
+    openCardMock.mockReturnValueOnce({ ok: false });
+
+    component.openCard('card-0');
+    fixture.detectChanges();
+
+    expect(component.activeCard()).toBeNull();
+    expect(component.match()?.cards.find((c) => c.id === 'card-0')?.state).toBe('face-down');
+    expect(setMatchMock).not.toHaveBeenCalled();
+  });
+
+  it('no hace nada al confirmar respuesta sin ninguna tarjeta activa', () => {
+    const fixture = createComponent(buildMatch());
+    const component = fixture.componentInstance;
+
+    component.confirmAnswer(0);
+    fixture.detectChanges();
+
+    expect(confirmAnswerMock).not.toHaveBeenCalled();
+    expect(component.feedback()).toBeNull();
+  });
+
   it('aplica la respuesta, muestra feedback y cierra el modal tras el temporizador', () => {
     jest.useFakeTimers();
     const fixture = createComponent(buildMatch());
@@ -144,5 +170,47 @@ describe('BoardPage', () => {
     fixture.detectChanges();
 
     expect(navigateByUrlMock).toHaveBeenCalledWith('/results');
+  });
+
+  describe('aviso de conectividad (FR-025)', () => {
+    it('no muestra el aviso cuando hay conexión', () => {
+      const fixture = createComponent(buildMatch());
+      const compiled = fixture.nativeElement as HTMLElement;
+
+      expect(compiled.querySelector('.tg-board-page__offline-banner')).toBeNull();
+    });
+
+    it('muestra el aviso no bloqueante cuando isOffline() es true', () => {
+      const fixture = createComponent(buildMatch());
+      isOfflineSignal.set(true);
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      const banner = compiled.querySelector('.tg-board-page__offline-banner');
+
+      expect(banner).not.toBeNull();
+      expect(banner?.textContent).toContain('Sin conexión');
+    });
+
+    it('oculta el aviso de nuevo al recuperar la conexión', () => {
+      const fixture = createComponent(buildMatch());
+      isOfflineSignal.set(true);
+      fixture.detectChanges();
+
+      isOfflineSignal.set(false);
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.tg-board-page__offline-banner')).toBeNull();
+    });
+
+    it('no reinicia ni navega fuera del tablero mientras está offline', () => {
+      const fixture = createComponent(buildMatch());
+      isOfflineSignal.set(true);
+      fixture.detectChanges();
+
+      expect(navigateByUrlMock).not.toHaveBeenCalled();
+      expect(fixture.componentInstance.match()).not.toBeNull();
+    });
   });
 });

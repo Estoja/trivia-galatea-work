@@ -29,7 +29,7 @@ test.describe('Flujo completo de partida (US1→US4)', () => {
     await page.waitForURL('**/results');
     await expect(page.locator('.tg-results-page__score')).toContainText('Puntaje total');
     await expect(page.locator('.tg-results-page__alias')).toContainText('JugadorE2E');
-    await expect(page.locator('#results-play-again-button')).toBeVisible();
+    await expect(page.locator('button#results-play-again-button')).toBeVisible();
   });
 
   test('"Jugar de nuevo" vuelve a welcome con el alias prellenado', async ({ page }) => {
@@ -39,7 +39,7 @@ test.describe('Flujo completo de partida (US1→US4)', () => {
     await answerCards(page, 6);
     await page.waitForURL('**/results');
 
-    await page.locator('#results-play-again-button').click();
+    await page.locator('button#results-play-again-button').click();
 
     await page.waitForURL('**/welcome*');
     await expect(page.locator('#welcome-alias-input')).toHaveValue('OtroJugador');

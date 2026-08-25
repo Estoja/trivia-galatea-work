@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
 import { MatchModel } from '../../../domain/models/match/match.model';
 import { BuildMatchUsecase } from '../../../domain/models/match/usecase/build-match.usecase';
@@ -129,6 +129,22 @@ describe('WelcomePage', () => {
     expect(component.isSubmitting()).toBe(false);
   });
 
+  it('ignora un segundo submit mientras la generación de preguntas está en curso (FR-031)', () => {
+    const fixture = createComponent();
+    const component = fixture.componentInstance;
+    component.form.controls.alias.setValue('Jugador1');
+    component.form.controls.topic.setValue('Fútbol');
+    const pendingBuild$ = new Subject<MatchModel>();
+    buildMock.mockReturnValue(pendingBuild$);
+
+    component.submit();
+    expect(component.isSubmitting()).toBe(true);
+
+    component.submit();
+
+    expect(buildMock).toHaveBeenCalledTimes(1);
+  });
+
   it('muestra un mensaje de error amigable y conserva el alias si el usecase falla (FR-003)', () => {
     const fixture = createComponent();
     const component = fixture.componentInstance;
@@ -141,6 +157,37 @@ describe('WelcomePage', () => {
     expect(component.errorMessage()).toBeTruthy();
     expect(component.isSubmitting()).toBe(false);
     expect(component.form.controls.alias.value).toBe('Jugador1');
+  });
+
+  it('deja el estado limpio (sin partida a medio construir) cuando el usecase falla (FR-025)', () => {
+    const fixture = createComponent();
+    const component = fixture.componentInstance;
+    component.form.controls.alias.setValue('Jugador1');
+    component.form.controls.topic.setValue('Fútbol');
+    buildMock.mockReturnValue(throwError(() => new Error('fallo de conectividad')));
+
+    component.submit();
+
+    expect(setMatchMock).not.toHaveBeenCalled();
+    expect(initializeSessionMock).not.toHaveBeenCalled();
+    expect(setQuestionsMock).not.toHaveBeenCalled();
+    expect(navigateByUrlMock).not.toHaveBeenCalled();
+    expect(component.errorMessage()).toBeTruthy();
+  });
+
+  it('muestra un mensaje específico de conectividad cuando falla estando offline (FR-025)', () => {
+    const onLineSpy = jest.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(false);
+    const fixture = createComponent();
+    const component = fixture.componentInstance;
+    component.form.controls.alias.setValue('Jugador1');
+    component.form.controls.topic.setValue('Fútbol');
+    buildMock.mockReturnValue(throwError(() => new Error('fallo de conectividad')));
+
+    component.submit();
+
+    expect(component.errorMessage()).toBe('Perdiste la conexión a internet. Verifica tu red e intenta nuevamente.');
+
+    onLineSpy.mockRestore();
   });
 
   it('muestra el mensaje de agotamiento de solicitudes de sesión cuando se alcanza el límite (FR-032)', () => {

@@ -7,6 +7,7 @@ const browserGlobals = {
   console: 'readonly',
   window: 'readonly',
   document: 'readonly',
+  navigator: 'readonly',
   self: 'readonly',
   globalThis: 'readonly',
   fetch: 'readonly',
@@ -45,7 +46,7 @@ module.exports = [
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        project: ['./tsconfig.app.json', './tsconfig.spec.json'],
+        project: ['./tsconfig.app.json', './tsconfig.spec.json', './tsconfig.e2e.json'],
       },
       globals: browserGlobals,
     },
@@ -63,6 +64,16 @@ module.exports = [
     files: ['**/*.spec.ts'],
     languageOptions: {
       globals: jestGlobals,
+    },
+  },
+  {
+    files: ['e2e/**/*.ts', 'playwright.config.ts'],
+    languageOptions: {
+      // `process` para playwright.config.ts (Node); el resto de globals de
+      // navegador son necesarios porque `page.evaluate(() => ...)` recibe
+      // callbacks que se ejecutan dentro de la página (no en Node) y usan
+      // `window`/`document`/`performance` directamente.
+      globals: { ...browserGlobals, process: 'readonly', performance: 'readonly' },
     },
   },
   {

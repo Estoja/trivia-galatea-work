@@ -27,6 +27,12 @@ interface ValidRawGeminiQuestion {
   correctOptionIndex: number;
 }
 
+/** Rango de longitud permitido para legibilidad y consistencia visual en la tarjeta (FR-005A). */
+const MIN_TEXT_LENGTH = 30;
+const MAX_TEXT_LENGTH = 180;
+const MIN_OPTION_LENGTH = 10;
+const MAX_OPTION_LENGTH = 100;
+
 function isValidRawQuestion(raw: unknown): raw is ValidRawGeminiQuestion {
   if (typeof raw !== 'object' || raw === null) {
     return false;
@@ -34,9 +40,13 @@ function isValidRawQuestion(raw: unknown): raw is ValidRawGeminiQuestion {
   const candidate = raw as RawGeminiQuestion;
   return (
     typeof candidate.text === 'string' &&
+    candidate.text.length >= MIN_TEXT_LENGTH &&
+    candidate.text.length <= MAX_TEXT_LENGTH &&
     Array.isArray(candidate.options) &&
     candidate.options.length === 4 &&
-    candidate.options.every((option) => typeof option === 'string') &&
+    candidate.options.every(
+      (option) => typeof option === 'string' && option.length >= MIN_OPTION_LENGTH && option.length <= MAX_OPTION_LENGTH,
+    ) &&
     typeof candidate.correctOptionIndex === 'number' &&
     Number.isInteger(candidate.correctOptionIndex) &&
     candidate.correctOptionIndex >= 0 &&
@@ -47,9 +57,9 @@ function isValidRawQuestion(raw: unknown): raw is ValidRawGeminiQuestion {
 /**
  * Traduce un elemento crudo (JSON ya parseado) de una respuesta de Gemini
  * (tema elegido, FR-003, o fallback de Galatea, FR-004) a un único `QuestionModel`.
- * Valida el esquema exacto de contracts/gemini-prompt-contract.md §4; si no se
- * cumple, lanza `InvalidGeminiResponseError` — el llamador decide cómo tratar
- * preguntas inválidas.
+ * Valida el esquema exacto de contracts/gemini-prompt-contract.md §4 (incluyendo
+ * el rango de longitud de enunciado/opciones, FR-005A); si no se cumple, lanza
+ * `InvalidGeminiResponseError` — el llamador decide cómo tratar preguntas inválidas.
  *
  * `source` se recibe por constructor porque Gemini se usa tanto para generar
  * preguntas del tema elegido (`chosen-topic`) como preguntas de Galatea de

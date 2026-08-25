@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CbButton } from '@bancolombia/caribe-design-system/button';
+import { CbStatus } from '@bancolombia/caribe-design-system/status';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
 import { CardModel } from '../../../domain/models/match/match.model';
 import { AssignLevelUsecase } from '../../../domain/models/level/usecase/assign-level.usecase';
@@ -18,8 +19,9 @@ import { Celebration } from '../../components/celebration/celebration';
 @Component({
   selector: 'tg-results-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Celebration, CbButton],
+  imports: [Celebration, CbButton, CbStatus],
   templateUrl: './results.page.html',
+  styleUrl: './results.page.scss',
 })
 export class ResultsPage implements OnInit {
   private readonly router = inject(Router);

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal }
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CbButton } from '@bancolombia/caribe-design-system/button';
+import { CbCircleLoading } from '@bancolombia/caribe-design-system/circle-loading';
 import { CbInput, InputFieldConfig, InputType } from '@bancolombia/caribe-design-system/input';
 import { CbLoader } from '@bancolombia/caribe-design-system/loader';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
@@ -19,11 +20,16 @@ export const LOADING_MESSAGE_DELAY_MS = 2_000;
 const GENERIC_BUILD_ERROR_MESSAGE =
   'No pudimos generar tus preguntas en este momento. Intenta nuevamente en unos segundos.';
 
+/** Mensaje mostrado cuando el navegador reporta pérdida de conectividad (FR-025). */
+export const OFFLINE_BUILD_ERROR_MESSAGE =
+  'Perdiste la conexión a internet. Verifica tu red e intenta nuevamente.';
+
 @Component({
   selector: 'tg-welcome-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, CbInput, CbButton, CbLoader],
+  imports: [ReactiveFormsModule, CbInput, CbButton, CbLoader, CbCircleLoading],
   templateUrl: './welcome.page.html',
+  styleUrl: './welcome.page.scss',
 })
 export class WelcomePage implements OnInit, OnDestroy {
   private readonly router = inject(Router);
@@ -136,13 +142,25 @@ export class WelcomePage implements OnInit, OnDestroy {
     this.router.navigateByUrl('/board');
   }
 
+  /**
+   * Maneja cualquier error emitido por `buildMatchUsecase.build(...)` — incluida
+   * la pérdida de conectividad antes de que el tablero esté activo (FR-025):
+   * como `onMatchBuilt` nunca se invoca, ni `currentMatchStore.setMatch` ni
+   * `matchStore.initializeSession`/`setQuestions` llegan a ejecutarse, por lo
+   * que el estado queda limpio (no hay partida a medio construir) y el jugador
+   * permanece en `welcome` con su alias ya escrito en el formulario.
+   */
   private onBuildError(error: unknown): void {
     this.clearLoadingMessageTimer();
     this.isSubmitting.set(false);
     this.showLoadingMessage.set(false);
-    this.errorMessage.set(
-      error instanceof GeminiRequestLimitExceededError ? error.message : GENERIC_BUILD_ERROR_MESSAGE,
-    );
+
+    if (error instanceof GeminiRequestLimitExceededError) {
+      this.errorMessage.set(error.message);
+      return;
+    }
+
+    this.errorMessage.set(navigator.onLine ? GENERIC_BUILD_ERROR_MESSAGE : OFFLINE_BUILD_ERROR_MESSAGE);
   }
 
   private toCardStates(match: MatchModel): CardState[] {

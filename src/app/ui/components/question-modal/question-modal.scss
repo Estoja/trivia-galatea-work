@@ -5,62 +5,137 @@
 .tg-question-modal__backdrop {
   position: fixed;
   inset: 0;
-  background: rgb(0 0 0 / 50%);
+  background: rgb(4 14 28 / 60%);
+  backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: var(--cb-sys-space-24);
   z-index: 1000;
 }
 
 .tg-question-modal__panel {
-  background: var(--cb-sys-background-secondary-01, #fff);
+  background: var(--cb-sys-background-secondary-01);
   color: var(--cb-sys-text-default);
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: 20px;
+  padding: var(--cb-sys-space-32);
   max-width: 480px;
   width: 90%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--cb-sys-space-24);
+  box-shadow:
+    0 24px 48px rgb(10 36 77 / 24%),
+    0 4px 12px rgb(10 36 77 / 12%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tg-question-modal__panel {
+    animation: tg-question-modal-enter 0.22s ease-out;
+  }
+}
+
+@keyframes tg-question-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .tg-question-modal__question {
-  font-weight: 600;
-  font-size: 1.1rem;
+  font: var(--cb-sys-plain-font-style-2-bold);
+  margin: 0;
 }
 
 .tg-question-modal__options {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--cb-sys-space-12);
 }
 
 .tg-question-modal__option {
-  border: 1px solid var(--cb-sys-border-default, #ccc);
-  border-radius: 8px;
-  padding: 12px;
+  border: 1.5px solid var(--cb-sys-border-default);
+  border-radius: 12px;
+  padding: var(--cb-sys-space-16);
   text-align: left;
-  background: transparent;
+  background: var(--cb-sys-background-primary-01);
+  color: var(--cb-sys-text-default);
+  font: var(--cb-sys-plain-font-style-4-regular);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-sys-space-12);
+  transition:
+    border-color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    transform 0.15s ease-in-out;
+
+  &:hover:not(:disabled) {
+    border-color: var(--cb-sys-action-primary, #fdda24);
+    background-color: var(--cb-sys-background-tertiary-01);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cb-sys-action-primary, #fdda24);
+    outline-offset: 2px;
+  }
 
   &--selected {
     border-color: var(--cb-sys-action-primary, #fdda24);
     border-width: 2px;
   }
 
+  &--correct {
+    border-color: var(--cb-sys-status-success-fill);
+    background-color: var(--cb-sys-status-success-fill);
+    color: var(--cb-sys-text-default);
+  }
+
+  &--incorrect {
+    border-color: var(--cb-sys-status-error-fill);
+    background-color: var(--cb-sys-status-error-fill);
+    color: var(--cb-sys-text-default);
+  }
+
   &:disabled {
     cursor: default;
-    opacity: 0.8;
   }
+}
+
+.tg-question-modal__option-text {
+  flex: 1;
+}
+
+.tg-question-modal__option-icon {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .tg-question-modal__confirm {
   align-self: flex-end;
   border: none;
   border-radius: 8px;
-  padding: 10px 20px;
+  padding: var(--cb-sys-space-12) var(--cb-sys-space-32);
   background: var(--cb-sys-action-primary, #fdda24);
+  font: var(--cb-sys-plain-font-style-4-bold);
   cursor: pointer;
+  transition: opacity 0.15s ease-in-out;
+
+  &:hover:not(:disabled) {
+    opacity: 0.85;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cb-sys-text-default);
+    outline-offset: 2px;
+  }
 
   &:disabled {
     opacity: 0.5;
@@ -70,5 +145,14 @@
 
 .tg-question-modal__feedback {
   min-height: 1.2em;
-  font-weight: 600;
+  margin: 0;
+  font: var(--cb-sys-plain-font-style-4-bold);
+
+  &--correct {
+    color: var(--cb-sys-status-success-fill);
+  }
+
+  &--incorrect {
+    color: var(--cb-sys-status-error-fill);
+  }
 }

@@ -11,10 +11,11 @@
   [attr.aria-label]="ariaLabel()"
   (click)="handleClick()"
 >
-  <span class="tg-question-card__category">{{ categoryLabel() }}</span>
+  <cb-stroke class="tg-question-card__stroke" name="12" size="140%" [ariaHidden]="true" />
   @if (card().state === 'answered') {
     <span class="tg-question-card__icon" aria-hidden="true">{{ card().result === 'correct' ? '✓' : '✗' }}</span>
   } @else {
     <span class="tg-question-card__icon" aria-hidden="true">?</span>
   }
+  <span class="tg-question-card__category">{{ categoryLabel() }}</span>
 </button>

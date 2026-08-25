@@ -34,6 +34,7 @@ Reglas estrictas:
 - Cada pregunta debe tener exactamente 4 opciones de respuesta.
 - Solo una opción es correcta.
 - Dificultad equilibrada: ni trivial ni oscura para el público general.
+- El enunciado debe tener entre 30 y 180 caracteres, y cada opción entre 10 y 100 caracteres (FR-005A).
 - Responde ÚNICAMENTE con JSON válido, sin texto adicional, siguiendo este esquema exacto:
 
 {
@@ -67,6 +68,7 @@ Reglas estrictas:
 - Cada pregunta debe tener exactamente 4 opciones de respuesta.
 - Solo una opción es correcta.
 - No inventes datos que no estén en el contexto proporcionado.
+- El enunciado debe tener entre 30 y 180 caracteres, y cada opción entre 10 y 100 caracteres (FR-005A).
 - Responde ÚNICAMENTE con JSON válido, sin texto adicional, siguiendo este esquema exacto:
 
 {
@@ -103,6 +105,7 @@ Reglas estrictas:
 - `questions` es un array con exactamente `count` elementos. Si tiene menos, se activa el comportamiento de FR-003 (mensaje amigable + retorno a selección de tema).
 - Cada pregunta tiene `options.length === 4`.
 - `correctOptionIndex` está en el rango `[0, 3]`.
+- El `text` de cada pregunta tiene entre 30 y 180 caracteres, y cada elemento de `options` entre 10 y 100 caracteres (FR-005A). Una pregunta fuera de rango se descarta igual que una violación de esquema (no se trunca).
 - Si el JSON de Gemini no es parseable o no cumple el esquema, se trata como fallo de generación (mismo tratamiento que "menos de 6 preguntas").
 
 ---

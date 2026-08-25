@@ -1,1 +1,25 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@bancolombia/caribe-design-system' as cb;
+@use '@bancolombia/caribe-brand-bancolombia' as cb-brand;
+
+// Enable Caribe utility classes (icons, typography helpers, spacing helpers).
+@include cb.system-classes();
+
+html {
+	height: 100%;
+	@include cb.theme(cb-brand.$config, cb-brand.$overrides);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-height: 100%;
+	color-scheme: light;
+	background-color: var(--cb-sys-background-secondary-01);
+	color: var(--cb-sys-text-default);
+	font: var(--cb-sys-plain-font-style-4-regular);
+}

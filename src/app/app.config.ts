@@ -1,6 +1,7 @@
 import { ApplicationConfig, makeEnvironmentProviders, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
+import { provideStrokeConfig } from '@bancolombia/caribe-design-system/stroke';
 import { FirebaseApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { ReCaptchaV3Provider, initializeAppCheck, provideAppCheck } from '@angular/fire/app-check';
 import { VertexAIBackend, getAI, provideVertexAI } from '@angular/fire/vertexai';
@@ -13,6 +14,8 @@ import { QuestionGateway } from './domain/models/question/gateway/question.gatew
 import { QuestionService } from './infrastructure/question/question.service';
 import { MatchStoreService } from './shared/foundational/state/match-store.service';
 import { routes } from './app.routes';
+
+const recaptchaV3SiteKey = environment.appCheck?.recaptchaV3SiteKey?.trim() ?? '';
 
 export const provideFoundationalMatchStore = () =>
   makeEnvironmentProviders([{ provide: MatchStoreService, useClass: MatchStoreService }]);
@@ -41,14 +44,19 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
+    provideStrokeConfig({ path: 'https://library-sdb.apps.bancolombia.com/assets/1.19.0' }),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAppCheck((injector) => {
-      const app = injector.get(FirebaseApp);
-      return initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider(environment.appCheck.recaptchaV3SiteKey),
-        isTokenAutoRefreshEnabled: true,
-      });
-    }),
+    ...(recaptchaV3SiteKey
+      ? [
+          provideAppCheck((injector) => {
+            const app = injector.get(FirebaseApp);
+            return initializeAppCheck(app, {
+              provider: new ReCaptchaV3Provider(recaptchaV3SiteKey),
+              isTokenAutoRefreshEnabled: true,
+            });
+          }),
+        ]
+      : []),
     provideVertexAI((injector) => {
       const app = injector.get(FirebaseApp);
       return getAI(app, { backend: new VertexAIBackend() });

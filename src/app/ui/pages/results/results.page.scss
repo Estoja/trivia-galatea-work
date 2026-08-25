@@ -1,0 +1,80 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 12% 10%, rgb(252 220 55 / 20%), transparent 30%),
+    radial-gradient(circle at 90% 85%, rgb(1 66 109 / 16%), transparent 32%),
+    linear-gradient(135deg, rgb(250 251 255), rgb(241 246 255));
+}
+
+.tg-results-page {
+  margin: 0 auto;
+  max-width: 56rem;
+  padding: var(--cb-sys-space-32) var(--cb-sys-space-24) var(--cb-sys-space-64);
+  display: grid;
+  gap: var(--cb-sys-space-32);
+}
+
+.tg-results-page__alias,
+.tg-results-page__score {
+  margin: 0;
+  font: var(--cb-sys-plain-font-style-3-regular);
+}
+
+.tg-results-page__score {
+  font: var(--cb-sys-plain-font-style-2-bold);
+}
+
+.tg-results-page__breakdown {
+  display: grid;
+  gap: var(--cb-sys-space-12);
+  padding: var(--cb-sys-space-24);
+  background-color: var(--cb-sys-background-tertiary-01);
+  border-radius: var(--cb-sys-border-radius-24);
+  box-shadow:
+    0 20px 40px rgb(10 36 77 / 12%),
+    0 2px 8px rgb(10 36 77 / 8%);
+}
+
+.tg-results-page__breakdown h2,
+.tg-results-page__breakdown p {
+  margin: 0;
+}
+
+.tg-results-page__answers {
+  margin: var(--cb-sys-space-8) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cb-sys-space-12);
+}
+
+.tg-results-page__answer {
+  display: grid;
+  gap: var(--cb-sys-space-8);
+  padding: var(--cb-sys-space-16);
+  border-radius: var(--cb-sys-border-radius-16);
+  border: 1px solid var(--cb-sys-border-default);
+  background-color: var(--cb-sys-background-primary-01);
+  box-shadow: 0 2px 8px rgb(10 36 77 / 6%);
+}
+
+.tg-results-page__answer--correct {
+  border-color: var(--cb-sys-status-success-fill);
+}
+
+.tg-results-page__answer--incorrect {
+  border-color: var(--cb-sys-status-error-fill);
+}
+
+.tg-results-page__answer-category {
+  font: var(--cb-sys-plain-font-style-5-bold);
+  text-transform: uppercase;
+  color: var(--cb-sys-text-default);
+  opacity: 0.65;
+}
+
+.tg-results-page__answer-text {
+  font: var(--cb-sys-plain-font-style-4-regular);
+}

@@ -1,5 +1,11 @@
 @if (match(); as m) {
   <section class="tg-board-page" aria-label="Tablero de preguntas">
+    @if (isOffline()) {
+      <p class="tg-board-page__offline-banner" role="status" aria-live="polite">
+        Sin conexión a internet: continúas la partida con las preguntas ya cargadas. La generación por IA no está
+        disponible en este momento.
+      </p>
+    }
     <tg-score-board [score]="liveScore()" />
     <div class="tg-board-page__grid">
       @for (card of m.cards; track card.id; let i = $index) {

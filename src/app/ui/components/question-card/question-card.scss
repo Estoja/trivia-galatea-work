@@ -4,17 +4,24 @@
 
 .tg-question-card__button {
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 5 / 7;
   border: none;
-  border-radius: 12px;
+  border-radius: 18px;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
+  padding: 16px 12px;
   color: var(--cb-sys-text-default);
-  transition: opacity 0.15s ease-in-out;
+  box-shadow: 0 4px 10px rgb(10 36 77 / 12%);
+  transition:
+    opacity 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out,
+    transform 0.15s ease-in-out;
 
   &--galatea {
     background-color: var(--cb-sys-status-alert-fill);
@@ -36,17 +43,61 @@
     background-color: var(--cb-sys-status-error-fill);
   }
 
+  &:not(:disabled):hover {
+    box-shadow: 0 10px 20px rgb(10 36 77 / 20%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cb-sys-action-primary, #fdda24);
+    outline-offset: 3px;
+  }
+
   &:disabled {
     opacity: 0.9;
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .tg-question-card__button:not(:disabled):hover {
+    transform: translateY(-3px);
+  }
+}
+
+.tg-question-card__stroke {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+  pointer-events: none;
+  transform: rotate(-50deg) scale(1.5);
+}
+
 .tg-question-card__category {
+  position: relative;
+  z-index: 1;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  text-align: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background-color: rgb(255 255 255 / 70%);
 }
 
 .tg-question-card__icon {
-  font-size: 1.5rem;
+  position: relative;
+  z-index: 1;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 1px 2px rgb(255 255 255 / 60%));
 }
+
