@@ -38,6 +38,8 @@ export class InsufficientGeneratedQuestionsError extends Error {
   }
 }
 
+const OPTIONS_PER_QUESTION = 4;
+
 function shuffle<T>(items: readonly T[]): T[] {
   const shuffled = [...items];
   for (let i = shuffled.length - 1; i > 0; i -= 1) {
@@ -136,7 +138,7 @@ export class QuestionService extends QuestionGateway {
         if (questions.length < count) {
           throw new InsufficientGeneratedQuestionsError();
         }
-        return questions.slice(0, count);
+        return this.debiasCorrectOptionIndexDistribution(questions.slice(0, count));
       }),
     );
   }
@@ -162,7 +164,54 @@ export class QuestionService extends QuestionGateway {
 
     return this.geminiClient.generateJson(prompt).pipe(
       map((raw) => this.parseAndMapGeminiResponse(raw, this.galateaFallbackMapper)),
+      map((questions) => this.debiasCorrectOptionIndexDistribution(questions)),
     );
+  }
+
+  /**
+   * Corrige el sesgo de posición de la respuesta correcta en un lote de
+   * preguntas generadas por IA (FR-033): si un índice de opción (0..3)
+   * concentra más de la mitad de las respuestas correctas del lote, reordena
+   * las opciones (preservando el texto de la respuesta correcta) hasta
+   * distribuir los índices de forma más equilibrada. NO se aplica al banco
+   * curado manual de Galatea (contenido humano ya revisado).
+   */
+  private debiasCorrectOptionIndexDistribution(questions: readonly QuestionModel[]): QuestionModel[] {
+    if (questions.length === 0) {
+      return [];
+    }
+
+    const balanced = questions.map((question) => ({ ...question, options: [...question.options] as [string, string, string, string] }));
+    const maxAllowedPerIndex = Math.max(1, Math.floor(balanced.length / 2));
+    const countByIndex = new Array(OPTIONS_PER_QUESTION).fill(0);
+    for (const question of balanced) {
+      countByIndex[question.correctOptionIndex] += 1;
+    }
+
+    for (const question of balanced) {
+      let guard = 0;
+      while (countByIndex[question.correctOptionIndex] > maxAllowedPerIndex && guard < OPTIONS_PER_QUESTION) {
+        const targetIndex = countByIndex.reduce(
+          (leastIndex, value, index) => (value < countByIndex[leastIndex] ? index : leastIndex),
+          0,
+        );
+        if (targetIndex === question.correctOptionIndex) {
+          break;
+        }
+
+        const previousIndex = question.correctOptionIndex;
+        [question.options[previousIndex], question.options[targetIndex]] = [
+          question.options[targetIndex],
+          question.options[previousIndex],
+        ];
+        question.correctOptionIndex = targetIndex;
+        countByIndex[previousIndex] -= 1;
+        countByIndex[targetIndex] += 1;
+        guard += 1;
+      }
+    }
+
+    return balanced;
   }
 
   private parseAndMapGeminiResponse(raw: string, mapper: GeminiQuestionMapper): QuestionModel[] {

@@ -149,7 +149,7 @@ export class WelcomePage implements OnInit, OnDestroy {
    * que el estado queda limpio (no hay partida a medio construir) y el jugador
    * permanece en `welcome` con su alias ya escrito en el formulario.
    */
-  private onBuildError(error: unknown): void {
+  private onBuildError(_error: unknown): void {
     this.clearLoadingMessageTimer();
     this.isSubmitting.set(false);
     this.showLoadingMessage.set(false);

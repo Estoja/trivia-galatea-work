@@ -14,7 +14,7 @@ function bankQuestion(id: string, text = `Pregunta ${id}`) {
   };
 }
 
-function geminiRawQuestion(text: string) {
+function geminiRawQuestion(text: string, correctOptionIndex = 1) {
   return {
     text,
     options: [
@@ -23,7 +23,7 @@ function geminiRawQuestion(text: string) {
       'Tercera opción de respuesta',
       'Cuarta opción de respuesta',
     ],
-    correctOptionIndex: 1,
+    correctOptionIndex,
   };
 }
 
@@ -261,6 +261,71 @@ describe('QuestionService', () => {
         expect(sentPrompt).toContain('Fútbol');
         done();
       });
+    });
+  });
+
+  describe('corrección de sesgo de índice correcto en IA (FR-033)', () => {
+    it('corrige la concentración de correctOptionIndex cuando Gemini devuelve las 6 respuestas correctas en el mismo índice', (done) => {
+      generateJsonMock.mockReturnValue(
+        of(
+          JSON.stringify({
+            questions: Array.from({ length: 6 }, (_, i) =>
+              geminiRawQuestion(`Pregunta número ${i} sobre el tema elegido por el jugador en la partida`, 1),
+            ),
+          }),
+        ),
+      );
+
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe((questions) => {
+        expect(questions.length).toBe(6);
+
+        const countByIndex = [0, 0, 0, 0];
+        for (const question of questions) {
+          countByIndex[question.correctOptionIndex] += 1;
+          // La respuesta correcta debe seguir siendo el mismo contenido original,
+          // sin importar a qué índice se haya movido tras el rebalanceo.
+          expect(question.options[question.correctOptionIndex]).toBe('Segunda opción de respuesta');
+        }
+
+        expect(Math.max(...countByIndex)).toBeLessThanOrEqual(3);
+        done();
+      });
+    });
+
+    it('no modifica el banco curado manual de Galatea; sólo rebalancea el fallback generado por IA', (done) => {
+      const bank = { version: 1, questions: [bankQuestion('gal-0'), bankQuestion('gal-1')] };
+      generateJsonMock.mockReturnValue(
+        of(
+          JSON.stringify({
+            questions: Array.from({ length: 4 }, (_, i) =>
+              geminiRawQuestion(`Pregunta generada por IA número ${i} para el banco de Galatea`, 1),
+            ),
+          }),
+        ),
+      );
+
+      service.getGalateaQuestions(6).subscribe((questions) => {
+        expect(questions.length).toBe(6);
+
+        const bankItems = questions.filter((question) => question.id.startsWith('gal-'));
+        expect(bankItems.length).toBe(2);
+        for (const item of bankItems) {
+          expect(item.correctOptionIndex).toBe(0);
+          expect(item.options).toEqual(['Opción A', 'Opción B', 'Opción C', 'Opción D']);
+        }
+
+        const aiItems = questions.filter((question) => !question.id.startsWith('gal-'));
+        expect(aiItems.length).toBe(4);
+        const countByIndex = [0, 0, 0, 0];
+        for (const item of aiItems) {
+          countByIndex[item.correctOptionIndex] += 1;
+        }
+        expect(Math.max(...countByIndex)).toBeLessThanOrEqual(2);
+        done();
+      });
+
+      const req = httpMock.expectOne('assets/galatea-questions.json');
+      req.flush(bank);
     });
   });
 });

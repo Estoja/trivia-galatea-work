@@ -13,6 +13,11 @@
 export type TopicSafetyResult = { ok: true } | { ok: false; reason: 'empty' | 'offensive'; message: string };
 
 const BLOCKED_TERMS: readonly string[] = [
+  'sexo',
+  'kamasutra',
+  'kamazutra',
+  'nopor',
+  'porno',
   'mierda',
   'puta',
   'puto',
@@ -31,11 +36,30 @@ const BLOCKED_TERMS: readonly string[] = [
   'asshole',
 ];
 
+const LEETSPEAK_MAP: Readonly<Record<string, string>> = {
+  '0': 'o',
+  '1': 'i',
+  '3': 'e',
+  '4': 'a',
+  '5': 's',
+  '7': 't',
+};
+
+function normalizeLeetspeak(text: string): string {
+  return text.replace(/[013457]/g, (char) => LEETSPEAK_MAP[char] ?? char);
+}
+
 function normalizeForComparison(text: string): string {
-  return text
+  const normalized = text
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
+
+  return normalizeLeetspeak(normalized).replace(/\s+/g, ' ').trim();
+}
+
+function tokenize(text: string): string[] {
+  return text.split(/[^a-z0-9]+/).filter((token) => token.length > 0);
 }
 
 /**
@@ -52,7 +76,8 @@ export function validateTopicSafety(topic: string): TopicSafetyResult {
   }
 
   const normalized = normalizeForComparison(topic);
-  const containsBlockedTerm = BLOCKED_TERMS.some((term) => normalized.includes(normalizeForComparison(term)));
+  const tokens = new Set(tokenize(normalized));
+  const containsBlockedTerm = BLOCKED_TERMS.some((term) => tokens.has(normalizeForComparison(term)));
 
   if (containsBlockedTerm) {
     return {
