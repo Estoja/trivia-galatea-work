@@ -37,7 +37,13 @@ describe('QuestionService', () => {
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [QuestionService, { provide: GeminiClientService, useValue: { generateJson: generateJsonMock } }],
+      providers: [
+        QuestionService,
+        {
+          provide: GeminiClientService,
+          useValue: { generateJson: generateJsonMock },
+        },
+      ],
     });
 
     service = TestBed.inject(QuestionService);
@@ -94,13 +100,22 @@ describe('QuestionService', () => {
 
     it('deduplica por texto entre preguntas del banco y del fallback de IA (FR-021)', (done) => {
       const duplicatedText = 'Este es un texto duplicado de prueba entre el banco y la IA generativa';
-      const bank = { version: 1, questions: [bankQuestion('gal-0', duplicatedText)] };
+      const bank = {
+        version: 1,
+        questions: [
+          bankQuestion('gal-0', duplicatedText),
+          bankQuestion('gal-1', 'Pregunta única de banco 1'),
+          bankQuestion('gal-2', 'Pregunta única de banco 2'),
+        ],
+      };
       generateJsonMock.mockReturnValue(
         of(
           JSON.stringify({
             questions: [
               geminiRawQuestion(duplicatedText),
               geminiRawQuestion('Este es un texto completamente único generado por la IA'),
+              geminiRawQuestion('Texto único adicional generado por IA para completar cupo'),
+              geminiRawQuestion('Cuarta pregunta única generada por IA para fallback válido'),
             ],
           }),
         ),
@@ -116,7 +131,7 @@ describe('QuestionService', () => {
       req.flush(bank);
     });
 
-    it('descarta las preguntas de IA fuera del rango de longitud (FR-005A) y no completa el faltante con ellas (FR-004)', (done) => {
+    it('si el fallback IA no completa el faltante, lanza error de insuficiencia', (done) => {
       const bank = { version: 1, questions: [bankQuestion('gal-0'), bankQuestion('gal-1')] };
       generateJsonMock.mockReturnValue(
         of(
@@ -131,10 +146,12 @@ describe('QuestionService', () => {
         ),
       );
 
-      service.getGalateaQuestions(6).subscribe((questions) => {
-        // El banco aporta 2, la IA aporta sólo 3 válidas (la 4ª se descartó) => 5 en total, no 6.
-        expect(questions.length).toBe(5);
-        done();
+      service.getGalateaQuestions(6).subscribe({
+        next: () => done.fail('Debió fallar por preguntas insuficientes tras fallback IA.'),
+        error: (err) => {
+          expect(err).toBeInstanceOf(InsufficientGeneratedQuestionsError);
+          done();
+        },
       });
 
       const req = httpMock.expectOne('assets/galatea-questions.json');

@@ -116,7 +116,13 @@ export class QuestionService extends QuestionGateway {
         }
         const missing = count - selected.length;
         return this.generateGalateaFallback(missing).pipe(
-          map((generated) => this.deduplicateByText([...selected, ...generated])),
+          map((generated) => {
+            const merged = this.deduplicateByText([...selected, ...generated]);
+            if (merged.length < count) {
+              throw new InsufficientGeneratedQuestionsError();
+            }
+            return merged;
+          }),
         );
       }),
     );

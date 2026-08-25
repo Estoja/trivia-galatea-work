@@ -8,7 +8,6 @@ import { CbLoader } from '@bancolombia/caribe-design-system/loader';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
 import { MatchModel } from '../../../domain/models/match/match.model';
 import { BuildMatchUsecase } from '../../../domain/models/match/usecase/build-match.usecase';
-import { GeminiRequestLimitExceededError } from '../../../infrastructure/gemini/gemini-client.service';
 import { validateTopicSafety } from '../../../infrastructure/gemini/topic-safety-policy';
 import { CardState } from '../../../shared/foundational/state/match-store.port';
 import { MatchStoreService } from '../../../shared/foundational/state/match-store.service';
@@ -154,11 +153,6 @@ export class WelcomePage implements OnInit, OnDestroy {
     this.clearLoadingMessageTimer();
     this.isSubmitting.set(false);
     this.showLoadingMessage.set(false);
-
-    if (error instanceof GeminiRequestLimitExceededError) {
-      this.errorMessage.set(error.message);
-      return;
-    }
 
     this.errorMessage.set(navigator.onLine ? GENERIC_BUILD_ERROR_MESSAGE : OFFLINE_BUILD_ERROR_MESSAGE);
   }

@@ -131,7 +131,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - **FR-029**: Cuando existe una partida activa con al menos 1 tarjeta respondida y el jugador intenta cerrar o recargar la página, el sistema DEBE mostrar la advertencia nativa del navegador (`beforeunload`) indicando que el progreso se perderá. Si el jugador confirma, la partida se reinicia según FR-023.
 - **FR-030**: Toda interpolación de texto libre ingresado por el jugador (categoría/tema elegido) en atributos `aria-*` DEBE escapar entidades HTML (`"` → `&quot;`, `'` → `&#x27;`, `<` → `&lt;`, `>` → `&gt;`) mediante un pipe Angular reutilizable, para evitar inyección de contenido accesible no esperado.
 - **FR-031**: El botón que dispara la generación de preguntas vía IA DEBE deshabilitarse inmediatamente al primer clic y permanecer deshabilitado hasta que la operación complete o falle, para prevenir solicitudes concurrentes, consumo doble de cuota y estados inconsistentes en `MatchStore`.
-- **FR-032**: El cliente DEBE limitar a un máximo de 3 solicitudes de generación de preguntas por sesión de navegador (contabilizando reintentos manuales del jugador), como salvaguarda frente a abuso de cuota durante la exposición pública en GitHub Pages. Al alcanzar el límite, la app DEBE mostrar un mensaje indicando que se agotaron los intentos y sugerir refrescar para iniciar una nueva sesión.
+- **FR-032**: El sistema NO DEBE imponer un límite de solicitudes de IA por sesión en el cliente. El control de abuso/cuota DEBE gestionarse de forma centralizada en Google Cloud (restricciones de API key por HTTP Referer, App Check y cuotas/rate limits del proyecto), para permitir operación continua en modo evento/kiosco con múltiples jugadores en un mismo navegador durante todo el día.
 
 ### Key Entities
 
@@ -219,7 +219,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 - Q: ¿Debe la app advertir al jugador antes de que cierre/recargue a mitad de partida? → A: Sí, advertencia nativa `beforeunload` únicamente cuando hay ≥1 tarjeta respondida; si no hay progreso, no se muestra advertencia.
 - Q: ¿Cómo manejar el alias al interpolarlo en atributos `aria-*`? → A: Escapar entidades HTML (`"`, `'`, `<`, `>`) mediante un pipe Angular reutilizable antes de cualquier interpolación en `aria-label` u otros atributos `aria-*`.
 - Q: ¿Qué ocurre si el jugador dispara múltiples solicitudes concurrentes a la IA (p. ej. doble clic en Iniciar)? → A: El botón se deshabilita en el primer clic y solo se re-habilita al completar o fallar la operación; no se lanzan solicitudes concurrentes.
-- Q: ¿Cómo se despliega la app y cuál es el modelo de amenazas real? → A: GitHub Pages pública durante ~1 mes (evento). Mitigación: HTTP Referer restriction en API key, cuota Google Cloud Console, límite de 3 solicitudes por sesión en cliente (FR-032), y baja/rotación de key al cerrar ventana (<24h post-evento).
+- Q: ¿Cómo se despliega la app y cuál es el modelo de amenazas real? → A: GitHub Pages pública durante ~1 mes (evento). Mitigación: HTTP Referer restriction en API key, App Check, cuotas/rate limits en Google Cloud Console, y baja/rotación de key al cerrar ventana (<24h post-evento).
 
 ### Session 2026-08-21 (corrección FR-030 post-implementación)
 
@@ -228,3 +228,7 @@ Al completar las 6 preguntas, el jugador ve una pantalla de resultados con su pu
 ### Session 2026-08-25 (acotación de alcance FR-005A post-convergencia)
 
 - Q: `/speckit.analyze` detectó (finding F1) que T095 implementó la validación de longitud (30-180/10-100 caracteres) únicamente en `GeminiQuestionMapper`, dejando sin validar el banco curado de Galatea (`galatea-questions.json`) y su schema (`galatea-question-bank.schema.json`, aún con `minLength: 10`/`minLength: 1`). ¿Se debe extender la validación al banco curado o acotar el requisito? → A: Acotar el requisito. FR-005A aplica sólo a preguntas generadas por IA (Gemini, tema elegido y fallback de Galatea); el banco curado de Galatea es contenido humano redactado y revisado manualmente antes del evento, por lo que queda fuera del alcance de esta validación runtime. No se modifica `GalateaQuestionMapper` ni el schema del banco.
+
+### Session 2026-08-25 (ajuste operativo FR-032 para modo kiosco)
+
+- Q: Durante el evento, múltiples jugadores usarán el mismo computador/navegador por horas continuas. ¿Debe mantenerse el límite local de 3 solicitudes IA por sesión (`sessionStorage`)? → A: No. Se elimina el límite local por sesión del cliente para evitar bloquear partidas válidas en uso compartido continuo (modo kiosco). El control de abuso/cuota se traslada a Google Cloud (HTTP Referer restriction, App Check y cuotas/rate limits del proyecto). FR-032 se actualiza para reflejar esta decisión.
