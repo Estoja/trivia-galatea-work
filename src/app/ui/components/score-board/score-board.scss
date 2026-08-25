@@ -1,10 +1,32 @@
 .tg-score-board {
   margin: 0;
-  padding: var(--cb-sys-spacing-3) var(--cb-sys-spacing-4);
-  border-radius: var(--cb-sys-radius-md);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.75rem;
+  border-radius: 999px;
   width: fit-content;
-  background-color: var(--cb-sys-background-primary-01);
-  border: 1px solid var(--cb-sys-border-default);
+  background: linear-gradient(135deg, var(--cb-sys-status-alert-fill), var(--cb-sys-background-primary-01) 130%);
+  border: 1px solid rgb(10 36 77 / 8%);
   color: var(--cb-sys-text-default);
-  font: var(--cb-sys-plain-font-style-3-bold);
+  box-shadow:
+    0 14px 28px rgb(10 36 77 / 18%),
+    0 3px 8px rgb(10 36 77 / 10%);
+}
+
+.tg-score-board__icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.tg-score-board__label {
+  font: var(--cb-sys-plain-font-style-5-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+.tg-score-board__value {
+  font: var(--cb-sys-plain-font-style-1-bold);
+  font-size: 1.5rem;
 }

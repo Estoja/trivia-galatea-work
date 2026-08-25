@@ -9,12 +9,19 @@
             type="button"
             class="tg-question-modal__option"
             [class.tg-question-modal__option--selected]="selectedOptionIndex() === $index"
+            [class.tg-question-modal__option--correct]="feedback() !== null && $index === question().correctOptionIndex"
+            [class.tg-question-modal__option--incorrect]="feedback() === 'incorrect' && selectedOptionIndex() === $index"
             role="radio"
             [attr.aria-checked]="selectedOptionIndex() === $index"
             [disabled]="feedback() !== null"
             (click)="selectOption($index)"
           >
-            {{ option }}
+            <span class="tg-question-modal__option-text">{{ option }}</span>
+            @if (feedback() !== null && $index === question().correctOptionIndex) {
+              <span class="tg-question-modal__option-icon" aria-hidden="true">✓</span>
+            } @else if (feedback() === 'incorrect' && selectedOptionIndex() === $index) {
+              <span class="tg-question-modal__option-icon" aria-hidden="true">✗</span>
+            }
           </button>
         }
       </div>
@@ -23,7 +30,12 @@
         Aceptar
       </button>
 
-      <p class="tg-question-modal__feedback" aria-live="polite">
+      <p
+        class="tg-question-modal__feedback"
+        [class.tg-question-modal__feedback--correct]="feedback() === 'correct'"
+        [class.tg-question-modal__feedback--incorrect]="feedback() === 'incorrect'"
+        aria-live="polite"
+      >
         @if (feedback() === 'correct') {
           ¡Respuesta correcta!
         } @else if (feedback() === 'incorrect') {

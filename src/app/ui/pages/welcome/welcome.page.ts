@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal }
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CbButton } from '@bancolombia/caribe-design-system/button';
+import { CbCircleLoading } from '@bancolombia/caribe-design-system/circle-loading';
 import { CbInput, InputFieldConfig, InputType } from '@bancolombia/caribe-design-system/input';
 import { CbLoader } from '@bancolombia/caribe-design-system/loader';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
@@ -22,7 +23,7 @@ const GENERIC_BUILD_ERROR_MESSAGE =
 @Component({
   selector: 'tg-welcome-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, CbInput, CbButton, CbLoader],
+  imports: [ReactiveFormsModule, CbInput, CbButton, CbLoader, CbCircleLoading],
   templateUrl: './welcome.page.html',
   styleUrl: './welcome.page.scss',
 })

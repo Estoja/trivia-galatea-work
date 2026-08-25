@@ -1,6 +1,7 @@
 import { ApplicationConfig, makeEnvironmentProviders, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
+import { provideStrokeConfig } from '@bancolombia/caribe-design-system/stroke';
 import { FirebaseApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { ReCaptchaV3Provider, initializeAppCheck, provideAppCheck } from '@angular/fire/app-check';
 import { VertexAIBackend, getAI, provideVertexAI } from '@angular/fire/vertexai';
@@ -43,6 +44,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
+    provideStrokeConfig({ path: 'https://library-sdb.apps.bancolombia.com/assets/1.19.0' }),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     ...(recaptchaV3SiteKey
       ? [

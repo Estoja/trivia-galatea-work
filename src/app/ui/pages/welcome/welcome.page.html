@@ -37,11 +37,13 @@
 
 @if (isSubmitting()) {
   <div class="tg-loading-overlay" role="status" aria-live="polite" aria-label="Generando preguntas">
-    <div class="tg-loading-overlay__circle">
-      <div class="tg-loading-overlay__loader" aria-hidden="true">
-        <cb-loader sizeLoader="5xl" ariaLabel="Generando tus preguntas"></cb-loader>
-      </div>
-      <p class="tg-loading-overlay__text">cargando...</p>
-    </div>
+    <cb-circle-loading
+      text="cargando..."
+      sizeCircleLoader="min(86vw, 24rem)"
+      componentId="welcome-loading"
+      [showCircleLoading]="true"
+    >
+      <cb-loader ariaLabel="Generando tus preguntas" sizeLoader="5xl"></cb-loader>
+    </cb-circle-loading>
   </div>
 }

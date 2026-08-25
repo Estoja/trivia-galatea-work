@@ -24,7 +24,11 @@
           >
             <span class="tg-results-page__answer-category">{{ categoryLabel(card) }}</span>
             <span class="tg-results-page__answer-text">{{ card.question.text }}</span>
-            <span class="tg-results-page__answer-result">{{ resultLabel(card) }}</span>
+            <cb-status
+              type="simple"
+              [color]="card.result === 'correct' ? 'status-success-3' : 'status-error-3'"
+              [text]="resultLabel(card)"
+            ></cb-status>
           </li>
         }
       </ul>

@@ -8,21 +8,23 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 32px 16px;
-  border-radius: 16px;
+  padding: 40px 16px;
+  border-radius: 20px;
   text-align: center;
   color: var(--cb-sys-text-default);
+  box-shadow:
+    0 20px 40px rgb(10 36 77 / 16%),
+    0 2px 8px rgb(10 36 77 / 10%);
 }
 
 .tg-celebration__emoji {
-  font-size: 3rem;
+  font-size: 3.5rem;
   line-height: 1;
   display: inline-block;
 }
 
 .tg-celebration__title {
-  font-weight: 700;
-  font-size: 1.5rem;
+  font: var(--cb-sys-plain-font-style-1-bold);
   margin: 0;
 }
 

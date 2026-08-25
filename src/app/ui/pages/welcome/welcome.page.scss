@@ -7,7 +7,7 @@
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: calc(var(--cb-sys-spacing-10) * 2) var(--cb-sys-spacing-6) var(--cb-sys-spacing-6);
+  padding: calc(var(--cb-sys-space-64) * 2) var(--cb-sys-space-32) var(--cb-sys-space-32);
   background:
     radial-gradient(circle at 15% 20%, rgb(252 220 55 / 22%), transparent 30%),
     radial-gradient(circle at 85% 15%, rgb(1 66 109 / 18%), transparent 32%),
@@ -60,25 +60,26 @@
 }
 
 .tg-welcome-card h1 {
-  margin: 0 0 var(--cb-sys-spacing-3);
+  margin: 0 0 var(--cb-sys-space-12);
   font: var(--cb-sys-plain-font-style-1-bold);
 }
 
 .tg-welcome-card > p {
-  margin: 0 0 var(--cb-sys-spacing-6);
-  color: var(--cb-sys-text-subtle);
+  margin: 0 0 var(--cb-sys-space-32);
+  color: var(--cb-sys-text-default);
+  opacity: 0.65;
   font-family: 'Open Sans', sans-serif;
   font: var(--cb-sys-plain-font-style-4-regular);
 }
 
 .tg-welcome-card form {
   display: grid;
-  gap: var(--cb-sys-spacing-5);
+  gap: var(--cb-sys-space-24);
 }
 
 .tg-field-error,
 .tg-form-error {
-  margin: calc(var(--cb-sys-spacing-2) * -1) 0 0;
+  margin: calc(var(--cb-sys-space-8) * -1) 0 0;
   color: var(--cb-sys-text-error);
   font: var(--cb-sys-plain-font-style-5-regular);
 }
@@ -91,33 +92,4 @@
   background: rgb(4 14 28 / 70%);
   backdrop-filter: blur(3px);
   z-index: 1200;
-}
-
-.tg-loading-overlay__circle {
-  width: min(86vw, 24rem);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background-color: var(--cb-sys-background-primary-01);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--cb-sys-spacing-5);
-  box-shadow:
-    0 20px 40px rgb(0 0 0 / 35%),
-    inset 0 0 0 8px rgb(253 218 36 / 10%);
-  padding: var(--cb-sys-spacing-6);
-}
-
-.tg-loading-overlay__loader {
-  transform: scale(1.7);
-  transform-origin: center;
-}
-
-.tg-loading-overlay__text {
-  margin: 0;
-  text-transform: lowercase;
-  font: var(--cb-sys-plain-font-style-3-bold);
-  color: var(--cb-sys-text-default);
-  letter-spacing: 0.02em;
 }
