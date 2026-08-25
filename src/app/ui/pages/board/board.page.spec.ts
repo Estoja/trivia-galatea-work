@@ -110,6 +110,30 @@ describe('BoardPage', () => {
     expect(openCardMock).toHaveBeenCalledTimes(1);
   });
 
+  it('no voltea la tarjeta si el store fundacional rechaza abrirla', () => {
+    const fixture = createComponent(buildMatch());
+    const component = fixture.componentInstance;
+    openCardMock.mockReturnValueOnce({ ok: false });
+
+    component.openCard('card-0');
+    fixture.detectChanges();
+
+    expect(component.activeCard()).toBeNull();
+    expect(component.match()?.cards.find((c) => c.id === 'card-0')?.state).toBe('face-down');
+    expect(setMatchMock).not.toHaveBeenCalled();
+  });
+
+  it('no hace nada al confirmar respuesta sin ninguna tarjeta activa', () => {
+    const fixture = createComponent(buildMatch());
+    const component = fixture.componentInstance;
+
+    component.confirmAnswer(0);
+    fixture.detectChanges();
+
+    expect(confirmAnswerMock).not.toHaveBeenCalled();
+    expect(component.feedback()).toBeNull();
+  });
+
   it('aplica la respuesta, muestra feedback y cierra el modal tras el temporizador', () => {
     jest.useFakeTimers();
     const fixture = createComponent(buildMatch());

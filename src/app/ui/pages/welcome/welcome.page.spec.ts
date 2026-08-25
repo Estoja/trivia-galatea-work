@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
 import { QuestionSource } from '../../../domain/enums/question-source.enum';
 import { MatchModel } from '../../../domain/models/match/match.model';
 import { BuildMatchUsecase } from '../../../domain/models/match/usecase/build-match.usecase';
@@ -127,6 +127,22 @@ describe('WelcomePage', () => {
     );
     expect(navigateByUrlMock).toHaveBeenCalledWith('/board');
     expect(component.isSubmitting()).toBe(false);
+  });
+
+  it('ignora un segundo submit mientras la generación de preguntas está en curso (FR-031)', () => {
+    const fixture = createComponent();
+    const component = fixture.componentInstance;
+    component.form.controls.alias.setValue('Jugador1');
+    component.form.controls.topic.setValue('Fútbol');
+    const pendingBuild$ = new Subject<MatchModel>();
+    buildMock.mockReturnValue(pendingBuild$);
+
+    component.submit();
+    expect(component.isSubmitting()).toBe(true);
+
+    component.submit();
+
+    expect(buildMock).toHaveBeenCalledTimes(1);
   });
 
   it('muestra un mensaje de error amigable y conserva el alias si el usecase falla (FR-003)', () => {

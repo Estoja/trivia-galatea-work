@@ -65,4 +65,17 @@ describe('CurrentMatchStore', () => {
     store.setOffline(false);
     expect(store.isOffline()).toBe(false);
   });
+
+  it('debe iniciar con isOffline en false si navigator no está definido (entorno no-browser)', () => {
+    const globalWithNavigator = globalThis as { navigator?: Navigator };
+    const originalNavigator = globalWithNavigator.navigator;
+    delete globalWithNavigator.navigator;
+
+    try {
+      const nonBrowserStore = new CurrentMatchStore();
+      expect(nonBrowserStore.isOffline()).toBe(false);
+    } finally {
+      globalWithNavigator.navigator = originalNavigator;
+    }
+  });
 });

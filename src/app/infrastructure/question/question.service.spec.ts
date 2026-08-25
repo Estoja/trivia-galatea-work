@@ -211,6 +211,17 @@ describe('QuestionService', () => {
       });
     });
 
+    it('trata un JSON válido sin la propiedad "questions" (array) como 0 preguntas válidas y lanza el error de insuficiencia', (done) => {
+      generateJsonMock.mockReturnValue(of(JSON.stringify({ notQuestions: 'valor inesperado' })));
+
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe({
+        error: (err) => {
+          expect(err).toBeInstanceOf(InsufficientGeneratedQuestionsError);
+          done();
+        },
+      });
+    });
+
     it('T088 (A-010/FR-018/FR-019): el prompt enviado a Gemini sólo contiene el tema y el conteo, nunca el alias del jugador ni otros campos de sesión', (done) => {
       // La firma misma de `getChosenTopicQuestions(topic, count)` no recibe alias:
       // esta prueba documenta y audita que el string de prompt resultante tampoco
