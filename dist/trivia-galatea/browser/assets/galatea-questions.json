@@ -2,28 +2,6 @@
   "version": 3,
   "questions": [
     {
-      "id": "gal-003",
-      "text": "¿Cuál fue el foco inicial de Galatea?",
-      "options": [
-        "Analítica comercial",
-        "Crédito hipotecario",
-        "Cajeros físicos",
-        "Soluciones backend"
-      ],
-      "correctOptionIndex": 3
-    },
-    {
-      "id": "gal-004",
-      "text": "¿Qué frase se asoció con el origen del nombre Galatea-Pigmalión?",
-      "options": [
-        "El cliente siempre gana",
-        "Innovamos sin límites",
-        "Un banco para todos",
-        "El futuro está en nuestras manos"
-      ],
-      "correctOptionIndex": 3
-    },
-    {
       "id": "gal-005",
       "text": "¿Qué tecnología mobile propuso Galatea para la organización?",
       "options": [
