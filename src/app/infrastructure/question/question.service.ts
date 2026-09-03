@@ -40,24 +40,25 @@ function shuffle<T>(items: readonly T[]): T[] {
 }
 
 function buildChosenTopicPrompt(topic: string, count: number): string {
-  return `Genera exactamente ${count} preguntas de trivia de selección múltiple sobre el tema: "${topic}".
+  return `Contexto: Eres un agente en un juego de trivia, tu tarea principal  es generar las preguntas en el formato deseado.
 
+Formato: DEBE DEVOLVERSE LA RESPUESTA CON EL SIGUIENTE FORMATO
+{
+ "questions": [
+   {
+     "text": "string",
+     "options": ["string", "string", "string", "string"],
+     "correctOptionIndex": 0
+   }
+ ]
+}
+Genera exactamente ${count} preguntas de trivia de selección múltiple sobre el tema: "${topic}".
 Reglas estrictas:
 - Cada pregunta debe tener exactamente 4 opciones de respuesta.
 - Solo una opción es correcta.
 - Dificultad equilibrada: ni trivial ni oscura para el público general.
 - El enunciado debe tener entre 30 y 180 caracteres, y cada opción entre 10 y 100 caracteres.
-- Responde ÚNICAMENTE con JSON válido, sin texto adicional, siguiendo este esquema exacto:
-
-{
-  "questions": [
-    {
-      "text": "string",
-      "options": ["string", "string", "string", "string"],
-      "correctOptionIndex": 0
-    }
-  ]
-}`;
+- Responde ÚNICAMENTE con JSON válido, sin texto adicional.`;
 }
 
 /**
