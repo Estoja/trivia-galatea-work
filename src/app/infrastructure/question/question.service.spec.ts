@@ -178,7 +178,7 @@ describe('QuestionService', () => {
       });
     });
 
-    it('lanza InsufficientGeneratedQuestionsError si Gemini retorna menos de 6 preguntas válidas', (done) => {
+    it('retorna las preguntas válidas disponibles cuando Gemini entrega menos de 6', (done) => {
       generateJsonMock.mockReturnValue(
         of(
           JSON.stringify({
@@ -187,15 +187,13 @@ describe('QuestionService', () => {
         ),
       );
 
-      service.getChosenTopicQuestions('Fútbol', 6).subscribe({
-        error: (err) => {
-          expect(err).toBeInstanceOf(InsufficientGeneratedQuestionsError);
-          done();
-        },
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe((questions) => {
+        expect(questions).toHaveLength(1);
+        done();
       });
     });
 
-    it('lanza InsufficientGeneratedQuestionsError cuando una pregunta fuera de rango de longitud (FR-005A) deja menos de 6 válidas — no permite un tablero incompleto', (done) => {
+    it('filtra preguntas fuera de rango de longitud (FR-005A) y conserva las válidas', (done) => {
       generateJsonMock.mockReturnValue(
         of(
           JSON.stringify({
@@ -209,33 +207,61 @@ describe('QuestionService', () => {
         ),
       );
 
-      service.getChosenTopicQuestions('Fútbol', 6).subscribe({
-        error: (err) => {
-          expect(err).toBeInstanceOf(InsufficientGeneratedQuestionsError);
-          done();
-        },
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe((questions) => {
+        expect(questions).toHaveLength(5);
+        done();
       });
     });
 
-    it('trata un JSON malformado como 0 preguntas válidas y lanza el error de insuficiencia', (done) => {
+    it('trata un JSON malformado como 0 preguntas válidas', (done) => {
       generateJsonMock.mockReturnValue(of('esto no es JSON'));
 
-      service.getChosenTopicQuestions('Fútbol', 6).subscribe({
-        error: (err) => {
-          expect(err).toBeInstanceOf(InsufficientGeneratedQuestionsError);
-          done();
-        },
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe((questions) => {
+        expect(questions).toHaveLength(0);
+        done();
       });
     });
 
-    it('trata un JSON válido sin la propiedad "questions" (array) como 0 preguntas válidas y lanza el error de insuficiencia', (done) => {
+    it('acepta respuesta JSON envuelta en bloque Markdown y completa la partida', (done) => {
+      generateJsonMock.mockReturnValue(
+        of(`\`\`\`json\n${JSON.stringify({
+          questions: Array.from({ length: 6 }, (_, i) =>
+            geminiRawQuestion(`Pregunta número ${i} sobre el tema elegido por el jugador en la partida`),
+          ),
+        })}\n\`\`\``),
+      );
+
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe((questions) => {
+        expect(questions.length).toBe(6);
+        done();
+      });
+    });
+
+    it('acepta respuesta doblemente serializada y completa la partida', (done) => {
+      generateJsonMock.mockReturnValue(
+        of(
+          JSON.stringify(
+            JSON.stringify({
+              questions: Array.from({ length: 6 }, (_, i) =>
+                geminiRawQuestion(`Pregunta número ${i} sobre el tema elegido por el jugador en la partida`),
+              ),
+            }),
+          ),
+        ),
+      );
+
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe((questions) => {
+        expect(questions.length).toBe(6);
+        done();
+      });
+    });
+
+    it('trata un JSON válido sin la propiedad "questions" (array) como 0 preguntas válidas', (done) => {
       generateJsonMock.mockReturnValue(of(JSON.stringify({ notQuestions: 'valor inesperado' })));
 
-      service.getChosenTopicQuestions('Fútbol', 6).subscribe({
-        error: (err) => {
-          expect(err).toBeInstanceOf(InsufficientGeneratedQuestionsError);
-          done();
-        },
+      service.getChosenTopicQuestions('Fútbol', 6).subscribe((questions) => {
+        expect(questions).toHaveLength(0);
+        done();
       });
     });
 
@@ -259,6 +285,7 @@ describe('QuestionService', () => {
         const sentPrompt = generateJsonMock.mock.calls[0][0] as string;
         expect(sentPrompt).not.toContain(playerAlias);
         expect(sentPrompt).toContain('Fútbol');
+        expect(sentPrompt).toContain('Genera exactamente 8 preguntas');
         done();
       });
     });

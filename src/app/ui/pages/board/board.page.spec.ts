@@ -213,4 +213,29 @@ describe('BoardPage', () => {
       expect(fixture.componentInstance.match()).not.toBeNull();
     });
   });
+
+  describe('aviso de fallback de generación', () => {
+    it('muestra el aviso cuando la partida se construyó en modo solo Galatea', () => {
+      const fixture = createComponent(
+        buildMatch({
+          generationNotice: 'Te tocó dificultad máxima: en esta partida jugarás solo con preguntas de Galatea.',
+        }),
+      );
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      const banner = compiled.querySelector('.tg-board-page__fallback-banner');
+
+      expect(banner).not.toBeNull();
+      expect(banner?.textContent).toContain('dificultad máxima');
+    });
+
+    it('no muestra el aviso cuando no hubo fallback', () => {
+      const fixture = createComponent(buildMatch({ generationNotice: null }));
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.tg-board-page__fallback-banner')).toBeNull();
+    });
+  });
 });

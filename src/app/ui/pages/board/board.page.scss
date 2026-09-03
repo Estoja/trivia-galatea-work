@@ -31,6 +31,15 @@
   font-size: 0.9rem;
 }
 
+.tg-board-page__fallback-banner {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: rgb(1 66 109 / 12%);
+  color: rgb(1 66 109);
+  font-size: 0.9rem;
+}
+
 .tg-board-page__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

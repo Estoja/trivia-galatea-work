@@ -6,6 +6,9 @@
         disponible en este momento.
       </p>
     }
+    @if (generationNotice(); as notice) {
+      <p class="tg-board-page__fallback-banner" role="status" aria-live="polite">{{ notice }}</p>
+    }
     <tg-score-board [score]="liveScore()" />
     <div class="tg-board-page__grid">
       @for (card of m.cards; track card.id; let i = $index) {

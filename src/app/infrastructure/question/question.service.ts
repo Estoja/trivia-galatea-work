@@ -39,6 +39,7 @@ export class InsufficientGeneratedQuestionsError extends Error {
 }
 
 const OPTIONS_PER_QUESTION = 4;
+const GENERATION_BUFFER = 2;
 
 function shuffle<T>(items: readonly T[]): T[] {
   const shuffled = [...items];
@@ -131,15 +132,10 @@ export class QuestionService extends QuestionGateway {
   }
 
   getChosenTopicQuestions(topic: string, count: number): Observable<QuestionModel[]> {
-    const prompt = buildChosenTopicPrompt(topic, count);
+    const prompt = buildChosenTopicPrompt(topic, count + GENERATION_BUFFER);
     return this.geminiClient.generateJson(prompt).pipe(
       map((raw) => this.parseAndMapGeminiResponse(raw, this.chosenTopicMapper)),
-      map((questions) => {
-        if (questions.length < count) {
-          throw new InsufficientGeneratedQuestionsError();
-        }
-        return this.debiasCorrectOptionIndexDistribution(questions.slice(0, count));
-      }),
+      map((questions) => this.debiasCorrectOptionIndexDistribution(questions.slice(0, count))),
     );
   }
 
@@ -160,7 +156,7 @@ export class QuestionService extends QuestionGateway {
 
   private generateGalateaFallback(count: number): Observable<QuestionModel[]> {
     const anonymizedContext = anonymizeContext(GALATEA_KNOWLEDGE_BASE_CONTEXT);
-    const prompt = buildGalateaFallbackPrompt(count, anonymizedContext);
+    const prompt = buildGalateaFallbackPrompt(count + GENERATION_BUFFER, anonymizedContext);
 
     return this.geminiClient.generateJson(prompt).pipe(
       map((raw) => this.parseAndMapGeminiResponse(raw, this.galateaFallbackMapper)),
@@ -215,18 +211,12 @@ export class QuestionService extends QuestionGateway {
   }
 
   private parseAndMapGeminiResponse(raw: string, mapper: GeminiQuestionMapper): QuestionModel[] {
-    let parsed: GeminiQuestionsResponse;
-    try {
-      parsed = JSON.parse(raw) as GeminiQuestionsResponse;
-    } catch {
+    const rawQuestions = this.extractGeminiQuestions(raw);
+    if (rawQuestions.length === 0) {
       return [];
     }
 
-    if (!parsed || !Array.isArray(parsed.questions)) {
-      return [];
-    }
-
-    return parsed.questions.reduce<QuestionModel[]>((acc, item) => {
+    return rawQuestions.reduce<QuestionModel[]>((acc, item) => {
       try {
         acc.push(mapper.fromMap(item));
       } catch {
@@ -234,6 +224,83 @@ export class QuestionService extends QuestionGateway {
       }
       return acc;
     }, []);
+  }
+
+  private extractGeminiQuestions(raw: string): unknown[] {
+    const candidates = this.buildJsonCandidates(raw);
+
+    for (const candidate of candidates) {
+      const parsed = this.tryParseJson(candidate);
+      if (parsed === null) {
+        continue;
+      }
+
+      const questions = this.questionsFromParsedPayload(parsed);
+      if (questions.length > 0) {
+        return questions;
+      }
+    }
+
+    return [];
+  }
+
+  private buildJsonCandidates(raw: string): string[] {
+    const trimmed = raw.trim();
+    const withoutFence = trimmed.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    const extracted = this.extractLikelyJson(withoutFence);
+
+    const candidates = [raw, trimmed, withoutFence, extracted ?? ''];
+    return Array.from(new Set(candidates.filter((candidate) => candidate.length > 0)));
+  }
+
+  private extractLikelyJson(value: string): string | null {
+    const startCurly = value.indexOf('{');
+    const startBracket = value.indexOf('[');
+    const starts = [startCurly, startBracket].filter((index) => index >= 0);
+    if (starts.length === 0) {
+      return null;
+    }
+
+    const start = Math.min(...starts);
+    const endCurly = value.lastIndexOf('}');
+    const endBracket = value.lastIndexOf(']');
+    const end = Math.max(endCurly, endBracket);
+
+    if (end <= start) {
+      return null;
+    }
+
+    return value.slice(start, end + 1).trim();
+  }
+
+  private tryParseJson(value: string): unknown | null {
+    try {
+      return JSON.parse(value) as unknown;
+    } catch {
+      return null;
+    }
+  }
+
+  private questionsFromParsedPayload(parsed: unknown): unknown[] {
+    if (Array.isArray(parsed)) {
+      return parsed;
+    }
+
+    if (typeof parsed === 'string') {
+      const nestedQuestions = this.extractGeminiQuestions(parsed);
+      return nestedQuestions;
+    }
+
+    if (typeof parsed !== 'object' || parsed === null) {
+      return [];
+    }
+
+    const payload = parsed as GeminiQuestionsResponse;
+    if (Array.isArray(payload.questions)) {
+      return payload.questions;
+    }
+
+    return [];
   }
 
   /** Deduplicación por texto de pregunta dentro de la misma partida (FR-021). */

@@ -17,11 +17,13 @@ export type MatchStatus = 'in-progress' | 'completed';
 
 export interface MatchModel {
   player: PlayerModel;
-  /** Las 12 tarjetas generadas al inicio: 6 Galatea + 6 del tema elegido (A-009) */
+  /** Las 12 tarjetas generadas al inicio; en fallback puede aumentar el cupo Galatea. */
   cards: CardModel[];
   /** Máximo de tarjetas que el jugador puede responder por partida */
   maxAnswerableCards: 6;
   status: MatchStatus;
+  /** Aviso opcional para comunicar modos de fallback aplicados a la sesión actual. */
+  generationNotice?: string | null;
 }
 
 export interface ScoreModel {
