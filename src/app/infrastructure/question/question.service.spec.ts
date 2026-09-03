@@ -72,25 +72,13 @@ describe('QuestionService', () => {
       req.flush(bank);
     });
 
-    it('completa con IA (fallback) si el banco tiene menos de 6 preguntas válidas (FR-004)', (done) => {
+    it('retorna solo las preguntas disponibles del banco sin intentar generación vía Gemini (FR-004)', (done) => {
       const bank = { version: 1, questions: [bankQuestion('gal-0'), bankQuestion('gal-1')] };
-      generateJsonMock.mockReturnValue(
-        of(
-          JSON.stringify({
-            questions: [
-              geminiRawQuestion('Pregunta generada por IA número uno para el banco de Galatea'),
-              geminiRawQuestion('Pregunta generada por IA número dos para el banco de Galatea'),
-              geminiRawQuestion('Pregunta generada por IA número tres para el banco de Galatea'),
-              geminiRawQuestion('Pregunta generada por IA número cuatro para el banco de Galatea'),
-            ],
-          }),
-        ),
-      );
 
       service.getGalateaQuestions(6).subscribe((questions) => {
-        expect(questions.length).toBe(6);
+        expect(questions.length).toBe(2);
         expect(questions.every((q) => q.source === QuestionSource.Galatea)).toBe(true);
-        expect(generateJsonMock).toHaveBeenCalledTimes(1);
+        expect(generateJsonMock).not.toHaveBeenCalled();
         done();
       });
 
@@ -98,65 +86,7 @@ describe('QuestionService', () => {
       req.flush(bank);
     });
 
-    it('deduplica por texto entre preguntas del banco y del fallback de IA (FR-021)', (done) => {
-      const duplicatedText = 'Este es un texto duplicado de prueba entre el banco y la IA generativa';
-      const bank = {
-        version: 1,
-        questions: [
-          bankQuestion('gal-0', duplicatedText),
-          bankQuestion('gal-1', 'Pregunta única de banco 1'),
-          bankQuestion('gal-2', 'Pregunta única de banco 2'),
-        ],
-      };
-      generateJsonMock.mockReturnValue(
-        of(
-          JSON.stringify({
-            questions: [
-              geminiRawQuestion(duplicatedText),
-              geminiRawQuestion('Este es un texto completamente único generado por la IA'),
-              geminiRawQuestion('Texto único adicional generado por IA para completar cupo'),
-              geminiRawQuestion('Cuarta pregunta única generada por IA para fallback válido'),
-            ],
-          }),
-        ),
-      );
 
-      service.getGalateaQuestions(6).subscribe((questions) => {
-        const texts = questions.map((q) => q.text);
-        expect(new Set(texts).size).toBe(texts.length);
-        done();
-      });
-
-      const req = httpMock.expectOne('assets/galatea-questions.json');
-      req.flush(bank);
-    });
-
-    it('si el fallback IA no completa el faltante, lanza error de insuficiencia', (done) => {
-      const bank = { version: 1, questions: [bankQuestion('gal-0'), bankQuestion('gal-1')] };
-      generateJsonMock.mockReturnValue(
-        of(
-          JSON.stringify({
-            questions: [
-              geminiRawQuestion('Muy corta'), // menos de 30 caracteres: se descarta (FR-005A)
-              geminiRawQuestion('Pregunta generada por IA número dos para el banco de Galatea'),
-              geminiRawQuestion('Pregunta generada por IA número tres para el banco de Galatea'),
-              geminiRawQuestion('Pregunta generada por IA número cuatro para el banco de Galatea'),
-            ],
-          }),
-        ),
-      );
-
-      service.getGalateaQuestions(6).subscribe({
-        next: () => done.fail('Debió fallar por preguntas insuficientes tras fallback IA.'),
-        error: (err) => {
-          expect(err).toBeInstanceOf(InsufficientGeneratedQuestionsError);
-          done();
-        },
-      });
-
-      const req = httpMock.expectOne('assets/galatea-questions.json');
-      req.flush(bank);
-    });
   });
 
   describe('getChosenTopicQuestions', () => {
@@ -319,40 +249,6 @@ describe('QuestionService', () => {
       });
     });
 
-    it('no modifica el banco curado manual de Galatea; sólo rebalancea el fallback generado por IA', (done) => {
-      const bank = { version: 1, questions: [bankQuestion('gal-0'), bankQuestion('gal-1')] };
-      generateJsonMock.mockReturnValue(
-        of(
-          JSON.stringify({
-            questions: Array.from({ length: 4 }, (_, i) =>
-              geminiRawQuestion(`Pregunta generada por IA número ${i} para el banco de Galatea`, 1),
-            ),
-          }),
-        ),
-      );
 
-      service.getGalateaQuestions(6).subscribe((questions) => {
-        expect(questions.length).toBe(6);
-
-        const bankItems = questions.filter((question) => question.id.startsWith('gal-'));
-        expect(bankItems.length).toBe(2);
-        for (const item of bankItems) {
-          expect(item.correctOptionIndex).toBe(0);
-          expect(item.options).toEqual(['Opción A', 'Opción B', 'Opción C', 'Opción D']);
-        }
-
-        const aiItems = questions.filter((question) => !question.id.startsWith('gal-'));
-        expect(aiItems.length).toBe(4);
-        const countByIndex = [0, 0, 0, 0];
-        for (const item of aiItems) {
-          countByIndex[item.correctOptionIndex] += 1;
-        }
-        expect(Math.max(...countByIndex)).toBeLessThanOrEqual(2);
-        done();
-      });
-
-      const req = httpMock.expectOne('assets/galatea-questions.json');
-      req.flush(bank);
-    });
   });
 });
